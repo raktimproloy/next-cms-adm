@@ -35,7 +35,7 @@ const tags = [
   },
 ];
 
-const BlogDetailsPage = () => {
+const ServiceDetailsPage = () => {
   return (
     <div>
       <div className="lg:flex flex-wrap blog-posts lg:space-x-5 space-y-5 lg:space-y-0 rtl:space-x-reverse">
@@ -281,4 +281,4 @@ const BlogDetailsPage = () => {
   );
 };
 
-export default BlogDetailsPage;
+export default ServiceDetailsPage;

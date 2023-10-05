@@ -9,6 +9,20 @@ const CrmPage = lazy(() => import("./pages/dashboard/crm"));
 const ProjectPage = lazy(() => import("./pages/dashboard/project"));
 const BankingPage = lazy(() => import("./pages/dashboard/banking"));
 
+// Import System 
+const AddUser = lazy(() => import("./pages/system/addUser"))
+const ChangePassword = lazy(() => import("./pages/system/changePassword"))
+const Permission = lazy(() => import("./pages/system/permission"))
+const UserManager = lazy(() => import("./pages/system/userManager"))
+
+// import Content
+const ContactPage = lazy(() => import("./pages/content/Contact"))
+const HeroSectionPage = lazy(() => import("./pages/content/HeroSection"))
+const LogoPage = lazy(() => import("./pages/content/Logo"))
+const MetadataPage = lazy(() => import("./pages/content/Metadata"))
+const SocalMediaPage = lazy(() => import("./pages/content/SocalMedia"))
+
+
 const Login = lazy(() => import("./pages/auth/login"));
 const Login2 = lazy(() => import("./pages/auth/login2"));
 const Login3 = lazy(() => import("./pages/auth/login3"));
@@ -84,8 +98,11 @@ const ComingSoonPage = lazy(() => import("./pages/utility/coming-soon"));
 const UnderConstructionPage = lazy(() =>
   import("./pages/utility/under-construction")
 );
+const MenuPage = lazy(() => import("./pages/utility/menu"));
 const BlogPage = lazy(() => import("./pages/utility/blog"));
 const BlogDetailsPage = lazy(() => import("./pages/utility/blog/blog-details"));
+const ServicePage = lazy(() => import("./pages/utility/service"));
+const ServiceDetailsPage = lazy(() => import("./pages/utility/service/service-details"));
 const FaqPage = lazy(() => import("./pages/utility/faq"));
 const Settings = lazy(() => import("./pages/utility/settings"));
 const Profile = lazy(() => import("./pages/utility/profile"));
@@ -214,6 +231,21 @@ function App() {
           <Route path="crm" element={<CrmPage />} />
           <Route path="project" element={<ProjectPage />} />
           <Route path="banking" element={<BankingPage />} />
+
+          {/* System */}
+          <Route path="add-user" element={<AddUser />} />
+          <Route path="change-password" element={<ChangePassword />} />
+          <Route path="permission" element={<Permission />} />
+          <Route path="user-manager" element={<UserManager />} />
+
+          {/* Content */}
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="hero-section" element={<HeroSectionPage />} />
+          <Route path="logo" element={<LogoPage />} />
+          <Route path="metadata" element={<MetadataPage />} />
+          <Route path="socal-media" element={<SocalMediaPage />} />
+
+
           {/* App pages */}
           <Route path="todo" element={<TodoPage />} />
           <Route path="email" element={<EmailPage />} />
@@ -266,8 +298,14 @@ function App() {
           <Route path="invoice-edit" element={<InvoiceEditPage />} />
           <Route path="pricing" element={<PricingPage />} />
           <Route path="blank-page" element={<BlankPage />} />
+
+
+
+          <Route path="menu" element={<MenuPage />} />
           <Route path="blog" element={<BlogPage />} />
           <Route path="blog-details" element={<BlogDetailsPage />} />
+          <Route path="service" element={<ServicePage />} />
+          <Route path="service-details" element={<ServiceDetailsPage />} />
           <Route path="faq" element={<FaqPage />} />
           <Route path="settings" element={<Settings />} />
           <Route path="profile" element={<Profile />} />
