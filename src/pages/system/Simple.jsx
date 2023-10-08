@@ -6,8 +6,15 @@ import * as yup from "yup";
 
 const FormValidationSchema = yup
   .object({
-    password: yup.string().required("Password is Required"),
     email: yup.string().email("Invalid email").required("Email is Required"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters"),
+    confirmpass: yup
+      .string()
+      .required("Confirm Password is required")
+      .oneOf([yup.ref("password"), null], "Passwords must match"),
   })
   .required();
 
@@ -36,10 +43,17 @@ const Simple = () => {
         />
         <Textinput
           name="password"
-          label="password"
+          label="new password"
           type="password"
           register={register}
           error={errors.password}
+        />
+        <Textinput
+          name="confirmpass"
+          label="confirm password"
+          type="password"
+          register={register}
+          error={errors.confirmpass}
         />
 
         <div className="ltr:text-right rtl:text-left">

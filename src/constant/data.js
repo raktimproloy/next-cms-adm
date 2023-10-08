@@ -11,17 +11,17 @@ export const menuItems = [
   },
   {
     title: "Blog",
-    icon: "heroicons-outline:home",
+    icon: "heroicons-outline:document",
     link: "blog",
   },
   {
     title: "Service",
-    icon: "heroicons-outline:home",
+    icon: "carbon:vehicle-services",
     link: "service",
   },
   {
     title: "System",
-    icon: "heroicons-outline:home",
+    icon: "tdesign:user-setting",
     link: "system",
     isOpen: true,
     isHide: true,
@@ -46,17 +46,17 @@ export const menuItems = [
   },
   {
     title: "Menu",
-    icon: "heroicons-outline:home",
+    icon: "gg:menu-round",
     link: "menu",
   },
   {
     title: "Email",
-    icon: "heroicons-outline:home",
+    icon: "line-md:email",
     link: "email",
   },
   {
     title: "Content",
-    icon: "heroicons-outline:home",
+    icon: "fluent:content-view-32-regular",
     link: "content",
     isOpen: true,
     isHide: true,
@@ -85,7 +85,7 @@ export const menuItems = [
   },
   {
     title: "Logout",
-    icon: "heroicons-outline:home",
+    icon: "ant-design:logout-outlined",
     link: "/",
   },
 ];

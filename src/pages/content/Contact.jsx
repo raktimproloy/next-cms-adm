@@ -8,13 +8,6 @@ function Contact() {
     <Card title="Horizontal Form">
         <div className="space-y-4">
           <Textinput
-            label="Full name"
-            id="h_Fullname"
-            type="text"
-            placeholder="Full name"
-            horizontal
-          />
-          <Textinput
             label="Email"
             id="h_email"
             type="email"
@@ -22,17 +15,45 @@ function Contact() {
             horizontal
           />
           <Textinput
-            label="Phone"
-            id="h_phone"
-            type="phone"
-            placeholder="Type your email"
+            label="Bd Address"
+            id="bd_address"
+            type="text"
+            placeholder="BD Address"
             horizontal
           />
           <Textinput
-            label="Password"
-            id="h_password"
-            type="Password"
-            placeholder="8+ characters, 1 capitat letter "
+            label="Bd Map Url"
+            id="bd_map_url"
+            type="text"
+            placeholder="BD Map Url"
+            horizontal
+          />
+          <Textinput
+            label="Uk Address"
+            id="uk_address"
+            type="text"
+            placeholder="UK Address"
+            horizontal
+          />
+          <Textinput
+            label="Uk Map Url"
+            id="uk_map_url"
+            type="text"
+            placeholder="UK Map Url"
+            horizontal
+          />
+          <Textinput
+            label="Bd Phone"
+            id="bd_phone"
+            type="text"
+            placeholder="Your BD Phone Number"
+            horizontal
+          />
+          <Textinput
+            label="Uk Phone"
+            id="uk_phone"
+            type="text"
+            placeholder="Your UK Phone Number"
             horizontal
           />
           <div className="ml-[124px] space-y-4">

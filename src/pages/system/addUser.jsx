@@ -7,7 +7,41 @@ import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Select from "react-select";
 import * as yup from "yup";
+import { tableData } from "@/constant/table-data";
+import Switch from "@/components/ui/Switch";
+
+
+const columns = [
+  {
+    label: "User",
+    field: "user",
+  },
+  {
+    label: "Info",
+    field: "info",
+  },
+  // {
+  //   label: "Content",
+  //   field: "content",
+  // },
+  // {
+  //   label: "Metadata",
+  //   field: "metadata",
+  // },
+  {
+    label: "Blog",
+    field: "blog",
+  },
+  {
+    label: "Service",
+    field: "service",
+  },
+  
+];
+// slice(0, 10) is used to limit the number of rows to 10
+const rows = tableData.slice(0, 1);
 
 const steps = [
   {
@@ -16,17 +50,23 @@ const steps = [
   },
   {
     id: 2,
-    title: "Personal info-500",
-  },
-  {
-    id: 3,
-    title: "Address",
-  },
-  {
-    id: 4,
-    title: "Social Links",
-  },
+    title: "Permission",
+  }
 ];
+
+const furits = [
+  { value: "admin", label: "Admin" },
+  { value: "manager", label: "Manager" },
+  { value: "user", label: "User" },
+];
+
+const styles = {
+  option: (provided, state) => ({
+    ...provided,
+    fontSize: "14px",
+  }),
+};
+
 
 let stepSchema = yup.object().shape({
   username: yup.string().required(" User name is required"),
@@ -47,24 +87,30 @@ let stepSchema = yup.object().shape({
 });
 
 let personalSchema = yup.object().shape({
-  fname: yup.string().required(" First name is required"),
-  lname: yup.string().required(" Last name is required"),
+  slug: yup.string().required("Slug is required"),
 });
-let addressSchema = yup.object().shape({
-  address: yup.string().required(" Address is required"),
-});
-const url =
-  /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+// let addressSchema = yup.object().shape({
+//   address: yup.string().required(" Address is required"),
+// });
+// const url =
+//   /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
-let socialSchema = yup.object().shape({
-  fburl: yup
-    .string()
-    .required("Facebook url is required")
-    .matches(url, "Facebook url is not valid"),
-});
+// let socialSchema = yup.object().shape({
+//   fburl: yup
+//     .string()
+//     .required("Facebook url is required")
+//     .matches(url, "Facebook url is not valid"),
+// });
 
 function AddUser() {
   const [stepNumber, setStepNumber] = useState(0);
+
+  const [checked1, setChecked1] = useState(false);
+  const [checked2, setChecked2] = useState(false);
+  const [checked3, setChecked3] = useState(false);
+  const [checked4, setChecked4] = useState(false);
+  const [checked5, setChecked5] = useState(false);
+  const [checked6, setChecked6] = useState(false);
 
   // find current step schema
   let currentStepSchema;
@@ -74,12 +120,6 @@ function AddUser() {
       break;
     case 1:
       currentStepSchema = personalSchema;
-      break;
-    case 2:
-      currentStepSchema = addressSchema;
-      break;
-    case 3:
-      currentStepSchema = socialSchema;
       break;
     default:
       currentStepSchema = stepSchema;
@@ -227,32 +267,115 @@ function AddUser() {
 
               {stepNumber === 1 && (
                 <div>
-                  <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
+                  <div className="grid md:grid-cols-2 grid-cols-1 gap-5 mb-5">
                     <div className="md:col-span-2 col-span-1">
                       <h4 className="text-base text-slate-800 dark:text-slate-300 mb-6">
                         Enter Your Personal info-500
                       </h4>
                     </div>
+                    {/* selection  */}
+                    <div className="gap-5">
+                      <div>
+                        <label htmlFor=" hh" className="form-label ">
+                          Role
+                        </label>
+                        <Select
+                          className="react-select"
+                          classNamePrefix="select"
+                          defaultValue={furits[0]}
+                          options={furits}
+                          styles={styles}
+                          id="hh"
+                        />
+                      </div>
+                    </div>
+                    {/* Normal */}
                     <Textinput
-                      label="First name"
+                      label="Slug"
                       type="text"
-                      placeholder="First name"
-                      name="fname"
-                      error={errors.fname}
-                      register={register}
-                    />
-                    <Textinput
-                      label="Last name"
-                      type="text"
-                      placeholder="Last name"
-                      name="lname"
-                      error={errors.lname}
+                      placeholder="Slug"
+                      name="slug"
+                      error={errors.slug}
                       register={register}
                     />
                   </div>
+                  {/* Basic table for permission */}
+                  <Card title="Permission" noborder>
+                    <div className="overflow-x-auto -mx-6">
+                      <div className="inline-block min-w-full align-middle">
+                        <div className="overflow-hidden ">
+                          <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                            <thead className="bg-slate-200 dark:bg-slate-700">
+                              <tr>
+                                {columns.map((column, i) => (
+                                  <th key={i} scope="col" className=" table-th ">
+                                    {column.label}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                              {rows.map((row, i) => (
+                                <tr key={i}>
+                                  <td className="table-td">
+                                  <Switch
+                                    label=""
+                                    activeClass="bg-danger-500"
+                                    value={checked1}
+                                    onChange={() => setChecked1(!checked1)}
+                                  />
+                                  </td>
+                                  <td className="table-td">
+                                  <Switch
+                                    label=""
+                                    activeClass="bg-danger-500"
+                                    value={checked2}
+                                    onChange={() => setChecked2(!checked2)}
+                                  />
+                                  </td>
+                                  {/* <td className="table-td ">
+                                    <Switch
+                                      label=""
+                                      activeClass="bg-warning-500"
+                                      value={checked3}
+                                      onChange={() => setChecked3(!checked3)}
+                                    />  
+                                  </td>
+                                  <td className="table-td ">
+                                    <Switch
+                                      label=""
+                                      activeClass="bg-warning-500"
+                                      value={checked4}
+                                      onChange={() => setChecked4(!checked4)}
+                                    />  
+                                  </td> */}
+                                  <td className="table-td ">
+                                    <Switch
+                                      label=""
+                                      activeClass="bg-success-500"
+                                      value={checked5}
+                                      onChange={() => setChecked5(!checked5)}
+                                    />  
+                                  </td>
+                                  <td className="table-td ">
+                                    <Switch
+                                      label=""
+                                      activeClass="bg-success-500"
+                                      value={checked6}
+                                      onChange={() => setChecked6(!checked6)}
+                                    />  
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
               )}
-              {stepNumber === 2 && (
+              {/* {stepNumber === 2 && (
                 <div>
                   <div className="grid grid-cols-1 gap-5">
                     <div className="">
@@ -289,7 +412,7 @@ function AddUser() {
                     />
                   </div>
                 </div>
-              )}
+              )} */}
 
               <div
                 className={`${

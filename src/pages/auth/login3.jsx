@@ -14,20 +14,12 @@ const login3 = () => {
     <>
       <ToastContainer />
       <div
-        className="loginwrapper bg-cover bg-no-repeat bg-center"
+        className="loginwrapper bg-cover bg-no-repeat bg-center flex justify-center"
         style={{
           backgroundImage: `url(${bgImage})`,
         }}
       >
-        <div className="lg-inner-column">
-          <div className="left-columns lg:w-1/2 lg:block hidden">
-            <div className="logo-box-3">
-              <Link to="/" className="">
-                <img src={LogoWhite} alt="" />
-              </Link>
-            </div>
-          </div>
-          <div className="lg:w-1/2 w-full flex flex-col items-center justify-center">
+          <div className="">
             <div className="auth-box-3">
               <div className="mobile-logo text-center mb-6 lg:hidden block">
                 <Link to="/">
@@ -41,7 +33,7 @@ const login3 = () => {
               <div className="text-center 2xl:mb-10 mb-5">
                 <h4 className="font-medium">Sign In</h4>
                 <div className="text-slate-500 dark:text-slate-400 text-base">
-                  Sign in to your account to start using Dashcode
+                  Sign in to your account to start using Dashboard
                 </div>
               </div>
               <LoginForm />
@@ -64,10 +56,6 @@ const login3 = () => {
               </div> */}
             </div>
           </div>
-          <div className="auth-footer3 text-white py-5 px-5 text-xl w-full">
-            Unlock your Project performance
-          </div>
-        </div>
       </div>
     </>
   );

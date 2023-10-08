@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
 
+import Button from "@/components/ui/Button";
 const button = () => {
   return (
     <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">

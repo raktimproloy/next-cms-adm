@@ -11,6 +11,7 @@ import {
   usePagination,
 } from "react-table";
 import GlobalFilter from "./GlobalFilter";
+import { Link } from "react-router-dom";
 
 const COLUMNS = [
   {
@@ -20,27 +21,27 @@ const COLUMNS = [
       return <span>{row?.cell?.value}</span>;
     },
   },
+  // {
+  //   Header: "Order",
+  //   accessor: "order",
+  //   Cell: (row) => {
+  //     return <span>#{row?.cell?.value}</span>;
+  //   },
+  // },
   {
-    Header: "Order",
-    accessor: "order",
-    Cell: (row) => {
-      return <span>#{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "customer",
+    Header: "title",
     accessor: "customer",
     Cell: (row) => {
       return (
         <div>
           <span className="inline-flex items-center">
-            <span className="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none bg-slate-600">
+            {/* <span className="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none bg-slate-600">
               <img
                 src={row?.cell?.value.image}
                 alt=""
                 className="object-cover w-full h-full rounded-full"
               />
-            </span>
+            </span> */}
             <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
               {row?.cell?.value.name}
             </span>
@@ -57,19 +58,19 @@ const COLUMNS = [
     },
   },
   {
-    Header: "quantity",
+    Header: "Comments",
     accessor: "quantity",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
   },
-  {
-    Header: "amount",
-    accessor: "amount",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
+  // {
+  //   Header: "amount",
+  //   accessor: "amount",
+  //   Cell: (row) => {
+  //     return <span>{row?.cell?.value}</span>;
+  //   },
+  // },
   {
     Header: "status",
     accessor: "status",
@@ -109,7 +110,9 @@ const COLUMNS = [
         <div className="flex space-x-3 rtl:space-x-reverse">
           <Tooltip content="View" placement="top" arrow animation="shift-away">
             <button className="action-btn" type="button">
-              <Icon icon="heroicons:eye" />
+              <Link to={"/blog-details"}>
+                <Icon icon="heroicons:eye" />
+              </Link>
             </button>
           </Tooltip>
           <Tooltip content="Edit" placement="top" arrow animation="shift-away">

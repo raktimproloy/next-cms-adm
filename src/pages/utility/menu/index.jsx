@@ -1,20 +1,28 @@
 import React from 'react'
 import Card from "@/components/ui/Card";
 import { tableData } from "@/constant/table-data";
+import Button from "@/components/ui/Button";
 
 const columns = [
     {
-      label: "Age",
-      field: "age",
+      label: "Title",
+      field: "title",
     },
     {
-      label: "First Name",
-      field: "first_name",
+      label: "Link",
+      field: "link",
     },
-  
     {
-      label: "Email",
-      field: "email",
+      label: "Status",
+      field: "status",
+    },
+    {
+      label: "Order",
+      field: "order",
+    },
+    {
+      label: "Manage",
+      field: "manage",
     },
   ];
   // slice(0, 10) is used to limit the number of rows to 10
@@ -38,9 +46,20 @@ function MenuPage() {
                 <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                   {rows.map((row, i) => (
                     <tr key={i}>
-                      <td className="table-td">{row.age}</td>
-                      <td className="table-td">{row.first_name}</td>
-                      <td className="table-td ">{row.email}</td>
+                      <td className="table-td">Services</td>
+                      <td className="table-td">/service</td>
+                      <td className="table-td ">Active</td>
+                      <td className="table-td ">0</td>
+                      <td className="table-td ">
+                          <Button
+                            text="Edit"
+                            className="btn-outline-primary rounded-[999px] py-2 me-2"
+                          />
+                          <Button
+                            text="Save"
+                            className="btn-outline-primary rounded-[999px] py-2"
+                          />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
