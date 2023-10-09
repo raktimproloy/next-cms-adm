@@ -7,7 +7,86 @@ export const menuItems = [
   {
     title: "Dashboard",
     icon: "heroicons-outline:home",
-    link: "dashboard",
+    link: "dashboard"
+  },
+  {
+    title: "Blog",
+    icon: "heroicons-outline:document",
+    link: "blog",
+  },
+  {
+    title: "Service",
+    icon: "carbon:vehicle-services",
+    link: "service",
+  },
+  {
+    title: "System",
+    icon: "tdesign:user-setting",
+    link: "system",
+    isOpen: true,
+    isHide: true,
+    child: [
+      {
+        childtitle: "Add User",
+        childlink: "add-user",
+      },
+      {
+        childtitle: "User Manager",
+        childlink: "user-manager",
+      },
+      {
+        childtitle: "Permission",
+        childlink: "permission",
+      },
+      {
+        childtitle: "Change Password",
+        childlink: "change-password",
+      }
+    ],
+  },
+  {
+    title: "Menu",
+    icon: "gg:menu-round",
+    link: "menu",
+  },
+  {
+    title: "Email",
+    icon: "line-md:email",
+    link: "email",
+  },
+  {
+    title: "Content",
+    icon: "fluent:content-view-32-regular",
+    link: "content",
+    isOpen: true,
+    isHide: true,
+    child: [
+      {
+        childtitle: "Contact",
+        childlink: "contact",
+      },
+      {
+        childtitle: "Metadata",
+        childlink: "metadata",
+      },
+      {
+        childtitle: "Socal Media",
+        childlink: "socal-media",
+      },
+      {
+        childtitle: "Logo",
+        childlink: "logo",
+      },
+      {
+        childtitle: "Hero Section",
+        childlink: "hero-section",
+      }
+    ],
+  },
+  {
+    title: "Logout",
+    icon: "ant-design:logout-outlined",
+    link: "/",
   },
 ];
 
