@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Select from "react-select";
 import * as yup from "yup";
 import Switch from "@/components/ui/Switch";
+import axios from "axios";
 
 
 const columns = [
@@ -89,8 +90,10 @@ function AddUser() {
     fullName: "",
     email: "",
     phone: "",
+    last_login: "30mnt ago",
+    status: 0,
     password: "",
-    role: ""
+    role: "admin"
   })
 
   // find current step schema
@@ -120,17 +123,34 @@ function AddUser() {
     mode: "all",
   });
 
-  const onSubmit = (data) => {
-    // next step until last step . if last step then submit form
+  const handleNext = (e) => {
     let totalSteps = steps.length;
     const isLastStep = stepNumber === totalSteps - 1;
     if (isLastStep) {
-      console.log(data);
+      
     } else {
       setStepNumber(stepNumber + 1);
       console.log(userData)
     }
-  };
+  }
+
+  const handleAdd = (e) => {
+    e.preventDefault()
+
+    const fullUserData = {
+      ...userData
+    }
+    axios.post(`http://localhost:3001/user/signup`, userData)
+    .then(response=>{
+        localStorage.setItem('_token', response?.data?.token )
+        router.push("/")
+    })
+    .catch(error=>{
+        console.log(error)
+        setErrorMessage(error.response.data.error);
+        setShowSpinner(false);
+    })
+  }
 
   function handleChange(e) {
     setUserData({
@@ -195,7 +215,7 @@ function AddUser() {
           </div>
 
           <div className="conten-box ">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(handleNext)}>
               {stepNumber === 0 && (
                 <div>
                   <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 pt-10">
@@ -359,11 +379,19 @@ function AddUser() {
                     onClick={handlePrev}
                   />
                 )}
-                <Button
-                  text={stepNumber !== steps.length - 1 ? "next" : "submit"}
-                  className="btn-dark"
-                  type="submit"
-                />
+                {
+                  stepNumber !== steps.length - 1 ?
+                  <Button
+                    text={"next"}
+                    className="btn-dark"
+                    type={"submit"}
+                  /> :
+                  <Button
+                    text={"submit"}
+                    className="btn-dark"
+                    onClick={handleAdd}
+                  />
+                }
               </div>
             </form>
           </div>
