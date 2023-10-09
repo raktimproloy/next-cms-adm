@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Textinput from "@/components/ui/Textinput";
 import InputGroup from "@/components/ui/InputGroup";
-import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
@@ -9,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Select from "react-select";
 import * as yup from "yup";
-import { tableData } from "@/constant/table-data";
 import Switch from "@/components/ui/Switch";
 
 
@@ -22,14 +20,6 @@ const columns = [
     label: "Info",
     field: "info",
   },
-  // {
-  //   label: "Content",
-  //   field: "content",
-  // },
-  // {
-  //   label: "Metadata",
-  //   field: "metadata",
-  // },
   {
     label: "Blog",
     field: "blog",
@@ -40,8 +30,7 @@ const columns = [
   },
   
 ];
-// slice(0, 10) is used to limit the number of rows to 10
-const rows = tableData.slice(0, 1);
+const rows = 1;
 
 const steps = [
   {
@@ -70,12 +59,8 @@ const styles = {
 
 let stepSchema = yup.object().shape({
   username: yup.string().required(" User name is required"),
-  fullname: yup.string().required("Full name is required"),
+  fullName: yup.string().required("Full name is required"),
   email: yup.string().email("Email is not valid").required("Email is required"),
-  // phone: yup
-  //   .string()
-  //   .required("Phone number is required")
-  //   .matches(/^[0-9]{12}$/, "Phone number is not valid"),
   password: yup
     .string()
     .required("Password is required")
@@ -89,28 +74,24 @@ let stepSchema = yup.object().shape({
 let personalSchema = yup.object().shape({
   slug: yup.string().required("Slug is required"),
 });
-// let addressSchema = yup.object().shape({
-//   address: yup.string().required(" Address is required"),
-// });
-// const url =
-//   /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
-
-// let socialSchema = yup.object().shape({
-//   fburl: yup
-//     .string()
-//     .required("Facebook url is required")
-//     .matches(url, "Facebook url is not valid"),
-// });
 
 function AddUser() {
+
   const [stepNumber, setStepNumber] = useState(0);
 
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const [checked3, setChecked3] = useState(false);
   const [checked4, setChecked4] = useState(false);
-  const [checked5, setChecked5] = useState(false);
-  const [checked6, setChecked6] = useState(false);
+
+  const [userData, setUserData] = useState({
+    username: "",
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    role: ""
+  })
 
   // find current step schema
   let currentStepSchema;
@@ -147,8 +128,21 @@ function AddUser() {
       console.log(data);
     } else {
       setStepNumber(stepNumber + 1);
+      console.log(userData)
     }
   };
+
+  function handleChange(e) {
+    setUserData({
+        ...userData, [e.target.name]:e.target.value
+    })
+  }
+
+  function handleOptionChange(e) {
+    setUserData({
+        ...userData, role:e.value
+    })
+  }
 
   const handlePrev = () => {
     setStepNumber(stepNumber - 1);
@@ -217,14 +211,16 @@ function AddUser() {
                       name="username"
                       error={errors.username}
                       register={register}
+                      onChange={handleChange}
                     />
                     <Textinput
                       label="Full name"
                       type="text"
                       placeholder="Full name"
-                      name="fullname"
-                      error={errors.fullname}
+                      name="fullName"
+                      error={errors.fullName}
                       register={register}
+                      onChange={handleChange}
                     />
                     <Textinput
                       label="Email"
@@ -233,15 +229,16 @@ function AddUser() {
                       name="email"
                       error={errors.email}
                       register={register}
+                      onChange={handleChange}
                     />
                     <InputGroup
                       label="Phone Number"
                       type="text"
-                      prepend="MY (+6)"
                       placeholder="Phone Number"
                       name="phone"
                       error={errors.phone}
                       register={register}
+                      onChange={handleChange}
                     />
                     <Textinput
                       label="Password"
@@ -251,6 +248,7 @@ function AddUser() {
                       error={errors.password}
                       hasicon
                       register={register}
+                      onChange={handleChange}
                     />
                     <Textinput
                       label="Confirm Password"
@@ -286,18 +284,10 @@ function AddUser() {
                           options={furits}
                           styles={styles}
                           id="hh"
+                          onChange={handleOptionChange}
                         />
                       </div>
                     </div>
-                    {/* Normal */}
-                    <Textinput
-                      label="Slug"
-                      type="text"
-                      placeholder="Slug"
-                      name="slug"
-                      error={errors.slug}
-                      register={register}
-                    />
                   </div>
                   {/* Basic table for permission */}
                   <Card title="Permission" noborder>
@@ -315,8 +305,7 @@ function AddUser() {
                               </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                              {rows.map((row, i) => (
-                                <tr key={i}>
+                                <tr>
                                   <td className="table-td">
                                   <Switch
                                     label=""
@@ -333,10 +322,10 @@ function AddUser() {
                                     onChange={() => setChecked2(!checked2)}
                                   />
                                   </td>
-                                  {/* <td className="table-td ">
+                                  <td className="table-td ">
                                     <Switch
                                       label=""
-                                      activeClass="bg-warning-500"
+                                      activeClass="bg-success-500"
                                       value={checked3}
                                       onChange={() => setChecked3(!checked3)}
                                     />  
@@ -344,29 +333,12 @@ function AddUser() {
                                   <td className="table-td ">
                                     <Switch
                                       label=""
-                                      activeClass="bg-warning-500"
+                                      activeClass="bg-success-500"
                                       value={checked4}
                                       onChange={() => setChecked4(!checked4)}
                                     />  
-                                  </td> */}
-                                  <td className="table-td ">
-                                    <Switch
-                                      label=""
-                                      activeClass="bg-success-500"
-                                      value={checked5}
-                                      onChange={() => setChecked5(!checked5)}
-                                    />  
-                                  </td>
-                                  <td className="table-td ">
-                                    <Switch
-                                      label=""
-                                      activeClass="bg-success-500"
-                                      value={checked6}
-                                      onChange={() => setChecked6(!checked6)}
-                                    />  
                                   </td>
                                 </tr>
-                              ))}
                             </tbody>
                           </table>
                         </div>
@@ -375,45 +347,6 @@ function AddUser() {
                   </Card>
                 </div>
               )}
-              {/* {stepNumber === 2 && (
-                <div>
-                  <div className="grid grid-cols-1 gap-5">
-                    <div className="">
-                      <h4 className="text-base text-slate-800 dark:text-slate-300 mb-6">
-                        Enter Your Address
-                      </h4>
-                    </div>
-                    <Textarea
-                      label="Address"
-                      type="text"
-                      placeholder="Write Address"
-                      name="address"
-                      error={errors.address}
-                      register={register}
-                    />
-                  </div>
-                </div>
-              )}
-              {stepNumber === 3 && (
-                <div>
-                  <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
-                    <div className="lg:col-span-3 md:col-span-2 col-span-1">
-                      <h4 className="text-base text-slate-800 dark:text-slate-300 mb-6">
-                        Enter Your Address
-                      </h4>
-                    </div>
-                    <Textinput
-                      label="Facebook"
-                      type="text"
-                      placeholder="https://www.facebook.com/profile"
-                      name="fburl"
-                      error={errors.fburl}
-                      register={register}
-                    />
-                  </div>
-                </div>
-              )} */}
-
               <div
                 className={`${
                   stepNumber > 0 ? "flex justify-between" : " text-right"
