@@ -4,7 +4,6 @@ import Icon from "@/components/ui/Icon";
 import { Menu, Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { handleLogout } from "@/pages/auth/common/store";
 
 import UserAvatar from "@/assets/images/all-img/user.png";
 
@@ -42,56 +41,56 @@ const Profile = () => {
       icon: "heroicons-outline:user",
 
       action: () => {
-        navigate("/profile");
+        console.log("profile");
       },
     },
-    // {
-    //   label: "Chat",
-    //   icon: "heroicons-outline:chat",
-    //   action: () => {
-    //     navigate("/chat");
-    //   },
-    // },
+    {
+      label: "Chat",
+      icon: "heroicons-outline:chat",
+      action: () => {
+        console.log("chat");
+      },
+    },
     {
       label: "Email",
       icon: "heroicons-outline:mail",
       action: () => {
-        navigate("/email");
+        console.log("email");
       },
     },
-    // {
-    //   label: "Todo",
-    //   icon: "heroicons-outline:clipboard-check",
-    //   action: () => {
-    //     navigate("/todo");
-    //   },
-    // },
+    {
+      label: "Todo",
+      icon: "heroicons-outline:clipboard-check",
+      action: () => {
+        console.log("todo");
+      },
+    },
     {
       label: "Settings",
       icon: "heroicons-outline:cog",
       action: () => {
-        navigate("/settings");
+        console.log("settings");
       },
     },
-    // {
-    //   label: "Price",
-    //   icon: "heroicons-outline:credit-card",
-    //   action: () => {
-    //     navigate("/pricing");
-    //   },
-    // },
-    // {
-    //   label: "Faq",
-    //   icon: "heroicons-outline:information-circle",
-    //   action: () => {
-    //     navigate("/faq");
-    //   },
-    // },
+    {
+      label: "Price",
+      icon: "heroicons-outline:credit-card",
+      action: () => {
+        console.log("price");
+      },
+    },
+    {
+      label: "Faq",
+      icon: "heroicons-outline:information-circle",
+      action: () => {
+        console.log("faq");
+      },
+    },
     {
       label: "Logout",
       icon: "heroicons-outline:login",
       action: () => {
-        dispatch(handleLogout(false));
+        console.log("logout");
       },
     },
   ];

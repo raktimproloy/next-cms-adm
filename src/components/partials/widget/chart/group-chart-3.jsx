@@ -7,7 +7,7 @@ import shade3 from "@/assets/images/all-img/shade-3.png";
 import shade4 from "@/assets/images/all-img/shade-4.png";
 const statistics = [
   {
-    title: "Active User",
+    title: "Sales",
     count: "354",
     bg: "bg-warning-500",
     text: "text-primary-500",
@@ -17,8 +17,9 @@ const statistics = [
     percentClass: "text-primary-500",
   },
   {
-    title: "Total User",
-    count: "400",
+    title: "Revenue ",
+    count: "$86,954",
+
     bg: "bg-info-500",
     text: "text-primary-500",
     percent: "8.67%",
@@ -27,8 +28,8 @@ const statistics = [
     percentClass: "text-primary-500",
   },
   {
-    title: "Total Blog",
-    count: "35",
+    title: "Conversion",
+    count: "15%",
     bg: "bg-primary-500",
     text: "text-danger-500",
     percent: "1.67%  ",
@@ -37,8 +38,8 @@ const statistics = [
     percentClass: "text-danger-500",
   },
   {
-    title: "Total Services",
-    count: "10",
+    title: "Leads",
+    count: "654",
     bg: "bg-success-500",
     text: "text-primary-500",
     percent: "11.67%  ",
@@ -69,7 +70,7 @@ const GroupChart3 = () => {
           <span className="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
             {item.count}
           </span>
-          {/* <div className="flex space-x-2 rtl:space-x-reverse">
+          <div className="flex space-x-2 rtl:space-x-reverse">
             <div className={` flex-none text-xl  ${item.text} `}>
               <Icon icon={item.icon} />
             </div>
@@ -81,7 +82,7 @@ const GroupChart3 = () => {
                 From last week
               </span>
             </div>
-          </div> */}
+          </div>
         </div>
       ))}
     </>
