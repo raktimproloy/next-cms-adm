@@ -38,6 +38,34 @@ const COLUMNS = [
     },
   },
   {
+    Header: "Username",
+    accessor: "",
+    Cell: (row) => {
+      return <span>{row?.cell?.value}</span>;
+    },
+  },
+  {
+    Header: "Email",
+    accessor: "",
+    Cell: (row) => {
+      return <span>{row?.cell?.value}</span>;
+    },
+  },
+  {
+    Header: "Phone",
+    accessor: "",
+    Cell: (row) => {
+      return <span>{row?.cell?.value}</span>;
+    },
+  },
+  {
+    Header: "Role",
+    accessor: "",
+    Cell: (row) => {
+      return <span>{row?.cell?.value}</span>;
+    },
+  },
+  {
     Header: "status",
     accessor: "status",
     Cell: (row) => {
@@ -66,6 +94,13 @@ const COLUMNS = [
           </span>
         </span>
       );
+    },
+  },
+  {
+    Header: "Last Login",
+    accessor: "",
+    Cell: (row) => {
+      return <span>{row?.cell?.value}</span>;
     },
   },
   {
@@ -199,6 +234,7 @@ const UserManager = () => {
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps}
               >
+                {/* table head */}
                 <thead className="bg-slate-200 dark:bg-slate-700">
                   {headerGroups.map((headerGroup) => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
@@ -223,11 +259,14 @@ const UserManager = () => {
                     </tr>
                   ))}
                 </thead>
+
+                {/* table data */}
                 <tbody
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps}
                 >
                   {page.map((row) => {
+                    console.log(row)
                     prepareRow(row);
                     return (
                       <tr {...row.getRowProps()}>
@@ -246,6 +285,7 @@ const UserManager = () => {
             </div>
           </div>
         </div>
+        {/* Pagination */}
         <div className="md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center">
           <div className=" flex items-center space-x-3 rtl:space-x-reverse">
             <select

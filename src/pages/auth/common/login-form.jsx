@@ -36,12 +36,12 @@ const LoginForm = () => {
     mode: "all",
   });
   const navigate = useNavigate();
-  const onSubmit = (data) => {
+  const onSubmit = () => {
 
     axios.post(`http://localhost:3001/user/login`, loginData)
     .then(response=>{
         localStorage.setItem('_token', response?.data?.token )
-        router.push("/dashboard")
+        navigate("/dashboard")
     })
     .catch(error=>{
         console.log(error)

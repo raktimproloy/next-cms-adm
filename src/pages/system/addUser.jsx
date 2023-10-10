@@ -10,7 +10,7 @@ import Select from "react-select";
 import * as yup from "yup";
 import Switch from "@/components/ui/Switch";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   {
@@ -72,12 +72,9 @@ let stepSchema = yup.object().shape({
     .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 
-let personalSchema = yup.object().shape({
-  slug: yup.string().required("Slug is required"),
-});
-
 function AddUser() {
 
+  const navigate = useNavigate()
   const [stepNumber, setStepNumber] = useState(0);
 
   const [checked1, setChecked1] = useState(false);
@@ -101,9 +98,6 @@ function AddUser() {
   switch (stepNumber) {
     case 0:
       currentStepSchema = stepSchema;
-      break;
-    case 1:
-      currentStepSchema = personalSchema;
       break;
     default:
       currentStepSchema = stepSchema;
@@ -137,12 +131,28 @@ function AddUser() {
   const handleAdd = (e) => {
     e.preventDefault()
 
-    const fullUserData = {
-      ...userData
-    }
     axios.post(`http://localhost:3001/user/signup`, userData)
     .then(response=>{
-        router.push("/user-manager")
+      console.log(response)
+      const userId = response.data.userId
+      const roleData = {
+        role: userData.role,
+        username: userData.username,
+        userId: userId,
+        permission: {
+          info: checked1,
+          user: checked2,
+          service: checked3,
+          blog: checked4
+        }
+      }
+      axios.post(`http://localhost:3001/role/add`, roleData)
+      .then(response=>{
+        console.log(response)
+      })
+      .catch(error=>{
+          console.log(error)
+      })
     })
     .catch(error=>{
         console.log(error)
