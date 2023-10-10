@@ -3,16 +3,29 @@ import Textinput from "@/components/ui/Textinput";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const schema = yup
   .object({
-    // email: yup.string().email("Invalid email").required("Email is Required"),
-    // password: yup.string().required("Password is Required"),
+    email: yup.string().email("Invalid email").required("Email is Required"),
+    password: yup.string().required("Password is Required"),
   })
   .required();
 const LoginForm = () => {
+
+  const [loginData, setLoginData] = useState({
+    email:"",
+    password: ""
+  })
+
+  function handleChange(e) {
+    setLoginData({
+        ...loginData, [e.target.name]:e.target.value
+    })
+  }
+
   const {
     register,
     formState: { errors },
@@ -24,9 +37,16 @@ const LoginForm = () => {
   });
   const navigate = useNavigate();
   const onSubmit = (data) => {
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
+
+    axios.post(`http://localhost:3001/user/login`, loginData)
+    .then(response=>{
+        localStorage.setItem('_token', response?.data?.token )
+        router.push("/dashboard")
+    })
+    .catch(error=>{
+        console.log(error)
+    })
+
   };
 
   const [checked, setChecked] = useState(false);
@@ -40,6 +60,7 @@ const LoginForm = () => {
         register={register}
         error={errors.email}
         className="h-[48px]"
+        onChange={handleChange}
       />
       <Textinput
         name="password"
@@ -48,6 +69,7 @@ const LoginForm = () => {
         register={register}
         error={errors.password}
         className="h-[48px]"
+        onChange={handleChange}
       />
       <div className="flex justify-end ">
         <Link

@@ -16,6 +16,25 @@ const ChangePassword = lazy(() => import("./pages/system/changePassword"))
 const Permission = lazy(() => import("./pages/system/permission"))
 const UserManager = lazy(() => import("./pages/system/userManager"))
 
+// Content
+const Contact = lazy(() => import("./pages/content/Contact"))
+const Logo = lazy(() => import("./pages/content/Logo"))
+const SocalMedia = lazy(() => import("./pages/content/SocalMedia"))
+
+// Blog Page
+const BlogPage = lazy(() => import("./pages/blog"))
+const BlogDetailsPage = lazy(() => import("./pages/blog/blog-details"))
+
+// Service Page
+const ServicePage = lazy(() => import("./pages/service"))
+const ServiceDetailsPage = lazy(() => import("./pages/service/service-details"))
+
+// Email Page
+const EmailPage = lazy(() => import("./pages/email"))
+
+// Menu Page
+const Menu = lazy(() => import("./pages/menu"))
+
 
 import Layout from "./layout/Layout";
 import Loading from "./components/Loading";
@@ -49,9 +68,23 @@ function App() {
           <Route path="user-manager" element={<UserManager />} />
 
           {/* Content */}
-          {/* <Route path="contact" element={<UserManager />} />
-          <Route path="logo" element={<UserManager />} />
-          <Route path="socal-media" element={<UserManager />} /> */}
+          <Route path="contact" element={<Contact />} />
+          <Route path="logo" element={<Logo />} />
+          <Route path="socal-media" element={<SocalMedia />} />
+
+          {/* Blog Page */}
+          <Route path="blog" element={<BlogPage />} />
+          <Route path="blog-details" element={<BlogDetailsPage />} />
+
+          {/* Service Page */}
+          <Route path="service" element={<ServicePage />} />
+          <Route path="service-details" element={<ServiceDetailsPage />} />
+
+          {/* Menu Page */}
+          <Route path="menu" element={<Menu />} />
+
+          {/* Email Page */}
+          {/* <Route path="email" element={<EmailPage />} /> */}
 
           <Route path="*" element={<Navigate to="/404" />} />
         </Route>

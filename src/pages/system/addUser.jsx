@@ -142,13 +142,10 @@ function AddUser() {
     }
     axios.post(`http://localhost:3001/user/signup`, userData)
     .then(response=>{
-        localStorage.setItem('_token', response?.data?.token )
-        router.push("/")
+        router.push("/user-manager")
     })
     .catch(error=>{
         console.log(error)
-        setErrorMessage(error.response.data.error);
-        setShowSpinner(false);
     })
   }
 

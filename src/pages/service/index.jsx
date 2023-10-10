@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
-import ExampleTwo from "@/pages/table/react-tables/ExampleTwo"
 import HomeBredCurbs from "@/components/partials/widget/HomeBredCurbs";
-import { advancedTable } from "../../../constant/table-data";
+import { advancedTable } from "../../constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Tooltip from "@/components/ui/Tooltip";
@@ -12,7 +11,7 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
-import GlobalFilter from "@/pages/table/react-tables/GlobalFilter";
+import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 import { Link } from "react-router-dom";
 
 const COLUMNS = [
@@ -23,13 +22,6 @@ const COLUMNS = [
       return <span>{row?.cell?.value}</span>;
     },
   },
-  // {
-  //   Header: "Order",
-  //   accessor: "order",
-  //   Cell: (row) => {
-  //     return <span>#{row?.cell?.value}</span>;
-  //   },
-  // },
   {
     Header: "title",
     accessor: "customer",
@@ -37,13 +29,6 @@ const COLUMNS = [
       return (
         <div>
           <span className="inline-flex items-center">
-            {/* <span className="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none bg-slate-600">
-              <img
-                src={row?.cell?.value.image}
-                alt=""
-                className="object-cover w-full h-full rounded-full"
-              />
-            </span> */}
             <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
               {row?.cell?.value.name}
             </span>
@@ -52,27 +37,6 @@ const COLUMNS = [
       );
     },
   },
-  // {
-  //   Header: "date",
-  //   accessor: "date",
-  //   Cell: (row) => {
-  //     return <span>{row?.cell?.value}</span>;
-  //   },
-  // },
-  // {
-  //   Header: "Comments",
-  //   accessor: "quantity",
-  //   Cell: (row) => {
-  //     return <span>{row?.cell?.value}</span>;
-  //   },
-  // },
-  // {
-  //   Header: "amount",
-  //   accessor: "amount",
-  //   Cell: (row) => {
-  //     return <span>{row?.cell?.value}</span>;
-  //   },
-  // },
   {
     Header: "status",
     accessor: "status",
