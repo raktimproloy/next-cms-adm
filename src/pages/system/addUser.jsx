@@ -11,6 +11,8 @@ import * as yup from "yup";
 import Switch from "@/components/ui/Switch";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addSingleUser } from "../../store/layout";
 
 const columns = [
   {
@@ -74,6 +76,7 @@ let stepSchema = yup.object().shape({
 
 function AddUser() {
 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const [stepNumber, setStepNumber] = useState(0);
 
@@ -147,8 +150,8 @@ function AddUser() {
         }
       }
       axios.post(`http://localhost:3001/role/add`, roleData)
-      .then(response=>{
-        console.log(response)
+      .then(res=>{
+        console.log(res)
       })
       .catch(error=>{
           console.log(error)

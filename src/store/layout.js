@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // theme config import
 import themeConfig from "@/configs/themeConfig";
@@ -52,6 +52,8 @@ const initialState = {
   mobileMenu: themeConfig.layout.mobileMenu,
   isMonochrome: initialMonochrome(),
 };
+
+
 
 export const layoutSlice = createSlice({
   name: "layout",
@@ -116,6 +118,18 @@ export const layoutSlice = createSlice({
     },
   },
 });
+
+export const userSlice = createSlice({
+  name: "user",
+  initialState: [],
+  reducers: {
+    addUser: (state, action) => {
+      return [...action.payload]; // Concatenate the new users with the existing ones
+    }
+  },
+});
+
+export const {addUser} = userSlice.actions
 
 export const {
   handleDarkMode,

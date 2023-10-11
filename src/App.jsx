@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // home pages  & dashboard
 // Auth Pages
@@ -39,6 +39,8 @@ const Menu = lazy(() => import("./pages/menu"))
 import Layout from "./layout/Layout";
 import Loading from "./components/Loading";
 function App() {
+
+  const status = "authenticated"
   return (
     <main className="App  relative">
       <Routes>
@@ -58,6 +60,8 @@ function App() {
             </Suspense>
           }
         />
+        {
+          status === "authenticated" ? 
         <Route path="/*" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
 
@@ -85,9 +89,12 @@ function App() {
 
           {/* Email Page */}
           {/* <Route path="email" element={<EmailPage />} /> */}
-
           <Route path="*" element={<Navigate to="/404" />} />
-        </Route>
+
+        </Route> :
+         <Route path='*' element={<Navigate to='/' replace />} />
+
+        }
 
       </Routes>
     </main>

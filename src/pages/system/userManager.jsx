@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import HomeBredCurbs from "@/components/partials/widget/HomeBredCurbs";
 import { advancedTable } from "@/constant/table-data";
 import Card from "@/components/ui/Card";
@@ -13,24 +13,30 @@ import {
 } from "react-table";
 import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {getUser} from "@/utils/getData"
+
+import Button from "@/components/ui/Button";
+import Modal from "@/components/ui/Modal";
+import axios from "axios";
 
 const COLUMNS = [
   {
     Header: "Id",
     accessor: "id",
     Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
+      return <span>{parseInt(row?.cell?.row.id) + 1}</span>;
     },
   },
   {
     Header: "Full Name",
-    accessor: "customer",
+    accessor: "fullName",
     Cell: (row) => {
       return (
         <div>
           <span className="inline-flex items-center">
             <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
-              {row?.cell?.value.name}
+              {row?.cell?.value}
             </span>
           </span>
         </div>
@@ -39,28 +45,28 @@ const COLUMNS = [
   },
   {
     Header: "Username",
-    accessor: "",
+    accessor: "username",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
   },
   {
     Header: "Email",
-    accessor: "",
+    accessor: "email",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
   },
   {
     Header: "Phone",
-    accessor: "",
+    accessor: "phone",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
   },
   {
     Header: "Role",
-    accessor: "",
+    accessor: "role",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
@@ -98,7 +104,7 @@ const COLUMNS = [
   },
   {
     Header: "Last Login",
-    accessor: "",
+    accessor: "last_login",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
@@ -121,17 +127,51 @@ const COLUMNS = [
               <Icon icon="heroicons:pencil-square" />
             </button>
           </Tooltip>
-          <Tooltip
-            content="Delete"
-            placement="top"
-            arrow
-            animation="shift-away"
-            theme="danger"
-          >
-            <button className="action-btn" type="button">
-              <Icon icon="heroicons:trash" />
-            </button>
-          </Tooltip>
+          <div className="flex justify-center">
+            {/* <Tooltip
+              content="Delete"
+              placement="top"
+              arrow
+              animation="shift-away"
+              theme="danger"
+            >
+
+              <button className="action-btn" type="button">
+                <Icon icon="heroicons:trash" />
+              </button>
+            </Tooltip> */}
+            <Modal
+              title="Warning"
+              label=""
+              labelClass="btn-outline-warning p-1"
+              themeClass="bg-warning-500"
+              uncontrol
+              footerContent={
+                <Button
+                  text="Accept"
+                  className="btn-warning "
+                  onClick={() => {
+                    axios
+                      .get(`http://localhost:3001/user/delete/${row?.cell?.row.original._id}`)
+                      .then((res) => {
+                        console.log(res)
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }}
+                />
+              }
+            >
+              <h4 className="font-medium text-lg mb-3 text-slate-900">
+                Delete User
+              </h4>
+              <div className="text-base text-slate-600 dark:text-slate-300">
+                Do you want to delete this user?
+              </div>
+            </Modal>
+          </div>
+          
         </div>
       );
     },
@@ -163,8 +203,14 @@ const IndeterminateCheckbox = React.forwardRef(
 
 const UserManager = () => {
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => advancedTable, []);
-  const title = "Blog"
+  const title = "Users"
+  getUser()
+  const data = useSelector((state) => state.users);
+
+  useEffect(() => {
+    console.log(data)
+  }, [data])
+
   const tableInstance = useTable(
     {
       columns,
@@ -215,9 +261,10 @@ const UserManager = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
+  
   return (
     <div>
-      <HomeBredCurbs title="Blog" />
+      <HomeBredCurbs title="User" />
       <div className="lg:flex flex-wrap blog-posts lg:space-x-5 space-y-5 lg:space-y-0 rtl:space-x-reverse">
         <div className="flex-1">
         <Card>
@@ -266,7 +313,6 @@ const UserManager = () => {
                   {...getTableBodyProps}
                 >
                   {page.map((row) => {
-                    console.log(row)
                     prepareRow(row);
                     return (
                       <tr {...row.getRowProps()}>
