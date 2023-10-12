@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // theme config import
 import themeConfig from "@/configs/themeConfig";
@@ -37,6 +37,7 @@ const initialMonochrome = () => {
   const item = window.localStorage.getItem("monochrome");
   return item ? JSON.parse(item) : themeConfig.layout.isMonochrome;
 };
+
 const initialState = {
   isRTL: initialRtl(),
   darkMode: initialDarkMode(),
@@ -52,6 +53,8 @@ const initialState = {
   mobileMenu: themeConfig.layout.mobileMenu,
   isMonochrome: initialMonochrome(),
 };
+
+
 
 export const layoutSlice = createSlice({
   name: "layout",
@@ -116,6 +119,21 @@ export const layoutSlice = createSlice({
     },
   },
 });
+
+export const userSlice = createSlice({
+  name: "user",
+  initialState: [],
+  reducers: {
+    addUser: (state, action) => {
+      return [...action.payload]; // Concatenate the new users with the existing ones
+    },
+    removeUser(state, action) {
+      state.splice(action.payload, 1)
+    },
+  },
+});
+
+export const {addUser, removeUser} = userSlice.actions
 
 export const {
   handleDarkMode,

@@ -17,6 +17,7 @@ const Modal = ({
   uncontrol,
   label = "Basic Modal",
   labelClass,
+  icon = "",
   ref,
 }) => {
   const [showModal, setShowModal] = useState(false);
@@ -41,7 +42,7 @@ const Modal = ({
             onClick={openModal}
             className={`btn ${labelClass}`}
           >
-            {label}
+            {icon !== "" ? label : <Icon icon="heroicons:trash" />}
           </button>
           <Transition appear show={showModal} as={Fragment}>
             <Dialog

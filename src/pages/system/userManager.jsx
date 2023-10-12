@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import HomeBredCurbs from "@/components/partials/widget/HomeBredCurbs";
 import { advancedTable } from "@/constant/table-data";
 import Card from "@/components/ui/Card";
@@ -13,54 +13,36 @@ import {
 } from "react-table";
 import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {getUser} from "@/utils/getData"
+import DeleteBtn from "./DeleteBtn";
+
 
 const COLUMNS = [
   {
     Header: "Id",
     accessor: "id",
     Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "Full Name",
-    accessor: "customer",
-    Cell: (row) => {
-      return (
-        <div>
-          <span className="inline-flex items-center">
-            <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
-              {row?.cell?.value.name}
-            </span>
-          </span>
-        </div>
-      );
+      return <span>{parseInt(row?.cell?.row.id) + 1}</span>;
     },
   },
   {
     Header: "Username",
-    accessor: "",
+    accessor: "username",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
   },
   {
     Header: "Email",
-    accessor: "",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "Phone",
-    accessor: "",
+    accessor: "email",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
   },
   {
     Header: "Role",
-    accessor: "",
+    accessor: "role",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
@@ -73,24 +55,18 @@ const COLUMNS = [
         <span className="block w-full">
           <span
             className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-              row?.cell?.value === "paid"
+              row?.cell?.value == "1"
                 ? "text-success-500 bg-success-500"
                 : ""
             } 
             ${
-              row?.cell?.value === "due"
+              row?.cell?.value == "0"
                 ? "text-warning-500 bg-warning-500"
                 : ""
             }
-            ${
-              row?.cell?.value === "cancled"
-                ? "text-danger-500 bg-danger-500"
-                : ""
-            }
-            
              `}
           >
-            {row?.cell?.value}
+            {row?.cell?.value === "1" ? "Active" : "Inactive"}
           </span>
         </span>
       );
@@ -98,7 +74,7 @@ const COLUMNS = [
   },
   {
     Header: "Last Login",
-    accessor: "",
+    accessor: "last_login",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
@@ -107,11 +83,12 @@ const COLUMNS = [
     Header: "action",
     accessor: "action",
     Cell: (row) => {
+      const username = row?.cell?.row?.values?.username
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
           <Tooltip content="View" placement="top" arrow animation="shift-away">
             <button className="action-btn" type="button">
-              <Link to={"/service-details"}>
+              <Link to={`/profile/${username}`}>
                 <Icon icon="heroicons:eye" />
               </Link>
             </button>
@@ -121,17 +98,8 @@ const COLUMNS = [
               <Icon icon="heroicons:pencil-square" />
             </button>
           </Tooltip>
-          <Tooltip
-            content="Delete"
-            placement="top"
-            arrow
-            animation="shift-away"
-            theme="danger"
-          >
-            <button className="action-btn" type="button">
-              <Icon icon="heroicons:trash" />
-            </button>
-          </Tooltip>
+          <DeleteBtn row={row}/>
+          
         </div>
       );
     },
@@ -163,8 +131,10 @@ const IndeterminateCheckbox = React.forwardRef(
 
 const UserManager = () => {
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => advancedTable, []);
-  const title = "Blog"
+  const title = "Users"
+  const data = useSelector((state) => state.users);
+  getUser()
+
   const tableInstance = useTable(
     {
       columns,
@@ -215,9 +185,10 @@ const UserManager = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
+  
   return (
     <div>
-      <HomeBredCurbs title="Blog" />
+      <HomeBredCurbs title="User" />
       <div className="lg:flex flex-wrap blog-posts lg:space-x-5 space-y-5 lg:space-y-0 rtl:space-x-reverse">
         <div className="flex-1">
         <Card>
@@ -266,7 +237,6 @@ const UserManager = () => {
                   {...getTableBodyProps}
                 >
                   {page.map((row) => {
-                    console.log(row)
                     prepareRow(row);
                     return (
                       <tr {...row.getRowProps()}>

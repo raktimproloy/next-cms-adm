@@ -1,6 +1,7 @@
-import layout from "./layout";
+import layout, { userSlice } from "./layout";
 
 const rootReducer = {
-  layout
+  layout,
+  users: userSlice.reducer
 };
 export default rootReducer;
