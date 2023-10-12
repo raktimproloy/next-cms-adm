@@ -37,6 +37,7 @@ const initialMonochrome = () => {
   const item = window.localStorage.getItem("monochrome");
   return item ? JSON.parse(item) : themeConfig.layout.isMonochrome;
 };
+
 const initialState = {
   isRTL: initialRtl(),
   darkMode: initialDarkMode(),
@@ -125,11 +126,14 @@ export const userSlice = createSlice({
   reducers: {
     addUser: (state, action) => {
       return [...action.payload]; // Concatenate the new users with the existing ones
-    }
+    },
+    removeUser(state, action) {
+      state.splice(action.payload, 1)
+    },
   },
 });
 
-export const {addUser} = userSlice.actions
+export const {addUser, removeUser} = userSlice.actions
 
 export const {
   handleDarkMode,

@@ -15,10 +15,8 @@ import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {getUser} from "@/utils/getData"
+import DeleteBtn from "./DeleteBtn";
 
-import Button from "@/components/ui/Button";
-import Modal from "@/components/ui/Modal";
-import axios from "axios";
 
 const COLUMNS = [
   {
@@ -26,21 +24,6 @@ const COLUMNS = [
     accessor: "id",
     Cell: (row) => {
       return <span>{parseInt(row?.cell?.row.id) + 1}</span>;
-    },
-  },
-  {
-    Header: "Full Name",
-    accessor: "fullName",
-    Cell: (row) => {
-      return (
-        <div>
-          <span className="inline-flex items-center">
-            <span className="text-sm text-slate-600 dark:text-slate-300 capitalize">
-              {row?.cell?.value}
-            </span>
-          </span>
-        </div>
-      );
     },
   },
   {
@@ -53,13 +36,6 @@ const COLUMNS = [
   {
     Header: "Email",
     accessor: "email",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "Phone",
-    accessor: "phone",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
@@ -79,24 +55,18 @@ const COLUMNS = [
         <span className="block w-full">
           <span
             className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-              row?.cell?.value === "paid"
+              row?.cell?.value == "1"
                 ? "text-success-500 bg-success-500"
                 : ""
             } 
             ${
-              row?.cell?.value === "due"
+              row?.cell?.value == "0"
                 ? "text-warning-500 bg-warning-500"
                 : ""
             }
-            ${
-              row?.cell?.value === "cancled"
-                ? "text-danger-500 bg-danger-500"
-                : ""
-            }
-            
              `}
           >
-            {row?.cell?.value}
+            {row?.cell?.value === "1" ? "Active" : "Inactive"}
           </span>
         </span>
       );
@@ -113,11 +83,12 @@ const COLUMNS = [
     Header: "action",
     accessor: "action",
     Cell: (row) => {
+      const username = row?.cell?.row?.values?.username
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
           <Tooltip content="View" placement="top" arrow animation="shift-away">
             <button className="action-btn" type="button">
-              <Link to={"/service-details"}>
+              <Link to={`/profile/${username}`}>
                 <Icon icon="heroicons:eye" />
               </Link>
             </button>
@@ -127,50 +98,7 @@ const COLUMNS = [
               <Icon icon="heroicons:pencil-square" />
             </button>
           </Tooltip>
-          <div className="flex justify-center">
-            {/* <Tooltip
-              content="Delete"
-              placement="top"
-              arrow
-              animation="shift-away"
-              theme="danger"
-            >
-
-              <button className="action-btn" type="button">
-                <Icon icon="heroicons:trash" />
-              </button>
-            </Tooltip> */}
-            <Modal
-              title="Warning"
-              label=""
-              labelClass="btn-outline-warning p-1"
-              themeClass="bg-warning-500"
-              uncontrol
-              footerContent={
-                <Button
-                  text="Accept"
-                  className="btn-warning "
-                  onClick={() => {
-                    axios
-                      .get(`http://localhost:3001/user/delete/${row?.cell?.row.original._id}`)
-                      .then((res) => {
-                        console.log(res)
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                      });
-                  }}
-                />
-              }
-            >
-              <h4 className="font-medium text-lg mb-3 text-slate-900">
-                Delete User
-              </h4>
-              <div className="text-base text-slate-600 dark:text-slate-300">
-                Do you want to delete this user?
-              </div>
-            </Modal>
-          </div>
+          <DeleteBtn row={row}/>
           
         </div>
       );
@@ -204,12 +132,8 @@ const IndeterminateCheckbox = React.forwardRef(
 const UserManager = () => {
   const columns = useMemo(() => COLUMNS, []);
   const title = "Users"
-  getUser()
   const data = useSelector((state) => state.users);
-
-  useEffect(() => {
-    console.log(data)
-  }, [data])
+  getUser()
 
   const tableInstance = useTable(
     {

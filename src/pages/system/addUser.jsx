@@ -12,7 +12,7 @@ import Switch from "@/components/ui/Switch";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addSingleUser } from "../../store/layout";
+import { useUserData } from "../../hooks/useUserData";
 
 const columns = [
   {
@@ -134,9 +134,9 @@ function AddUser() {
   const handleAdd = (e) => {
     e.preventDefault()
 
+    useUserData()
     axios.post(`http://localhost:3001/user/signup`, userData)
     .then(response=>{
-      console.log(response)
       const userId = response.data.userId
       const roleData = {
         role: userData.role,
@@ -151,7 +151,7 @@ function AddUser() {
       }
       axios.post(`http://localhost:3001/role/add`, roleData)
       .then(res=>{
-        console.log(res)
+        navigate("/user-manager")
       })
       .catch(error=>{
           console.log(error)

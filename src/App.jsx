@@ -35,6 +35,9 @@ const EmailPage = lazy(() => import("./pages/email"))
 // Menu Page
 const Menu = lazy(() => import("./pages/menu"))
 
+// Profile page
+const Profile = lazy(() => import("./pages/profile"))
+
 
 import Layout from "./layout/Layout";
 import Loading from "./components/Loading";
@@ -86,6 +89,9 @@ function App() {
 
           {/* Menu Page */}
           <Route path="menu" element={<Menu />} />
+
+          {/* profile page */}
+          <Route path="profile/*" element={<Profile />} />
 
           {/* Email Page */}
           {/* <Route path="email" element={<EmailPage />} /> */}

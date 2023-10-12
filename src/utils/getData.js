@@ -7,15 +7,18 @@ import { useSelector } from "react-redux";
 export const getUser = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.users);
-
-  if (data.length === 0) { 
-    axios
-      .get(`http://localhost:3001/user/all`)
-      .then((res) => {
-        dispatch(addUser(res.data));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  const isUserUpdate = JSON.parse(localStorage.getItem("userdata"))
+  // if(isUserUpdate !== "updated"){
+    if (data.length === 0) { 
+      axios
+        .get(`http://localhost:3001/user/all`)
+        .then((res) => {
+          localStorage.setItem("userdata", JSON.stringify("updated"))
+          dispatch(addUser(res.data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  // }
 };
