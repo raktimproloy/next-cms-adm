@@ -14,6 +14,16 @@ export default defineConfig({
       },
     ],
   },
+  server: {
+    host: "0.0.0.0",
+    port: 4173,
+    secure: false,
+    strictPort: true,
+    hmr: {
+      port: 4173,
+      host: "localhost",
+    }, 
+  },
 
   plugins: [
     rollupReplace({
