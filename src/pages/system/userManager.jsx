@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {getUser} from "@/utils/getData"
 import DeleteBtn from "./DeleteBtn";
+import { useDispatch } from "react-redux";
 
 
 const COLUMNS = [
@@ -130,11 +131,22 @@ const IndeterminateCheckbox = React.forwardRef(
 
 
 const UserManager = () => {
+
+// User Data Fatching
+const dispatch = useDispatch();
+const data = useSelector((state) => state.users);
+const updateInfo = useSelector((state) => state.update);
+useEffect(() => {
+  if (updateInfo.userUpdate === "" || updateInfo.userUpdate === "not-updated") {
+      getUser(dispatch, data);
+  }
+}, [dispatch, data, updateInfo]);
+
+
+
+
   const columns = useMemo(() => COLUMNS, []);
   const title = "Users"
-  const data = useSelector((state) => state.users);
-  getUser()
-
   const tableInstance = useTable(
     {
       columns,

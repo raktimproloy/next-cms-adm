@@ -133,7 +133,27 @@ export const userSlice = createSlice({
   },
 });
 
+export const updateInfoSlice = createSlice({
+  name: "updateInfo",
+  initialState: {
+    userUpdate: "",
+    settingUpdate: ""
+  },
+  reducers: {
+    addInfo: (state, action) => {
+      const { field, value } = action.payload;
+      if (field === 'userUpdate') {
+        state.userUpdate = value;
+      } else if (field === 'settingUpdate') {
+        state.settingUpdate = value;
+      }
+    }
+  }
+});
+
+
 export const {addUser, removeUser} = userSlice.actions
+export const {addInfo} = updateInfoSlice.actions
 
 export const {
   handleDarkMode,

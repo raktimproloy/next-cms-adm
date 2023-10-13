@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import GroupChart3 from "@/components/partials/widget/chart/group-chart-3";
 import HomeBredCurbs from "@/components/partials/widget/HomeBredCurbs";
 import { getUser } from "../../utils/getData";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const Dashboard = () => {
-  getUser()
+
   return (
     <div>
       <HomeBredCurbs title="Dashboard" />
