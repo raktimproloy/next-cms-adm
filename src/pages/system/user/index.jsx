@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import HomeBredCurbs from "@/components/partials/widget/HomeBredCurbs";
-import { advancedTable } from "@/constant/table-data";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Tooltip from "@/components/ui/Tooltip";
@@ -14,10 +13,12 @@ import {
 import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {getUser} from "@/utils/getData"
+import {getUser} from "@/utils/getAllUser"
 import DeleteBtn from "./DeleteBtn";
 import { useDispatch } from "react-redux";
-
+import Button from "@/components/ui/Button";
+import Modal from "@/components/ui/Modal";
+import axios from "axios";
 
 const COLUMNS = [
   {
@@ -96,7 +97,9 @@ const COLUMNS = [
           </Tooltip>
           <Tooltip content="Edit" placement="top" arrow animation="shift-away">
             <button className="action-btn" type="button">
-              <Icon icon="heroicons:pencil-square" />
+              <Link to={`/user-manager/edit`}>
+                <Icon icon="heroicons:pencil-square" />
+              </Link>
             </button>
           </Tooltip>
           <DeleteBtn row={row}/>
@@ -143,7 +146,30 @@ useEffect(() => {
 }, [dispatch, data, updateInfo]);
 
 
+// Selected User
+const [selectedUser, setSelectedUser] = useState([])
+const handleSelect = (user) => {
+  const id = user.original._id;
 
+  setSelectedUser((prevSelectedUser) => {
+    const isUserInArray = prevSelectedUser.includes(id);
+    console.log(isUserInArray)
+    if (isUserInArray) {
+      return prevSelectedUser.filter((item) => item !== id);
+    } else {
+      return [...prevSelectedUser, id];
+    }
+  });
+};
+
+// Delete User 
+
+// Selected All User
+const [showAllDeleteModal, setShowAllDeleteModal] = useState(false)
+const [whichDelete, setWhichDelete] = useState("")
+const handleAllSelect = () => {
+  setShowAllDeleteModal(true)
+}
 
   const columns = useMemo(() => COLUMNS, []);
   const title = "Users"
@@ -164,12 +190,18 @@ useEffect(() => {
           id: "selection",
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+              {/* <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()}
+                onClick={() => handleAllSelect()}
+              /> */}
             </div>
           ),
           Cell: ({ row }) => (
             <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()}
+               onClick={(e) => {handleSelect(
+                row
+               )}} 
+              />
             </div>
           ),
         },
@@ -196,6 +228,7 @@ useEffect(() => {
     prepareRow,
   } = tableInstance;
 
+
   const { globalFilter, pageIndex, pageSize } = state;
   
   return (
@@ -209,6 +242,45 @@ useEffect(() => {
           <div>
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           </div>
+        </div>
+        <div className="mb-3">
+          <Button text="Delete Selected" className="btn-warning py-2" onClick={() => {handleAllSelect(); setWhichDelete("selected")}} />
+          <Button text="Delete All" className="btn-warning py-2 ms-4" onClick={() => {handleAllSelect(); setWhichDelete("all")}} />
+          <Modal
+              title="Warning"
+              label=""
+              labelClass="btn-outline-warning p-1"
+              themeClass="bg-warning-500"
+              activeModal={showAllDeleteModal}
+              onClose={() => {
+                setShowAllDeleteModal(false)
+              }}
+              footerContent={
+                <Button
+                  text="Accept"
+                  className="btn-warning "
+                  onClick={() => 
+                    {
+                      axios
+                      .delete(`http://localhost:3001/user/delete`, { data: { userList: selectedUser } })
+                      .then((res) => {
+                        setShowAllDeleteModal(false)
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                    }
+                  }
+                />
+              }
+            >
+              <h4 className="font-medium text-lg mb-3 text-slate-900">
+                Delete All Users
+              </h4>
+              <div className="text-base text-slate-600 dark:text-slate-300">
+                Do you want to delete all users?
+              </div>
+          </Modal>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">

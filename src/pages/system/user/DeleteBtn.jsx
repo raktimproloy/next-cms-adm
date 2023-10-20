@@ -4,7 +4,7 @@ import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import axios from "axios";
-import { removeUser } from '../../store/layout';
+import { removeUser } from '../../../store/layout';
 import { useDispatch } from 'react-redux';
 
 function DeleteBtn({row}) {

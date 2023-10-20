@@ -1,8 +1,21 @@
-import layout, { userSlice, updateInfoSlice } from "./layout";
+import layout, { userSlice, updateInfoSlice, roleSlice } from "./layout";
+import pageReducer from "./reducers/pageReducer"
+import { combineReducers } from "@reduxjs/toolkit";
 
-const rootReducer = {
+
+// const rootReducer = {
+//   layout,
+//   users: userSlice.reducer,
+//   roles: roleSlice.reducer,
+//   update: updateInfoSlice.reducer,
+//   pageStore: pageReducer
+// };
+// export default rootReducer;
+
+export default combineReducers({
   layout,
   users: userSlice.reducer,
-  update: updateInfoSlice.reducer
-};
-export default rootReducer;
+  roles: roleSlice.reducer,
+  update: updateInfoSlice.reducer,
+  pageStore: pageReducer,
+});

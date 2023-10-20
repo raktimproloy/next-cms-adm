@@ -20,6 +20,27 @@ export const menuItems = [
     link: "service",
   },
   {
+    title: "Pages",
+    icon: "streamline:interface-content-book-page-pages-content-books-book-open",
+    link: "pages",
+    isOpen: true,
+    isHide: true,
+    child: [
+      {
+        childtitle: "Home",
+        childlink: "pages/home",
+      },
+      {
+        childtitle: "About us",
+        childlink: "pages/about-us",
+      },
+      {
+        childtitle: "Services",
+        childlink: "pages/services",
+      }
+    ],
+  },
+  {
     title: "System",
     icon: "tdesign:user-setting",
     link: "system",

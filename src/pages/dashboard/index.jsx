@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import GroupChart3 from "@/components/partials/widget/chart/group-chart-3";
 import HomeBredCurbs from "@/components/partials/widget/HomeBredCurbs";
-import { getUser } from "../../utils/getData";
+import { getUser } from "../../utils/getAllUser";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 

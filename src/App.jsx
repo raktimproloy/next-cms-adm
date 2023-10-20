@@ -9,12 +9,18 @@ const ForgotPass = lazy(() => import("./pages/auth/forgot-password3"));
 // Sidebar pages
 const Dashboard = lazy(() => import("./pages/dashboard"));
 
+// Pages
+const PagesService = lazy(() => import("./pages/pages/Service"))
+
+// Editor
+const Editor = lazy(() => import("./pages/pages/Editor"))
 
 // System 
-const AddUser = lazy(() => import("./pages/system/addUser"))
+const AddUser = lazy(() => import("./pages/system/user/addUser"))
 const ChangePassword = lazy(() => import("./pages/system/changePassword"))
 const Permission = lazy(() => import("./pages/system/permission"))
-const UserManager = lazy(() => import("./pages/system/userManager"))
+const UserManager = lazy(() => import("./pages/system/user"))
+const UserEdit = lazy(() => import("./pages/system/user/userEdit"))
 
 // Content
 const Contact = lazy(() => import("./pages/content/Contact"))
@@ -73,6 +79,13 @@ function App() {
           <Route path="change-password" element={<ChangePassword />} />
           <Route path="permission" element={<Permission />} />
           <Route path="user-manager" element={<UserManager />} />
+          <Route path="user-manager/edit" element={<UserEdit />} />
+
+          {/* Pages */}
+          <Route path="pages/services" element={<PagesService />} />
+
+          {/* Editor */}
+          <Route path="pages/editor/:pageId" element={<Editor />} />
 
           {/* Content */}
           <Route path="contact" element={<Contact />} />

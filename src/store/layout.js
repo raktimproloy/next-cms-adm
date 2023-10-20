@@ -120,6 +120,7 @@ export const layoutSlice = createSlice({
   },
 });
 
+// User Data Slice
 export const userSlice = createSlice({
   name: "user",
   initialState: [],
@@ -133,19 +134,33 @@ export const userSlice = createSlice({
   },
 });
 
+
+// Role Data SLice
+export const roleSlice = createSlice({
+  name: "role",
+  initialState: [],
+  reducers: {
+    addRole: (state, action) => {
+      return [...action.payload]; // Concatenate the new users with the existing ones
+    }
+  },
+});
+
+
+// All Update info Slice
 export const updateInfoSlice = createSlice({
   name: "updateInfo",
   initialState: {
     userUpdate: "",
-    settingUpdate: ""
+    roleUpdate: ""
   },
   reducers: {
     addInfo: (state, action) => {
       const { field, value } = action.payload;
       if (field === 'userUpdate') {
         state.userUpdate = value;
-      } else if (field === 'settingUpdate') {
-        state.settingUpdate = value;
+      } else if (field === 'roleUpdate') {
+        state.roleUpdate = value;
       }
     }
   }
@@ -153,6 +168,7 @@ export const updateInfoSlice = createSlice({
 
 
 export const {addUser, removeUser} = userSlice.actions
+export const {addRole} = roleSlice.actions
 export const {addInfo} = updateInfoSlice.actions
 
 export const {

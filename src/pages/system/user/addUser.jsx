@@ -12,7 +12,7 @@ import Switch from "@/components/ui/Switch";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addInfo } from "../../store/layout";
+import { addInfo } from "../../../store/layout";
 
 const columns = [
   {
@@ -139,7 +139,7 @@ function AddUser() {
       const userId = response.data.userId
       const roleData = {
         role: userData.role,
-        username: userData.username,
+        username: userData.username.toLowerCase(),
         userId: userId,
         permission: {
           info: checked1,
@@ -235,20 +235,20 @@ function AddUser() {
                       </h4>
                     </div>
                     <Textinput
-                      label="Username"
-                      type="text"
-                      placeholder="Type your User Name"
-                      name="username"
-                      error={errors.username}
-                      register={register}
-                      onChange={handleChange}
-                    />
-                    <Textinput
                       label="Full name"
                       type="text"
                       placeholder="Full name"
                       name="fullName"
                       error={errors.fullName}
+                      register={register}
+                      onChange={handleChange}
+                    />
+                    <Textinput
+                      label="Username"
+                      type="text"
+                      placeholder="Type your User Name"
+                      name="username"
+                      error={errors.username}
                       register={register}
                       onChange={handleChange}
                     />
