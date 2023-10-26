@@ -7,6 +7,7 @@ import TopNav from "./TopNav";
 import geditorConfig from "@/utils/api/geditor_config.js";
 import PageSection from "./PageSection";
 
+
 const Editor = () => {
   const [editor, setEditor] = useState(null);
   const [assets, setAssets] = useState([]);
