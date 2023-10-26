@@ -1,4 +1,4 @@
-
+import { API_HOST } from "@/utils";
 
 export const styleManager = {
   appendTo: "#styles-container",
@@ -551,8 +551,8 @@ export const storageSetting = (pageId) => {
       "Content-Type": "application/json",
     },
     id: "mycustom_",
-    urlStore: `http://localhost:8080/api/pages/${pageId}/content`,
-    urlLoad: `http://localhost:8080/api/pages/${pageId}/content`,
+    urlStore: `${API_HOST}pages/${pageId}/content`,
+    urlLoad: `${API_HOST}pages/${pageId}/content`,
   };
 };
 

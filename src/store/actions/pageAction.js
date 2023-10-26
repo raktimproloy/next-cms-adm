@@ -1,4 +1,5 @@
 import axios from "axios";
+import {API_HOST} from "@/utils"
 
 export const TYPES = {
   LIST_PAGE_REQUEST_SEND: "LIST_PAGE_REQUEST_SEND",
@@ -13,7 +14,8 @@ export const TYPES = {
 export const pageLoad = () => async (dispatch) => {
   dispatch({ type: TYPES.LIST_PAGE_REQUEST_SEND });
   try {
-    const response = await axios.get(`http://localhost:8080/api/pages/`);
+    const response = await axios.get(`${API_HOST}api/pages/`);
+    console.log("PageLoad", response)
     dispatch({ type: TYPES.LIST_PAGE_REQUEST_SUCCESS, data: response.data });
   } catch (error) {
     dispatch({ type: TYPES.LIST_PAGE_REQUEST_ERROR, error: error });
@@ -23,7 +25,8 @@ export const pageLoad = () => async (dispatch) => {
 export const createPage = (name) => async (dispatch) => {
   dispatch({ type: TYPES.CREATE_PAGE_REQUEST });
   try {
-    const response = await axios.post(`http://localhost:8080/api/pages/`, { name });
+    const response = await axios.post(`${API_HOST}api/pages/`, { name });
+    console.log("createPage", response)
     dispatch({ type: TYPES.CREATE_PAGE_SUCCESS, data: response.data });
   } catch (error) {
     dispatch({ type: TYPES.CREATE_PAGE_ERROR, data: error });

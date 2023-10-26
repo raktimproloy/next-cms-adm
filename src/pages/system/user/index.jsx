@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import axios from "axios";
+import {API_HOST} from "@/utils"
 
 const COLUMNS = [
   {
@@ -262,7 +263,7 @@ const handleAllSelect = () => {
                   onClick={() => 
                     {
                       axios
-                      .delete(`http://localhost:3001/user/delete`, { data: { userList: selectedUser } })
+                      .delete(`${API_HOST}user/delete`, { data: { userList: selectedUser } })
                       .then((res) => {
                         setShowAllDeleteModal(false)
                       })

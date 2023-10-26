@@ -6,6 +6,7 @@ import Modal from "@/components/ui/Modal";
 import axios from "axios";
 import { removeUser } from '../../../store/layout';
 import { useDispatch } from 'react-redux';
+import {API_HOST} from "@/utils"
 
 function DeleteBtn({row}) {
     const [showModal, setShowModal] = useState(false)
@@ -43,7 +44,7 @@ function DeleteBtn({row}) {
                   className="btn-warning "
                   onClick={() => {
                       axios
-                      .delete(`http://localhost:3001/user/delete/${row?.cell?.row.original._id}`)
+                      .delete(`${API_HOST}user/delete/${row?.cell?.row.original._id}`)
                       .then((res) => {
                         deleteUser(row?.cell?.row.id)
                         setShowModal(false)

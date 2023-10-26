@@ -18,13 +18,12 @@ import {
   styles,
   toggleSidebar,
   traitManager,
-} from "@/utils/api/geditor_utils";
+} from "./geditor_utils";
 import tailwindComponent from "@/plugins/tailwind";
 import swiperComponent from "@/plugins/swiper";
 import chartLibComponent from "@/plugins/charts";
 
 const geditorConfig = (assets, pageId) => {
-  console.log(assets, pageId)
   $(".panel__devices").html("");
   $(".panel__basic-actions").html("");
   $(".panel__editor").html("");
@@ -76,6 +75,7 @@ const geditorConfig = (assets, pageId) => {
       chartLibComponent: {},
     },
   });
+  console.log(editor)
 
   addEditorCommand(editor);
   editor.on("run:preview", () => {

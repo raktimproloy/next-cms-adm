@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import Sidebar from "./Sidebar";
-import TopNav from "./TopNav";
-import geditorConfig from "@/utils/api/geditor_config.js";
-import PageSection from "./PageSection";
-
+import Sidebar from "@/pages/pages/Editor/Sidebar";
+import TopNav from "@/pages/pages/Editor/TopNav";
+import geditorConfig from "@/utils/api/geditor_config";
+import PageSection from "@/pages/pages/Editor/PageSection";
+import {API_HOST} from "@/utils"
+import "@/styles/main.scss"
 
 const Editor = () => {
   const [editor, setEditor] = useState(null);
@@ -16,18 +17,22 @@ const Editor = () => {
   const { pageStore } = useSelector((state) => state);
   const { pages } = pageStore;
 
-  useEffect(() => {
-    async function getAllAssets() {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/assets/`);
-        setAssets(response.data);
-      } catch (error) {
-        setAssets(error.message);
-      }
-    }
+  // useEffect(() => {
+  //   async function getAllAssets() {
+  //     try {
+  //       const response = await axios.get(`${API_HOST}assets/`, {
+  //         headers:{
+  //           "Access-Control-Allow-Origin": "*"
+  //         }
+  //       });
+  //       setAssets(response.data);
+  //     } catch (error) {
+  //       setAssets(error.message);
+  //     }
+  //   }
 
-    getAllAssets();
-  }, []);
+  //   getAllAssets();
+  // }, []);
 
   useEffect(() => {
     const editor = geditorConfig(assets, pageId);

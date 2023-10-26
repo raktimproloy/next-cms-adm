@@ -13,6 +13,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addInfo } from "../../../store/layout";
+import {API_HOST} from "@/utils"
 
 const columns = [
   {
@@ -134,7 +135,7 @@ function AddUser() {
   const handleAdd = (e) => {
     e.preventDefault()
 
-    axios.post(`http://localhost:3001/user/signup`, userData)
+    axios.post(`${API_HOST}user/signup`, userData)
     .then(response=>{
       const userId = response.data.userId
       const roleData = {
@@ -148,7 +149,7 @@ function AddUser() {
           blog: checked4
         }
       }
-      axios.post(`http://localhost:3001/role/add`, roleData)
+      axios.post(`${API_HOST}role/add`, roleData)
       .then(res=>{
         dispatch(addInfo({ field: 'userUpdate', value: 'not-updated' }));
         navigate("/user-manager")
