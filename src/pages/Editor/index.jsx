@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import Sidebar from "@/pages/pages/Editor/Sidebar";
-import TopNav from "@/pages/pages/Editor/TopNav";
+import Sidebar from "@/pages/Editor/Sidebar";
+import TopNav from "@/pages/Editor/TopNav";
 import geditorConfig from "@/utils/api/geditor_config";
-import PageSection from "@/pages/pages/Editor/PageSection";
+import PageSection from "@/pages/Editor/PageSection";
 import {API_HOST} from "@/utils"
 import "@/styles/main.scss"
 
@@ -14,8 +14,8 @@ const Editor = () => {
   const [assets, setAssets] = useState([]);
   const { pageId } = useParams();
 
-  const { pageStore } = useSelector((state) => state);
-  const { pages } = pageStore;
+  // const { pageStore } = useSelector((state) => state);
+  // const { pages } = pageStore;
 
   // useEffect(() => {
   //   async function getAllAssets() {
@@ -49,7 +49,7 @@ const Editor = () => {
             <span className="navbar-brand mb-0 h3 logo">Code Dexterous</span>
           </div>
         </nav>
-        <PageSection pages={pages} />
+        {/* <PageSection pages={pages} /> */}
         <Sidebar />
       </div>
       <div

@@ -15,7 +15,6 @@ export const pageLoad = () => async (dispatch) => {
   dispatch({ type: TYPES.LIST_PAGE_REQUEST_SEND });
   try {
     const response = await axios.get(`${API_HOST}api/pages/`);
-    console.log("PageLoad", response)
     dispatch({ type: TYPES.LIST_PAGE_REQUEST_SUCCESS, data: response.data });
   } catch (error) {
     dispatch({ type: TYPES.LIST_PAGE_REQUEST_ERROR, error: error });

@@ -1,12 +1,25 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import Icon from "@/components/ui/Icon";
 import Card from "@/components/ui/Card";
 
 // import images
 import ProfileImage from "@/assets/images/users/user-1.jpg";
+import axios from "axios";
+import {API_HOST} from "@/utils"
 
 const Index = () => {
+
+  const [profileData, setProfileData] =useState({})
+
+  const { username } = useParams();
+  axios.get(`${API_HOST}user/${username}`)
+  .then(res => {
+    setProfileData(res.data[0])
+  })
+  .catch(error => {
+    console.log(error)
+  })
   return (
     <div>
       <div className="space-y-5 profile-page">
@@ -31,7 +44,7 @@ const Index = () => {
               </div>
               <div className="flex-1">
                 <div className="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
-                  Albert Flores
+                  {profileData.fullName}
                 </div>
                 <div className="text-sm font-light text-slate-600 dark:text-slate-400">
                   Front End Developer

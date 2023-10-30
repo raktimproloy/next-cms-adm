@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // home pages  & dashboard
@@ -13,7 +13,7 @@ const Dashboard = lazy(() => import("./pages/dashboard"));
 const PagesService = lazy(() => import("./pages/pages/Service"))
 
 // Editor
-const Editor = lazy(() => import("./pages/pages/Editor"))
+const Editor = lazy(() => import("./pages/Editor"))
 
 // System 
 const AddUser = lazy(() => import("./pages/system/user/addUser"))
@@ -44,12 +44,21 @@ const Menu = lazy(() => import("./pages/menu"))
 // Profile page
 const Profile = lazy(() => import("./pages/profile"))
 
+// Redux Dispathch
+import { pageLoad } from "./store/actions/pageAction";
+
 
 import Layout from "./layout/Layout";
 import Loading from "./components/Loading";
+import { useDispatch } from "react-redux";
 function App() {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    pageLoad()(dispatch);
+  }, [dispatch]);
 
   const status = "authenticated"
+
   return (
     <main className="App  relative">
       <Routes>
@@ -69,6 +78,8 @@ function App() {
             </Suspense>
           }
         />
+        {/* Editor */}
+        <Route path="pages/editor/:pageId" element={<Editor />} />
         {
           status === "authenticated" ? 
         <Route path="/*" element={<Layout />}>
@@ -84,8 +95,7 @@ function App() {
           {/* Pages */}
           <Route path="pages/services" element={<PagesService />} />
 
-          {/* Editor */}
-          <Route path="pages/editor/:pageId" element={<Editor />} />
+
 
           {/* Content */}
           <Route path="contact" element={<Contact />} />
@@ -104,7 +114,7 @@ function App() {
           <Route path="menu" element={<Menu />} />
 
           {/* profile page */}
-          <Route path="profile/*" element={<Profile />} />
+          <Route path="profile/:username" element={<Profile />} />
 
           {/* Email Page */}
           {/* <Route path="email" element={<EmailPage />} /> */}

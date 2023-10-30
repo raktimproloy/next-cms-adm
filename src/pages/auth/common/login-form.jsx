@@ -6,6 +6,7 @@ import * as yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import {API_HOST} from "@/utils"
 
 const schema = yup
   .object({
@@ -38,7 +39,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const onSubmit = () => {
 
-    axios.post(`http://localhost:3001/user/login`, loginData)
+    axios.post(`${API_HOST}user/login`, loginData)
     .then(response=>{
         localStorage.setItem('_token', response?.data?.token )
         navigate("/dashboard")

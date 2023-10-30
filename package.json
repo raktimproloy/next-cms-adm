@@ -36,6 +36,7 @@
     "grapesjs-blocks-basic": "^1.0.2",
     "grapesjs-blocks-bootstrap4": "^0.2.3",
     "grapesjs-navbar": "^1.0.2",
+    "grapesjs-parser-postcss": "^1.0.3",
     "grapesjs-plugin-export": "^1.0.12",
     "grapesjs-style-bg": "^2.0.2",
     "isomorphic-dompurify": "^1.9.0",

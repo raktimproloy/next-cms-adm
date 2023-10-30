@@ -704,9 +704,9 @@
     hoist-non-react-statics "^3.3.0"
 
 "@types/jquery@*":
-  version "3.5.24"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.24.tgz#5b4d42654c4882a177d15ce755caf547bc2317c1"
-  integrity sha512-V/TG69ge5amcr8Ap7vY3SObqKfZlV7ttqcYnNcYnndI77ySIRi05+3GjvfwRtE2qalAC2ySLIL1ker512sI20g==
+  version "3.5.25"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.25.tgz#c817c71d414855f7d71f46da39f43e6b9579b0b9"
+  integrity sha512-gykx2c+OZf5nx2tv/5fDQqmvGgTiXshELy5jf9IgXPtVfSBl57IUYByN4osbwMXwJijWGOEYQABzGaFZE79A0Q==
   dependencies:
     "@types/sizzle" "*"
 
@@ -2845,6 +2845,11 @@ grapesjs-navbar@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/grapesjs-navbar/-/grapesjs-navbar-1.0.2.tgz#a38a0376eda94c63dfef4c8176cc2560ff133ae8"
   integrity sha512-JYTi5LwBkjSt3Cv3DxK4OcnOrsFSXLpi2/1sobnlfZ9hjp2b286BJbC58f0RNw1yx5n/12IhEzk9Nj4sAiSSwQ==
+
+grapesjs-parser-postcss@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/grapesjs-parser-postcss/-/grapesjs-parser-postcss-1.0.3.tgz#311b7b4a65d7dcb40a5b9a801429aa72aff3cb0d"
+  integrity sha512-lfiNRDGdYQT259fUudYD0Z9EKB0DeS9GdCjVqGuJo28rv0WPAdGlpFnvlYgNGurX38ZjIi8qnbEuSSDl8AXFSw==
 
 grapesjs-plugin-export@^1.0.12:
   version "1.0.12"
