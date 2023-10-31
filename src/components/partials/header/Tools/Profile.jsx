@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import UserAvatar from "@/assets/images/all-img/user.png";
+import { useCookies } from "react-cookie";
 
 const profileLabel = () => {
   return (
@@ -34,6 +35,11 @@ const profileLabel = () => {
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [cookie, setCookie, removeCookie] = useCookies();
+
+  const handleRemove = () => {
+    removeCookie('_token');
+};
 
   const ProfileMenu = [
     {
@@ -55,7 +61,7 @@ const Profile = () => {
       label: "Logout",
       icon: "heroicons-outline:login",
       action: () => {
-        console.log("logout");
+        handleRemove()
       },
     },
   ];

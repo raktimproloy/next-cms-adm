@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import LoginForm from "./common/login-form";
 import { ToastContainer } from "react-toastify";
@@ -9,6 +9,7 @@ import LogoWhite from "@/assets/images/logo/logo-white.svg";
 import Logo from "@/assets/images/logo/logo.svg";
 const login3 = () => {
   const [isDark] = useDarkMode();
+  const [error, setError] = useState(false)
   return (
     <>
       <ToastContainer />
@@ -31,11 +32,16 @@ const login3 = () => {
               </div>
               <div className="text-center 2xl:mb-10 mb-5">
                 <h4 className="font-medium">Sign In</h4>
-                <div className="text-slate-500 dark:text-slate-400 text-base">
-                  Sign in to your account to start using Dashboard
+                
+                <div className="text-red-500 dark:text-red-400 text-base">
+                {
+                  error ?
+                  "Your credential do not matching !" :
+                  ""
+                }
                 </div>
               </div>
-              <LoginForm />
+              <LoginForm setError={setError} />
             </div>
           </div>
       </div>

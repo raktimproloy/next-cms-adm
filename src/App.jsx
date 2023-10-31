@@ -63,11 +63,6 @@ function App() {
     pageLoad()(dispatch);
   }, [dispatch]);
 
-  useEffect(() => {
-    // Call useAuthCheck whenever the path changes
-    console.log("Check")
-    // const [isAuthenticated] = useAuthCheck();
-  }, [location.pathname]); 
 
   return (
     <main className="App  relative">

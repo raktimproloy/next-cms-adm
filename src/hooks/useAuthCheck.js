@@ -7,11 +7,10 @@ const useAuthCheck = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Cookie hook
-  const [cookies] = useCookies(['_token']);
+  const [cookies, removeCookie] = useCookies(['_token']);
   const token = cookies._token;
-
   useEffect(() => {
-    if (!token) {
+    if (!token || token == "undefined") {
       setIsAuthenticated(false);
     } else {
       const decoded = jwtDecode(token);

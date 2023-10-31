@@ -17,7 +17,7 @@ const schema = yup
   .required();
 
 
-const LoginForm = () => {
+const LoginForm = ({setError}) => {
   // Cookies store
   const [cookies, setCookie] = useCookies(['_token'])
   const [loginData, setLoginData] = useState({
@@ -51,6 +51,7 @@ const LoginForm = () => {
     })
     .catch(error=>{
         console.log(error)
+        setError(true)
     })
 
   };
