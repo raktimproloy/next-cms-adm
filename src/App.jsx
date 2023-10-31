@@ -50,26 +50,40 @@ import { pageLoad } from "./store/actions/pageAction";
 
 import Layout from "./layout/Layout";
 import Loading from "./components/Loading";
+
+
 import { useDispatch } from "react-redux";
+import useAuthCheck from "@/hooks/useAuthCheck";
+
 function App() {
   const dispatch = useDispatch()
+  const [isAuthenticated] = useAuthCheck();
+
   useEffect(() => {
     pageLoad()(dispatch);
   }, [dispatch]);
 
-  const status = "authenticated"
+  useEffect(() => {
+    // Call useAuthCheck whenever the path changes
+    console.log("Check")
+    // const [isAuthenticated] = useAuthCheck();
+  }, [location.pathname]); 
 
   return (
     <main className="App  relative">
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Suspense fallback={<Loading />}>
-              <Login />
-            </Suspense>
-          }
-        />
+        {
+          isAuthenticated === false ? 
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<Loading />}>
+                <Login />
+              </Suspense>
+            }
+          /> :
+          <Route path='/' element={<Navigate to='/dashboard' replace />} />
+        }
         <Route
           path="/forgot-password"
           element={
@@ -81,7 +95,7 @@ function App() {
         {/* Editor */}
         <Route path="pages/editor/:pageId" element={<Editor />} />
         {
-          status === "authenticated" ? 
+          isAuthenticated === true ? 
         <Route path="/*" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
 

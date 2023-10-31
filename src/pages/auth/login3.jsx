@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Social from "./common/social";
 import LoginForm from "./common/login-form";
 import { ToastContainer } from "react-toastify";
 import useDarkMode from "@/hooks/useDarkMode";

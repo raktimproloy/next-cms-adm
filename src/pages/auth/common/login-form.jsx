@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {API_HOST} from "@/utils"
+import { useCookies } from "react-cookie";
 
 const schema = yup
   .object({
@@ -14,8 +15,11 @@ const schema = yup
     password: yup.string().required("Password is Required"),
   })
   .required();
-const LoginForm = () => {
 
+
+const LoginForm = () => {
+  // Cookies store
+  const [cookies, setCookie] = useCookies(['_token'])
   const [loginData, setLoginData] = useState({
     email:"",
     password: ""
@@ -41,8 +45,9 @@ const LoginForm = () => {
 
     axios.post(`${API_HOST}user/login`, loginData)
     .then(response=>{
-        localStorage.setItem('_token', response?.data?.token )
-        navigate("/dashboard")
+      const token = response?.data?.token
+      setCookie("_token", token)
+      navigate("/dashboard")
     })
     .catch(error=>{
         console.log(error)

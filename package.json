@@ -41,6 +41,7 @@
     "grapesjs-style-bg": "^2.0.2",
     "isomorphic-dompurify": "^1.9.0",
     "jquery": "^3.7.1",
+    "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.3",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
@@ -51,6 +52,7 @@
     "react-calendar": "^4.0.0",
     "react-chartjs-2": "^5.2.0",
     "react-collapse": "^5.1.1",
+    "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-flatpickr": "^3.10.13",
@@ -72,6 +74,7 @@
     "simplebar-react": "^2.4.3",
     "sort-by": "^1.2.0",
     "swiper": "^8.4.5",
+    "uuid": "^9.0.1",
     "uuidv4": "^6.2.13",
     "yup": "^0.32.11"
   },
