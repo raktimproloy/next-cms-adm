@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addInfo } from "../../../store/layout";
 import {API_HOST} from "@/utils"
+import { useCookies } from "react-cookie";
 
 const columns = [
   {
@@ -81,6 +82,9 @@ function AddUser() {
   const navigate = useNavigate()
   const [stepNumber, setStepNumber] = useState(0);
 
+  // Cookies
+  const [cookie, removeCookie] = useCookies()
+
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const [checked3, setChecked3] = useState(false);
@@ -135,7 +139,13 @@ function AddUser() {
   const handleAdd = (e) => {
     e.preventDefault()
 
-    axios.post(`${API_HOST}user/signup`, userData)
+    const headers = {
+      'Authorization': `Bearer ${cookie._token}`
+    }
+
+    axios.post(`${API_HOST}user/signup`, userData, {
+      headers: headers
+    })
     .then(response=>{
       const userId = response.data.userId
       const roleData = {
@@ -151,6 +161,7 @@ function AddUser() {
       }
       axios.post(`${API_HOST}role/add`, roleData)
       .then(res=>{
+        console.log(res)
         dispatch(addInfo({ field: 'userUpdate', value: 'not-updated' }));
         navigate("/user-manager")
       })
@@ -160,6 +171,9 @@ function AddUser() {
     })
     .catch(error=>{
         console.log(error)
+        if(error.response.data.error === "Authentication error!"){
+          removeCookie("_token")
+        }
     })
   }
 
