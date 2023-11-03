@@ -16,11 +16,11 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: 4173,
+    port: 3006,
     secure: false,
     strictPort: true,
     hmr: {
-      port: 4173,
+      port: 3006,
       host: "localhost",
     }, 
   },

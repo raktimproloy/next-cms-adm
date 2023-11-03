@@ -20,6 +20,7 @@ import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import axios from "axios";
 import {API_HOST} from "@/utils"
+import { useCookies } from "react-cookie";
 
 const COLUMNS = [
   {
@@ -140,9 +141,13 @@ const UserManager = () => {
 const dispatch = useDispatch();
 const data = useSelector((state) => state.users);
 const updateInfo = useSelector((state) => state.update);
+const [cookies, removeCookies] = useCookies()
+const headers = {
+  'Authorization': `Bearer ${cookies._token}`
+}
 useEffect(() => {
   if (updateInfo.userUpdate === "" || updateInfo.userUpdate === "not-updated") {
-      getUser(dispatch, data);
+      getUser(dispatch, cookies, removeCookies);
   }
 }, [dispatch, data, updateInfo]);
 
@@ -263,11 +268,16 @@ const handleAllSelect = () => {
                   onClick={() => 
                     {
                       axios
-                      .delete(`${API_HOST}user/delete`, { data: { userList: selectedUser } })
+                      .delete(`${API_HOST}user/delete`, { data: { userList: selectedUser } }, {
+                        headers: headers
+                      })
                       .then((res) => {
                         setShowAllDeleteModal(false)
                       })
                       .catch((err) => {
+                        if(err.response.data.error === "Authentication error!"){
+                          removeCookies("_token")
+                        }
                         console.log(err);
                       });
                     }

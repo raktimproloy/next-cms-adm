@@ -17,9 +17,10 @@ const schema = yup
   .required();
 
 
-const LoginForm = ({setError}) => {
+const LoginForm = () => {
   // Cookies store
   const [cookies, setCookie] = useCookies(['_token'])
+  const [error, setError] = useState(false)
   const [loginData, setLoginData] = useState({
     email:"",
     password: ""
@@ -56,9 +57,16 @@ const LoginForm = ({setError}) => {
 
   };
 
-  const [checked, setChecked] = useState(false);
 
   return (
+    <>
+    <div className="text-red-500 dark:text-red-400 text-base text-center mb-3">
+      {
+        error ?
+        "Your credential do not matching !" :
+        ""
+      }
+    </div>
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
       <Textinput
         name="email"
@@ -89,6 +97,8 @@ const LoginForm = ({setError}) => {
 
       <button className="btn btn-dark block w-full text-center">Sign in</button>
     </form>
+    
+    </>
   );
 };
 

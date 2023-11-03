@@ -7,10 +7,17 @@ import axios from "axios";
 import { removeUser } from '../../../store/layout';
 import { useDispatch } from 'react-redux';
 import {API_HOST} from "@/utils"
+import { useCookies } from 'react-cookie';
 
 function DeleteBtn({row}) {
     const [showModal, setShowModal] = useState(false)
     const dispatch = useDispatch()
+
+    // Cookies
+    const [cookies, removeCookies] = useCookies()
+    const headers = {
+      'Authorization': `Bearer ${cookies._token}`
+    }
 
     const deleteUser = (id) => {
         dispatch(removeUser(id))
@@ -44,12 +51,17 @@ function DeleteBtn({row}) {
                   className="btn-warning "
                   onClick={() => {
                       axios
-                      .delete(`${API_HOST}user/delete/${row?.cell?.row.original._id}`)
+                      .delete(`${API_HOST}user/delete/${row?.cell?.row.original._id}`, {
+                        headers: headers
+                      })
                       .then((res) => {
                         deleteUser(row?.cell?.row.id)
                         setShowModal(false)
                       })
                       .catch((err) => {
+                        if(err.response.data.error === "Authentication error!"){
+                          removeCookies("_token")
+                        }
                         console.log(err);
                       });
                   }}
