@@ -18,7 +18,8 @@ const Editor = lazy(() => import("./pages/Editor"))
 // System 
 const AddUser = lazy(() => import("./pages/system/user/addUser"))
 const ChangePassword = lazy(() => import("./pages/system/changePassword"))
-const Permission = lazy(() => import("./pages/system/permission"))
+const RoleManager = lazy(() => import("./pages/system/role"))
+const EditRole = lazy(() => import("./pages/system/role/EditRole"))
 const UserManager = lazy(() => import("./pages/system/user"))
 const UserEdit = lazy(() => import("./pages/system/user/userEdit"))
 
@@ -97,9 +98,10 @@ function App() {
           {/* System */}
           <Route path="add-user" element={<AddUser />} />
           <Route path="change-password" element={<ChangePassword />} />
-          <Route path="permission" element={<Permission />} />
-          <Route path="user-manager" element={<UserManager />} />
-          <Route path="user-manager/edit" element={<UserEdit />} />
+          <Route path="role-management" element={<RoleManager />} />
+          <Route path="role-management/edit/:id" element={<EditRole />} />
+          <Route path="user-management" element={<UserManager />} />
+          <Route path="user-management/edit/:username" element={<UserEdit />} />
 
           {/* Pages */}
           <Route path="pages/services" element={<PagesService />} />

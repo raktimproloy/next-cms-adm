@@ -135,7 +135,7 @@ export const userSlice = createSlice({
 });
 
 
-// Role Data SLice
+// User Role Data SLice
 export const roleSlice = createSlice({
   name: "role",
   initialState: [],

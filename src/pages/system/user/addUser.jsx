@@ -159,7 +159,7 @@ function AddUser() {
           blog: checked4
         }
       }
-      axios.post(`${API_HOST}role/add`, roleData)
+      axios.post(`${API_HOST}user-role/add`, roleData)
       .then(res=>{
         console.log(res)
         dispatch(addInfo({ field: 'userUpdate', value: 'not-updated' }));

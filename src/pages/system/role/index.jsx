@@ -13,11 +13,13 @@ import {
 import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {getUser} from "@/utils/getAllUser"
+import { getAllRoles } from '@/utils/getAllRoles';
 import DeleteBtn from "../shared/DeleteBtn";
 import { useDispatch } from "react-redux";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
+import Textinput from "@/components/ui/Textinput";
+import Switch from "@/components/ui/Switch";
 import axios from "axios";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
@@ -31,75 +33,78 @@ const COLUMNS = [
     },
   },
   {
-    Header: "Username",
-    accessor: "username",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "Email",
-    accessor: "email",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
     Header: "Role",
-    accessor: "role",
+    accessor: "rolename",
     Cell: (row) => {
       return <span>{row?.cell?.value}</span>;
     },
   },
   {
-    Header: "status",
-    accessor: "status",
+    Header: "User",
+    accessor: "user",
     Cell: (row) => {
       return (
-        <span className="block w-full">
-          <span
-            className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-              row?.cell?.value == "1"
-                ? "text-success-500 bg-success-500"
-                : ""
-            } 
-            ${
-              row?.cell?.value == "0"
-                ? "text-warning-500 bg-warning-500"
-                : ""
-            }
-             `}
-          >
-            {row?.cell?.value === "1" ? "Active" : "Inactive"}
-          </span>
-        </span>
+        <Switch
+          label="User"
+          activeClass="bg-danger-500"
+          disabled={true}
+          value={row?.cell?.value}
+        />
       );
     },
   },
   {
-    Header: "Last Login",
-    accessor: "last_login",
+    Header: "Info",
+    accessor: "info",
     Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
+      return (
+        <Switch
+          label="Info"
+          activeClass="bg-danger-500"
+          disabled={true}
+          value={row?.cell?.value}
+        />
+      );
+    },
+  },
+  {
+    Header: "Services",
+    accessor: "service",
+    Cell: (row) => {
+      return (
+        <Switch
+          label="Service"
+          activeClass="bg-danger-500"
+          disabled={true}
+          value={row?.cell?.value}
+        />
+      );
+    },
+  },
+  {
+    Header: "Blog",
+    accessor: "blog",
+    Cell: (row) => {
+      return (
+        <Switch
+          label="Blog"
+          activeClass="bg-danger-500"
+          disabled={true}
+          value={row?.cell?.value}
+        />
+      );
     },
   },
   {
     Header: "action",
     accessor: "action",
     Cell: (row) => {
-      const username = row?.cell?.row?.values?.username
+      const roleId = row?.cell?.row?.original?._id
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
-          <Tooltip content="View" placement="top" arrow animation="shift-away">
-            <button className="action-btn" type="button">
-              <Link to={`/profile/${username}`}>
-                <Icon icon="heroicons:eye" />
-              </Link>
-            </button>
-          </Tooltip>
           <Tooltip content="Edit" placement="top" arrow animation="shift-away">
             <button className="action-btn" type="button">
-              <Link to={`/user-management/edit/${username}`}>
+              <Link to={`/role-management/edit/${roleId}`}>
                 <Icon icon="heroicons:pencil-square" />
               </Link>
             </button>
@@ -112,80 +117,37 @@ const COLUMNS = [
   },
 ];
 
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef();
-    const resolvedRef = ref || defaultRef;
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate;
-    }, [resolvedRef, indeterminate]);
-
-    return (
-      <>
-        <input
-          type="checkbox"
-          ref={resolvedRef}
-          {...rest}
-          className="table-checkbox"
-        />
-      </>
-    );
-  }
-);
-
 
 const UserManager = () => {
 
 // User Data Fatching
 const dispatch = useDispatch();
-const data = useSelector((state) => state.users);
+const data = useSelector((state) => state.roles);
 const updateInfo = useSelector((state) => state.update);
+
+// Cookies
 const [cookie, removeCookie] = useCookies()
 const headers = {
   'Authorization': `Bearer ${cookie._token}`
 }
 useEffect(() => {
-  if (updateInfo.userUpdate === "" || updateInfo.userUpdate === "not-updated") {
-      getUser(dispatch, cookie, removeCookie);
+  if (updateInfo.roleUpdate === "" || updateInfo.roleUpdate === "not-updated") {
+    getAllRoles(dispatch, cookie, removeCookie);
   }
 }, [dispatch, data, updateInfo]);
 
 
-// Selected User
-const [selectedUser, setSelectedUser] = useState([])
-const handleSelect = (user) => {
-  const id = user.original._id;
+// Needed UseState
+const [showAddModal, setShowAddModal] = useState(false)
 
-  setSelectedUser((prevSelectedUser) => {
-    const isUserInArray = prevSelectedUser.includes(id);
-    console.log(isUserInArray)
-    if (isUserInArray) {
-      return prevSelectedUser.filter((item) => item !== id);
-    } else {
-      return [...prevSelectedUser, id];
-    }
-  });
-};
-
-// Delete User 
-const deleteUser = () => {
-  selectedUser.map(id => {
-    dispatch(removeUser(id))
-  })
-}
-
-// Selected All User
-const [showAllDeleteModal, setShowAllDeleteModal] = useState(false)
-const [whichDelete, setWhichDelete] = useState("")
-const handleAllSelect = () => {
-  if(selectedUser.length > 0){
-    setShowAllDeleteModal(true)
-  }
-}
+const [roleName, setRoleName] = useState("")
+const [userCheck, SetUserCheck] = useState(false)
+const [infoCheck, SetInfoCheck] = useState(false)
+const [serviceCheck, SetServiceCheck] = useState(false)
+const [blogCheck, SetBlogCheck] = useState(false)
 
   const columns = useMemo(() => COLUMNS, []);
-  const title = "Users"
+  const title = "Roles"
   const tableInstance = useTable(
     {
       columns,
@@ -199,25 +161,6 @@ const handleAllSelect = () => {
 
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
-        {
-          id: "selection",
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              {/* <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()}
-                onClick={() => handleAllSelect()}
-              /> */}
-            </div>
-          ),
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()}
-               onClick={(e) => {handleSelect(
-                row
-               )}} 
-              />
-            </div>
-          ),
-        },
         ...columns,
       ]);
     }
@@ -243,6 +186,31 @@ const handleAllSelect = () => {
 
 
   const { globalFilter, pageIndex, pageSize } = state;
+
+
+  // Added Role
+  const addedRoleHandler = () => {
+    const permissionData = {
+      rolename: roleName,
+      user: userCheck,
+      info: infoCheck,
+      service: serviceCheck,
+      blog: blogCheck,
+    }
+    axios
+    .post(`${API_HOST}role/add`, permissionData, {
+      headers: headers
+    })
+    .then((res) => {
+      setShowAddModal(false)
+    })
+    .catch((err) => {
+      if(err.response.data.error === "Authentication error!"){
+        removeCookie("_token")
+      }
+      console.log(err);
+    });
+  }
   
   return (
     <div>
@@ -252,52 +220,69 @@ const handleAllSelect = () => {
         <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">{title}</h4>
-          <div>
-            <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-          </div>
-        </div>
-        <div className="mb-3">
-          <Button text="Delete Selected" className="btn-warning py-2" onClick={() => {handleAllSelect(); setWhichDelete("selected")}} />
-          {/* <Button text="Delete All" className="btn-warning py-2 ms-4" onClick={() => {handleAllSelect(); setWhichDelete("all")}} /> */}
-          <Modal
-              title="Warning"
-              label=""
-              labelClass="btn-outline-warning p-1"
-              themeClass="bg-warning-500"
-              activeModal={showAllDeleteModal}
-              onClose={() => {
-                setShowAllDeleteModal(false)
-              }}
-              footerContent={
-                <Button
-                  text="Accept"
-                  className="btn-warning "
-                  onClick={() => 
-                    {
-                      axios
-                      .delete(`${API_HOST}user/delete`, { data: { userList: selectedUser }, headers: headers })
-                      .then((res) => {
-                        setShowAllDeleteModal(false)
-                        deleteUser()
-                      })
-                      .catch((err) => {
-                        if(err.response.data.error === "Authentication error!"){
-                          removeCookie("_token")
-                        }
-                        console.log(err);
-                      });
-                    }
-                  }
-                />
-              }
-            >
-              <h4 className="font-medium text-lg mb-3 text-slate-900">
-                Delete All Users
-              </h4>
-              <div className="text-base text-slate-600 dark:text-slate-300">
-                Do you want to delete all users?
+          <div className="mb-3 text-end">
+            <Button text="Add Role" className="btn-warning py-2" onClick={() => {
+              setShowAddModal(true)
+            }}  />
+            <Modal
+            title="Login Form Modal"
+            label="Login Form"
+            labelClass="btn-outline-dark"
+            activeModal={showAddModal}
+            onClose={() => {
+              setShowAddModal(false)
+            }}
+            footerContent={
+              <Button
+                text="Accept"
+                className="btn-dark "
+                onClick={() => {
+                  addedRoleHandler()
+                }}
+              />
+            }
+          >
+            <div className="text-base text-slate-600 dark:text-slate-300">
+              <Textinput
+                label="Role Name"
+                type="text"
+                placeholder="Type new role"
+                value={roleName}
+                onChange={(e) => setRoleName(e.target.value)}
+              />
+              <div className="mt-4 w-2/4 mx-auto">
+                <div className="flex justify-between py-3">
+                  <Switch
+                    label="User"
+                    activeClass="bg-danger-500"
+                    value={userCheck}
+                    onChange={() => SetUserCheck(!userCheck)}
+                  />
+                  <Switch
+                    label="Info"
+                    activeClass="bg-danger-500"
+                    value={infoCheck}
+                    onChange={() => SetInfoCheck(!infoCheck)}
+                  />
+                </div>
+                <div className="flex justify-between py-3">
+                  <Switch
+                    label="Service"
+                    activeClass="bg-danger-500"
+                    value={serviceCheck}
+                    onChange={() => SetServiceCheck(!serviceCheck)}
+                  />
+                  <Switch
+                    label="Blog"
+                    activeClass="bg-danger-500"
+                    value={blogCheck}
+                    onChange={() => SetBlogCheck(!blogCheck)}
+                  />
+                </div>
               </div>
+            </div>
           </Modal>
+          </div>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">

@@ -52,16 +52,12 @@ export const menuItems = [
         childlink: "add-user",
       },
       {
-        childtitle: "User Manager",
-        childlink: "user-manager",
+        childtitle: "User Management",
+        childlink: "user-management",
       },
       {
-        childtitle: "Permission",
-        childlink: "permission",
-      },
-      {
-        childtitle: "Change Password",
-        childlink: "change-password",
+        childtitle: "Role Management",
+        childlink: "role-management",
       }
     ],
   },

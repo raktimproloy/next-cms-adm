@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Icon from "@/components/ui/Icon";
 import Card from "@/components/ui/Card";
@@ -20,18 +20,20 @@ const Index = () => {
   }
 
   const { username } = useParams();
-  axios.get(`${API_HOST}user/${username}`, {
-    headers: headers
-  })
-  .then(res => {
-    setProfileData(res.data[0])
-  })
-  .catch(error => {
-    if(error.response.data.error === "Authentication error!"){
-      removeCookie("_token")
-    }
-    console.log(error)
-  })
+  useEffect(() => {
+    axios.get(`${API_HOST}user/${username}`, {
+      headers: headers
+    })
+    .then(res => {
+      setProfileData(res.data[0])
+    })
+    .catch(error => {
+      if(error.response.data.error === "Authentication error!"){
+        removeCookie("_token")
+      }
+      console.log(error)
+    })
+  }, [])
   return (
     <div>
       <div className="space-y-5 profile-page">
