@@ -7,17 +7,29 @@ import Card from "@/components/ui/Card";
 import ProfileImage from "@/assets/images/users/user-1.jpg";
 import axios from "axios";
 import {API_HOST} from "@/utils"
+import { useCookies } from "react-cookie";
 
 const Index = () => {
 
   const [profileData, setProfileData] =useState({})
 
+  // Cookies
+  const [cookie, removeCookie] = useCookies()
+  const headers = {
+    'Authorization': `Bearer ${cookie._token}`
+  }
+
   const { username } = useParams();
-  axios.get(`${API_HOST}user/${username}`)
+  axios.get(`${API_HOST}user/${username}`, {
+    headers: headers
+  })
   .then(res => {
     setProfileData(res.data[0])
   })
   .catch(error => {
+    if(error.response.data.error === "Authentication error!"){
+      removeCookie("_token")
+    }
     console.log(error)
   })
   return (

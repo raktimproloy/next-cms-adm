@@ -141,13 +141,13 @@ const UserManager = () => {
 const dispatch = useDispatch();
 const data = useSelector((state) => state.users);
 const updateInfo = useSelector((state) => state.update);
-const [cookies, removeCookies] = useCookies()
+const [cookie, removeCookie] = useCookies()
 const headers = {
-  'Authorization': `Bearer ${cookies._token}`
+  'Authorization': `Bearer ${cookie._token}`
 }
 useEffect(() => {
   if (updateInfo.userUpdate === "" || updateInfo.userUpdate === "not-updated") {
-      getUser(dispatch, cookies, removeCookies);
+      getUser(dispatch, cookie, removeCookie);
   }
 }, [dispatch, data, updateInfo]);
 
@@ -169,12 +169,19 @@ const handleSelect = (user) => {
 };
 
 // Delete User 
+const deleteUser = () => {
+  selectedUser.map(id => {
+    dispatch(removeUser(id))
+  })
+}
 
 // Selected All User
 const [showAllDeleteModal, setShowAllDeleteModal] = useState(false)
 const [whichDelete, setWhichDelete] = useState("")
 const handleAllSelect = () => {
-  setShowAllDeleteModal(true)
+  if(selectedUser.length > 0){
+    setShowAllDeleteModal(true)
+  }
 }
 
   const columns = useMemo(() => COLUMNS, []);
@@ -251,7 +258,7 @@ const handleAllSelect = () => {
         </div>
         <div className="mb-3">
           <Button text="Delete Selected" className="btn-warning py-2" onClick={() => {handleAllSelect(); setWhichDelete("selected")}} />
-          <Button text="Delete All" className="btn-warning py-2 ms-4" onClick={() => {handleAllSelect(); setWhichDelete("all")}} />
+          {/* <Button text="Delete All" className="btn-warning py-2 ms-4" onClick={() => {handleAllSelect(); setWhichDelete("all")}} /> */}
           <Modal
               title="Warning"
               label=""
@@ -268,15 +275,14 @@ const handleAllSelect = () => {
                   onClick={() => 
                     {
                       axios
-                      .delete(`${API_HOST}user/delete`, { data: { userList: selectedUser } }, {
-                        headers: headers
-                      })
+                      .delete(`${API_HOST}user/delete`, { data: { userList: selectedUser }, headers: headers })
                       .then((res) => {
                         setShowAllDeleteModal(false)
+                        deleteUser()
                       })
                       .catch((err) => {
                         if(err.response.data.error === "Authentication error!"){
-                          removeCookies("_token")
+                          removeCookie("_token")
                         }
                         console.log(err);
                       });

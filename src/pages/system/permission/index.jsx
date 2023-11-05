@@ -44,9 +44,14 @@ function Permission() {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.roles);
   const updateInfo = useSelector((state) => state.update);
+
+    // Cookies
+    const [cookie, removeCookie] = useCookies()
+
+
   useEffect(() => {
     if (updateInfo.roleUpdate === "" || updateInfo.roleUpdate === "not-updated") {
-      getAllRoles(dispatch, data);
+      getAllRoles(dispatch, cookie, removeCookie);
     }
   }, [dispatch, data, updateInfo]);
 
