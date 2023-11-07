@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import HomeBredCurbs from "@/components/partials/widget/HomeBredCurbs";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
-import Tooltip from "@/components/ui/Tooltip";
+
 import {
   useTable,
   useRowSelect,
@@ -11,10 +11,11 @@ import {
   usePagination,
 } from "react-table";
 import GlobalFilter from "@/components/partials/widget/GlobalFilter";
-import { Link } from "react-router-dom";
+
 import { useSelector } from "react-redux";
 import { getAllRoles } from '@/utils/getAllRoles';
 import DeleteBtn from "../shared/DeleteBtn";
+import EditButton from "./EditButton";
 import { useDispatch } from "react-redux";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
@@ -23,6 +24,7 @@ import Switch from "@/components/ui/Switch";
 import axios from "axios";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
+import Popup from "@/components/ui/Popup"
 
 const COLUMNS = [
   {
@@ -102,14 +104,8 @@ const COLUMNS = [
       const roleId = row?.cell?.row?.original?._id
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
-          <Tooltip content="Edit" placement="top" arrow animation="shift-away">
-            <button className="action-btn" type="button">
-              <Link to={`/role-management/edit/${roleId}`}>
-                <Icon icon="heroicons:pencil-square" />
-              </Link>
-            </button>
-          </Tooltip>
-          <DeleteBtn row={row}/>
+          <EditButton row={row} />
+          <DeleteBtn row={row} which={"role"}/>
           
         </div>
       );
@@ -124,6 +120,8 @@ const UserManager = () => {
 const dispatch = useDispatch();
 const data = useSelector((state) => state.roles);
 const updateInfo = useSelector((state) => state.update);
+
+const [showLoading, setShowLoading] = useState(false)
 
 // Cookies
 const [cookie, removeCookie] = useCookies()
@@ -190,6 +188,7 @@ const [blogCheck, SetBlogCheck] = useState(false)
 
   // Added Role
   const addedRoleHandler = () => {
+    setShowLoading(true)
     const permissionData = {
       rolename: roleName,
       user: userCheck,
@@ -202,9 +201,11 @@ const [blogCheck, SetBlogCheck] = useState(false)
       headers: headers
     })
     .then((res) => {
+      setShowLoading(false)
       setShowAddModal(false)
     })
     .catch((err) => {
+      setShowLoading(false)
       if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
       }
@@ -214,6 +215,7 @@ const [blogCheck, SetBlogCheck] = useState(false)
   
   return (
     <div>
+      <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
       <HomeBredCurbs title="User" />
       <div className="lg:flex flex-wrap blog-posts lg:space-x-5 space-y-5 lg:space-y-0 rtl:space-x-reverse">
         <div className="flex-1">
@@ -225,7 +227,7 @@ const [blogCheck, SetBlogCheck] = useState(false)
               setShowAddModal(true)
             }}  />
             <Modal
-            title="Login Form Modal"
+            title="Add New Role"
             label="Login Form"
             labelClass="btn-outline-dark"
             activeModal={showAddModal}

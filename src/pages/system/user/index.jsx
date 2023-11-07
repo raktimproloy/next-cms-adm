@@ -104,7 +104,7 @@ const COLUMNS = [
               </Link>
             </button>
           </Tooltip>
-          <DeleteBtn row={row}/>
+          <DeleteBtn row={row} which={"user"}/>
           
         </div>
       );

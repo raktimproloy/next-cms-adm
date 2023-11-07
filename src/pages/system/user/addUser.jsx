@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { addInfo } from "../../../store/layout";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
+import Popup from "@/components/ui/Popup"
 
 const columns = [
   {
@@ -85,6 +86,9 @@ function AddUser() {
   // Cookies
   const [cookie, removeCookie] = useCookies()
 
+  // Show Loading
+  const [showLoading, setShowLoading] = useState(false)
+
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const [checked3, setChecked3] = useState(false);
@@ -138,6 +142,7 @@ function AddUser() {
 
   const handleAdd = (e) => {
     e.preventDefault()
+    setShowLoading(true)
 
     const headers = {
       'Authorization': `Bearer ${cookie._token}`
@@ -163,10 +168,12 @@ function AddUser() {
       .then(res=>{
         console.log(res)
         dispatch(addInfo({ field: 'userUpdate', value: 'not-updated' }));
-        navigate("/user-manager")
+        navigate("/user-management")
+        setShowLoading(false)
       })
       .catch(error=>{
           console.log(error)
+          setShowLoading(false)
       })
     })
     .catch(error=>{
@@ -195,6 +202,7 @@ function AddUser() {
 
   return (
     <div>
+      <Popup showLoading={showLoading} popupText={"User Adding..."} />
       <Card title="Horizontal">
         <div>
           <div className="flex z-[5] items-center relative justify-center md:mx-8">

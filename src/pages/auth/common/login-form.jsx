@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
+import Popup from "@/components/ui/Popup"
+
 
 const schema = yup
   .object({
@@ -21,6 +23,8 @@ const LoginForm = () => {
   // Cookies store
   const [cookies, setCookie] = useCookies(['_token'])
   const [error, setError] = useState(false)
+  const [showLoading, setShowLoading] = useState(false)
+
   const [loginData, setLoginData] = useState({
     email:"",
     password: ""
@@ -43,14 +47,16 @@ const LoginForm = () => {
   });
   const navigate = useNavigate();
   const onSubmit = () => {
+    setShowLoading(true)
 
     axios.post(`${API_HOST}user/login`, loginData)
     .then(response=>{
+      setShowLoading(false)
       const token = response?.data?.token
       setCookie("_token", token)
-      navigate("/dashboard")
     })
     .catch(error=>{
+        setShowLoading(false)
         console.log(error)
         setError(true)
     })
@@ -58,8 +64,12 @@ const LoginForm = () => {
   };
 
 
+
+
+
   return (
     <>
+    <Popup showLoading={showLoading} popupText={"User Logging..."} />
     <div className="text-red-500 dark:text-red-400 text-base text-center mb-3">
       {
         error ?
