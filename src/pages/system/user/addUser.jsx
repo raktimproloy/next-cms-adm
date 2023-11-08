@@ -6,7 +6,6 @@ import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Select from "react-select";
 import * as yup from "yup";
 import Switch from "@/components/ui/Switch";
 import axios from "axios";
@@ -16,27 +15,10 @@ import { addInfo } from "../../../store/layout";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
 import Popup from "@/components/ui/Popup"
+import RoleOption from "./RoleOption";
+import PermissionCard from "./PermissionCard";
 
-const columns = [
-  {
-    label: "User",
-    field: "user",
-  },
-  {
-    label: "Info",
-    field: "info",
-  },
-  {
-    label: "Blog",
-    field: "blog",
-  },
-  {
-    label: "Service",
-    field: "service",
-  },
-  
-];
-const rows = 1;
+
 
 const steps = [
   {
@@ -48,20 +30,6 @@ const steps = [
     title: "Permission",
   }
 ];
-
-const furits = [
-  { value: "admin", label: "Admin" },
-  { value: "manager", label: "Manager" },
-  { value: "user", label: "User" },
-];
-
-const styles = {
-  option: (provided, state) => ({
-    ...provided,
-    fontSize: "14px",
-  }),
-};
-
 
 let stepSchema = yup.object().shape({
   username: yup.string().required(" User name is required"),
@@ -89,10 +57,12 @@ function AddUser() {
   // Show Loading
   const [showLoading, setShowLoading] = useState(false)
 
-  const [checked1, setChecked1] = useState(false);
-  const [checked2, setChecked2] = useState(false);
-  const [checked3, setChecked3] = useState(false);
-  const [checked4, setChecked4] = useState(false);
+  const [permission, setPermission] = useState({
+    user: false,
+    info: false,
+    service: false,
+    blog: false
+  })
 
   const [userData, setUserData] = useState({
     username: "",
@@ -102,7 +72,7 @@ function AddUser() {
     last_login: "30mnt ago",
     status: 0,
     password: "",
-    role: "admin"
+    role: ""
   })
 
   // find current step schema
@@ -114,9 +84,6 @@ function AddUser() {
     default:
       currentStepSchema = stepSchema;
   }
-  useEffect(() => {
-    //console.log("step number changed");
-  }, [stepNumber]);
 
   const {
     register,
@@ -136,7 +103,6 @@ function AddUser() {
       
     } else {
       setStepNumber(stepNumber + 1);
-      console.log(userData)
     }
   }
 
@@ -157,12 +123,7 @@ function AddUser() {
         role: userData.role,
         username: userData.username.toLowerCase(),
         userId: userId,
-        permission: {
-          info: checked1,
-          user: checked2,
-          service: checked3,
-          blog: checked4
-        }
+        permission: permission
       }
       axios.post(`${API_HOST}user-role/add`, roleData)
       .then(res=>{
@@ -187,12 +148,6 @@ function AddUser() {
   function handleChange(e) {
     setUserData({
         ...userData, [e.target.name]:e.target.value
-    })
-  }
-
-  function handleOptionChange(e) {
-    setUserData({
-        ...userData, role:e.value
     })
   }
 
@@ -325,79 +280,10 @@ function AddUser() {
                       </h4>
                     </div>
                     {/* selection  */}
-                    <div className="gap-5">
-                      <div>
-                        <label htmlFor=" hh" className="form-label ">
-                          Role
-                        </label>
-                        <Select
-                          className="react-select"
-                          classNamePrefix="select"
-                          defaultValue={furits[0]}
-                          options={furits}
-                          styles={styles}
-                          id="hh"
-                          onChange={handleOptionChange}
-                        />
-                      </div>
-                    </div>
+                    <RoleOption userData={userData} setUserData={setUserData}  />
                   </div>
                   {/* Basic table for permission */}
-                  <Card title="Permission" noborder>
-                    <div className="overflow-x-auto -mx-6">
-                      <div className="inline-block min-w-full align-middle">
-                        <div className="overflow-hidden ">
-                          <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead className="bg-slate-200 dark:bg-slate-700">
-                              <tr>
-                                {columns.map((column, i) => (
-                                  <th key={i} scope="col" className=" table-th ">
-                                    {column.label}
-                                  </th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                <tr>
-                                  <td className="table-td">
-                                  <Switch
-                                    label=""
-                                    activeClass="bg-danger-500"
-                                    value={checked1}
-                                    onChange={() => setChecked1(!checked1)}
-                                  />
-                                  </td>
-                                  <td className="table-td">
-                                  <Switch
-                                    label=""
-                                    activeClass="bg-danger-500"
-                                    value={checked2}
-                                    onChange={() => setChecked2(!checked2)}
-                                  />
-                                  </td>
-                                  <td className="table-td ">
-                                    <Switch
-                                      label=""
-                                      activeClass="bg-success-500"
-                                      value={checked3}
-                                      onChange={() => setChecked3(!checked3)}
-                                    />  
-                                  </td>
-                                  <td className="table-td ">
-                                    <Switch
-                                      label=""
-                                      activeClass="bg-success-500"
-                                      value={checked4}
-                                      onChange={() => setChecked4(!checked4)}
-                                    />  
-                                  </td>
-                                </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
+                  <PermissionCard userData={userData} setUserData={setUserData} setPermission={setPermission} permission={permission} />
                 </div>
               )}
               <div
