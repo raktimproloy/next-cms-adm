@@ -77,8 +77,8 @@ function App() {
                 <Login />
               </Suspense>
             }
-          /> :
-          <Route path='/' element={<Navigate to='/dashboard' replace />} />
+          /> 
+          : <Route path='/' element={<Navigate to='/dashboard' replace />} />
         }
         <Route
           path="/forgot-password"
@@ -91,7 +91,7 @@ function App() {
         {/* Editor */}
         <Route path="pages/editor/:pageId" element={<Editor />} />
         {
-          isAuthenticated === true ? 
+          isAuthenticated === true ?
         <Route path="/*" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
 
@@ -131,8 +131,8 @@ function App() {
           {/* <Route path="email" element={<EmailPage />} /> */}
           <Route path="*" element={<Navigate to="/404" />} />
 
-        </Route> :
-         <Route path='*' element={<Navigate to='/' replace />} />
+        </Route> 
+        : <Route path='*' element={<Navigate to='/' replace />} />
 
         }
 

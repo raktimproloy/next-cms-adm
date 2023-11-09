@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import Button from "@/components/ui/Button";
 
 function Contact() {
+  const [disableEdit, setDisableEdit] = useState(true)
+
   return (
     <Card title="Horizontal Form">
         <div className="space-y-4">
@@ -13,6 +15,7 @@ function Contact() {
             type="email"
             placeholder="Type your email"
             horizontal
+            disabled={disableEdit}
           />
           <Textinput
             label="Bd Address"
@@ -20,6 +23,7 @@ function Contact() {
             type="text"
             placeholder="BD Address"
             horizontal
+            disabled={disableEdit}
           />
           <Textinput
             label="Bd Map Url"
@@ -27,6 +31,7 @@ function Contact() {
             type="text"
             placeholder="BD Map Url"
             horizontal
+            disabled={disableEdit}
           />
           <Textinput
             label="Uk Address"
@@ -34,6 +39,7 @@ function Contact() {
             type="text"
             placeholder="UK Address"
             horizontal
+            disabled={disableEdit}
           />
           <Textinput
             label="Uk Map Url"
@@ -41,6 +47,7 @@ function Contact() {
             type="text"
             placeholder="UK Map Url"
             horizontal
+            disabled={disableEdit}
           />
           <Textinput
             label="Bd Phone"
@@ -48,6 +55,7 @@ function Contact() {
             type="text"
             placeholder="Your BD Phone Number"
             horizontal
+            disabled={disableEdit}
           />
           <Textinput
             label="Uk Phone"
@@ -55,9 +63,11 @@ function Contact() {
             type="text"
             placeholder="Your UK Phone Number"
             horizontal
+            disabled={disableEdit}
           />
           <div className="ml-[124px] space-y-4">
-            <Button text="Submit" className="btn-dark" />
+            <Button text="Submit" className="btn-success me-4" />
+            <Button text="Edit" className="btn-dark" onClick={() => setDisableEdit(!disableEdit)} />
           </div>
         </div>
       </Card>

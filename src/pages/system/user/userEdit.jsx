@@ -4,15 +4,19 @@ import Textinput from "@/components/ui/Textinput"
 import Button from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
 import { useCookies } from 'react-cookie';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import {API_HOST} from "@/utils"
 import Switch from "@/components/ui/Switch"
+import Popup from "@/components/ui/Popup"
 
 function userEdit() {
   const [profileData, setProfileData] = useState({})
   const [userPermission, setUserPermission] = useState({})
   const [permissionData, setPermissionData] = useState({})
+  // Show Loading
+  const [showLoading, setShowLoading] = useState(false)
+  const navigate = useNavigate()
 
   function handleChange(e) {
     setProfileData({
@@ -54,21 +58,22 @@ function userEdit() {
         setPermissionData(res.data[0].permission)
       })
       .catch(error => {
-        // if(error.response.data.error === "Authentication error!"){
-        //   removeCookie("_token")
-        // }
+        if(error.response.data.error === "Authentication error!"){
+          removeCookie("_token")
+        }
         console.log(error)
       })
     })
     .catch(error => {
-      // if(error.response.data.error === "Authentication error!"){
-      //   removeCookie("_token")
-      // }
+      if(error.response.data.error === "Authentication error!"){
+        removeCookie("_token")
+      }
       console.log(error)
     })
   }, [])
 
   const handleUpdate = () => {
+    setShowLoading(true)
     const updatedData = {
       profileData,
       permissionData:{
@@ -80,16 +85,19 @@ function userEdit() {
       headers: headers
     })
     .then(res => {
-        console.log(res)
+        navigate("/user-management")
+        setShowLoading(false)
     })
     .catch(err => {
         console.log(err)
+        setShowLoading(false)
     })
   }
 
 
   return (
     <div>
+      <Popup showLoading={showLoading} popupText={"User Updating..."} />
         <Card title="Basic Inputs">
         <div className="space-y-3">
           <Textinput

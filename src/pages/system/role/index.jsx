@@ -25,6 +25,7 @@ import axios from "axios";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
 import Popup from "@/components/ui/Popup"
+import { addInfo } from "@/store/layout";
 
 const COLUMNS = [
   {
@@ -201,6 +202,7 @@ const [blogCheck, SetBlogCheck] = useState(false)
       headers: headers
     })
     .then((res) => {
+      dispatch(addInfo({ field: 'roleUpdate', value: 'not-updated' }));
       setShowLoading(false)
       setShowAddModal(false)
     })

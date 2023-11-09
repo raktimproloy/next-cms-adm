@@ -10,8 +10,11 @@ import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { API_HOST } from '@/utils'
 import Popup from "@/components/ui/Popup"
+import { useDispatch } from 'react-redux';
+import { addInfo } from "@/store/layout";
 
 function EditButton({row}) {
+    const dispatch = useDispatch()
     const roleId = row?.cell?.row.original._id
     const [showEditModal, setShowEditModal] = useState(false)
     const [showLoading, setShowLoading] = useState(false)
@@ -52,8 +55,9 @@ function EditButton({row}) {
           headers: headers
         })
         .then(res => {
-            console.log(res)
+            dispatch(addInfo({ field: 'roleUpdate', value: 'not-updated' }));
             setShowLoading(false)
+            setShowEditModal(false)
         })
         .catch(error => {
           setShowLoading(false)

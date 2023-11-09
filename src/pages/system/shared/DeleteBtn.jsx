@@ -4,7 +4,7 @@ import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import axios from "axios";
-import { removeUser } from '../../../store/layout';
+import { removeUser, removeRole } from '../../../store/layout';
 import { useDispatch } from 'react-redux';
 import {API_HOST} from "@/utils"
 import { useCookies } from 'react-cookie';
@@ -24,6 +24,10 @@ function DeleteBtn({row, which}) {
     const deleteUser = (id) => {
         dispatch(removeUser(id))
     }
+
+    const deleteRole = (id) => {
+      dispatch(removeRole(id))
+  }
 
     const handleDelete = () => {
       setShowLoading(true)
@@ -48,7 +52,7 @@ function DeleteBtn({row, which}) {
         })
         .then((res) => {
           setShowLoading(false)
-          // deleteUser(row?.cell?.row.id)
+          deleteRole(row?.cell?.row.id)
           setShowModal(false)
         })
         .catch((err) => {

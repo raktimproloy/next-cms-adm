@@ -142,7 +142,10 @@ export const roleSlice = createSlice({
   reducers: {
     addRole: (state, action) => {
       return [...action.payload]; // Concatenate the new users with the existing ones
-    }
+    },
+    removeRole(state, action) {
+      state.splice(action.payload, 1)
+    },
   },
 });
 
@@ -168,7 +171,7 @@ export const updateInfoSlice = createSlice({
 
 
 export const {addUser, removeUser} = userSlice.actions
-export const {addRole} = roleSlice.actions
+export const {addRole, removeRole} = roleSlice.actions
 export const {addInfo} = updateInfoSlice.actions
 
 export const {
