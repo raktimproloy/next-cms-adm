@@ -12,10 +12,10 @@ import "@/styles/main.scss"
 const Editor = () => {
   const [editor, setEditor] = useState(null);
   const [assets, setAssets] = useState([]);
-  const { pageId } = useParams();
+  const { slug } = useParams();
 
-  // const { pageStore } = useSelector((state) => state);
-  // const { pages } = pageStore;
+  const { pageStore } = useSelector((state) => state);
+  const { pages } = pageStore;
 
   // useEffect(() => {
   //   async function getAllAssets() {
@@ -35,9 +35,9 @@ const Editor = () => {
   // }, []);
 
   useEffect(() => {
-    const editor = geditorConfig(assets, pageId);
+    const editor = geditorConfig(assets, slug);
     setEditor(editor);
-  }, [pageId, assets]);
+  }, [slug, assets]);
   return (
     <div className="App">
       <div
@@ -49,7 +49,7 @@ const Editor = () => {
             <span className="navbar-brand mb-0 h3 logo">Code Dexterous</span>
           </div>
         </nav>
-        {/* <PageSection pages={pages} /> */}
+        <PageSection pages={pages} />
         <Sidebar />
       </div>
       <div

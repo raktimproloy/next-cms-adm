@@ -538,12 +538,11 @@ export const addEditorCommand = (editor) => {
   });
 };
 
-
-export const storageSetting = (pageId) => {
-  const projectApi = `${API_HOST}api/pages/${pageId}/content`
+export const storageSetting = (slug) => {
+  console.log("this is slug", slug)
   return {
     type: "remote",
-    stepsBeforeSave: 1,
+    stepsBeforeSave: 3,
     contentTypeJson: true,
     storeComponents: true,
     storeStyles: true,
@@ -551,13 +550,11 @@ export const storageSetting = (pageId) => {
     storeCss: true,
     headers: {
       "Content-Type": "application/json",
-      "accept": "application/json"
     },
     id: "mycustom_",
-    urlStore: projectApi,
-    urlLoad: projectApi,
+    urlStore: `${API_HOST}api/pages/${slug}/content`,
+    urlLoad: `${API_HOST}api/pages/${slug}/content`,
   };
-  
 };
 
 export const scripts = [

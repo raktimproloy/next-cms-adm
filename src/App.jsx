@@ -11,6 +11,8 @@ const Dashboard = lazy(() => import("./pages/dashboard"));
 
 // Pages
 const Pages = lazy(() => import("./pages/pagesCMS"))
+const AddPage = lazy(() => import("./pages/pagesCMS/AddPage"))
+const EditPage = lazy(() => import("./pages/pagesCMS/EditPage"))
 const PagesService = lazy(() => import("./pages/pagesCMS/Service"))
 
 // Editor
@@ -89,7 +91,7 @@ function App() {
           }
         />
         {/* Editor */}
-        <Route path="pages/editor/:pageId" element={<Editor />} />
+        
         {
           isAuthenticated === true ?
         <Route path="/*" element={<Layout />}>
@@ -104,8 +106,10 @@ function App() {
 
           {/* Pages */}
           <Route path="pages" element={<Pages />} />
+          <Route path="pages/add" element={<AddPage />} />
+          <Route path="pages/edit/:slug" element={<EditPage />} />
           <Route path="pages/services" element={<PagesService />} />
-
+          <Route path="pages/editor/:slug" element={<Editor />} />
 
 
           {/* Content */}

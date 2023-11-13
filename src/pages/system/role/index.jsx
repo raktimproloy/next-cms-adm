@@ -14,7 +14,7 @@ import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 
 import { useSelector } from "react-redux";
 import { getAllRoles } from '@/utils/getAllRoles';
-import DeleteBtn from "../shared/DeleteBtn";
+import DeleteBtn from "@/pages/shared/DeleteBtn";
 import EditButton from "./EditButton";
 import { useDispatch } from "react-redux";
 import Button from "@/components/ui/Button";

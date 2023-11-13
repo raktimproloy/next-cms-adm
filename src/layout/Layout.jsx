@@ -38,13 +38,15 @@ const Layout = () => {
   // mobile menu
   const [mobileMenu, setMobileMenu] = useMobileMenu();
   const nodeRef = useRef(null);
+  const pathname = window.location.pathname
+  console.log(pathname.includes("/pages/editor"))
 
   return (
     <>
       <ToastContainer />
-      <Header className={width > breakpoints.xl ? switchHeaderClass() : ""} />
+      {!pathname.includes("/pages/editor") && <Header className={width > breakpoints.xl ? switchHeaderClass() : ""} />}
       {menuType === "vertical" && width > breakpoints.xl && !menuHidden && (
-        <Sidebar />
+        !pathname.includes("/pages/editor") && <Sidebar />
       )}
 
       <MobileMenu
@@ -99,7 +101,7 @@ const Layout = () => {
                   duration: 0.5,
                 }}
               >
-                <Breadcrumbs />
+                {!pathname.includes("/pages/editor") &&  <Breadcrumbs />}
                 {<Outlet />}
               </motion.div>
             </Suspense>
@@ -108,7 +110,7 @@ const Layout = () => {
       </div>
       {width < breakpoints.md && <MobileFooter />}
       {width > breakpoints.md && (
-        <Footer className={width > breakpoints.xl ? switchHeaderClass() : ""} />
+        !pathname.includes("/pages/editor") && <Footer className={width > breakpoints.xl ? switchHeaderClass() : ""} />
       )}
     </>
   );

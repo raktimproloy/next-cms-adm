@@ -149,13 +149,28 @@ export const roleSlice = createSlice({
   },
 });
 
+// page Data SLice
+export const pageSlice = createSlice({
+  name: "page",
+  initialState: [],
+  reducers: {
+    addPage: (state, action) => {
+      return [...action.payload]; // Concatenate the new users with the existing ones
+    },
+    removePage(state, action) {
+      state.splice(action.payload, 1)
+    },
+  },
+});
+
 
 // All Update info Slice
 export const updateInfoSlice = createSlice({
   name: "updateInfo",
   initialState: {
     userUpdate: "",
-    roleUpdate: ""
+    roleUpdate: "",
+    pageUpdate: ""
   },
   reducers: {
     addInfo: (state, action) => {
@@ -164,6 +179,8 @@ export const updateInfoSlice = createSlice({
         state.userUpdate = value;
       } else if (field === 'roleUpdate') {
         state.roleUpdate = value;
+      } else if (field === 'pageUpdate') {
+        state.pageUpdate = value;
       }
     }
   }
@@ -172,6 +189,7 @@ export const updateInfoSlice = createSlice({
 
 export const {addUser, removeUser} = userSlice.actions
 export const {addRole, removeRole} = roleSlice.actions
+export const {addPage, removePage} = pageSlice.actions
 export const {addInfo} = updateInfoSlice.actions
 
 export const {

@@ -18,6 +18,7 @@ const Textarea = ({
   validate,
   msgTooltip,
   description,
+  defaultValue,
   cols,
   row = 3,
   onChange,
@@ -54,6 +55,7 @@ const Textarea = ({
             cols={cols}
             rows={row}
             onChange={onChange}
+            defaultValue={defaultValue}
           ></textarea>
         )}
         {!name && (
@@ -68,6 +70,7 @@ const Textarea = ({
             cols={cols}
             rows={row}
             onChange={onChange}
+            defaultValue={defaultValue}
           ></textarea>
         )}
 

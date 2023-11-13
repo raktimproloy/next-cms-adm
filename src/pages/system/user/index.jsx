@@ -14,7 +14,7 @@ import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {getUser} from "@/utils/getAllUser"
-import DeleteBtn from "../shared/DeleteBtn";
+import DeleteBtn from "@/pages/shared/DeleteBtn";
 import { useDispatch } from "react-redux";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
@@ -258,7 +258,6 @@ const handleAllSelect = () => {
         </div>
         <div className="mb-3">
           <Button text="Delete Selected" className="btn-warning py-2" onClick={() => {handleAllSelect(); setWhichDelete("selected")}} />
-          {/* <Button text="Delete All" className="btn-warning py-2 ms-4" onClick={() => {handleAllSelect(); setWhichDelete("all")}} /> */}
           <Modal
               title="Warning"
               label=""

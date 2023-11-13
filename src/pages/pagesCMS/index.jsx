@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import Card from "@/components/ui/Card";
-import { tableData } from "@/constant/table-data";
 import Button from "@/components/ui/Button";
+import { useCookies } from 'react-cookie';
+import { useDispatch } from 'react-redux';
+import Popup from "@/components/ui/Popup"
+import Modal from "@/components/ui/Modal"
+import { useSelector } from 'react-redux';
+import { getAllPages } from '../../utils/getAllPages';
+import axios from 'axios';
+import { API_HOST } from '@/utils';
+import { addInfo } from '../../store/layout';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const columns = [
@@ -17,59 +26,137 @@ const columns = [
       label: "Status",
       field: "status",
     },
-    // {
-    //   label: "Order",
-    //   field: "order",
-    // },
+    {
+      label: "Publish",
+      field: "publish",
+    },
+    {
+      label: "Category",
+      field: "category",
+    },
     {
       label: "Manage",
       field: "manage",
     },
-  ];
-  // slice(0, 10) is used to limit the number of rows to 10
-  const rows = tableData.slice(0, 7);
+];
+
 function index() {
-    return (
-        <Card title="Table Head" noborder>
-            <div className="overflow-x-auto -mx-6">
-              <div className="inline-block min-w-full align-middle">
-                <div className="overflow-hidden ">
-                  <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                    <thead className="bg-slate-200 dark:bg-slate-700">
-                      <tr>
-                        {columns.map((column, i) => (
-                          <th key={i} scope="col" className=" table-th ">
-                            {column.label}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                      {rows.map((row, i) => (
-                        <tr key={i}>
-                          <td className="table-td">Services</td>
-                          <td className="table-td">/service</td>
-                          <td className="table-td ">Active</td>
-                          {/* <td className="table-td ">0</td> */}
-                          <td className="table-td ">
-                              <Button
-                                text="Edit"
-                                className="btn-outline-primary rounded-[999px] py-2 me-2"
-                              />
-                              <Button
-                                text="Save"
-                                className="btn-outline-primary rounded-[999px] py-2"
-                              />
-                          </td>
-                        </tr>
+  const navigate = useNavigate()
+  const [deleteInfo, setDeleteInfo] = useState({
+    showDeleteModal: false,
+    slug: ""
+  })
+  const data = useSelector((state) => state.pages);
+  const updateInfo = useSelector((state) => state.update);
+  const dispatch = useDispatch()
+
+  // Cookies
+  const [cookie, removeCookie] = useCookies()
+  const headers = {
+    'Authorization': `Bearer ${cookie._token}`
+    }
+
+  useEffect(() => {
+    if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
+      getAllPages(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, data, updateInfo]);
+
+  const handleDelete = () => {
+    axios.delete(`${API_HOST}page/delete/${deleteInfo.slug}`, {
+      headers: headers
+    })
+    .then((res) => {
+      dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+      setDeleteInfo({...deleteInfo, showDeleteModal: false})
+    })
+    .catch((err) => {
+      console.log(err)
+      if(err.response.data.error === "Authentication error!"){
+        removeCookie("_token")
+      }
+    });
+  }
+
+  return (
+    <div>
+      <Modal
+        title="Warning"
+        label=""
+        labelClass="btn-outline-warning p-1"
+        themeClass="bg-warning-500"
+        activeModal={deleteInfo.showDeleteModal}
+        onClose={() => {
+          setDeleteInfo({...deleteInfo, showDeleteModal: false})
+        }}
+        footerContent={
+          <Button
+            text="Accept"
+            className="btn-warning "
+            onClick={handleDelete}
+          />
+        }
+      >
+        <h4 className="font-medium text-lg mb-3 text-slate-900">
+          Delete Page
+        </h4>
+        <div className="text-base text-slate-600 dark:text-slate-300">
+          Do you want to delete this page?
+        </div>
+      </Modal>
+      <Card title="Pages" noborder>
+        <div className='text-right mb-3'>
+          
+            <Button text="Add Page" className="btn-warning py-2" onClick={() => {
+              navigate("/pages/add")
+            }}  />
+        </div>
+          <div className="overflow-x-auto -mx-6">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden ">
+                <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                  <thead className="bg-slate-200 dark:bg-slate-700">
+                    <tr>
+                      {columns.map((column, i) => (
+                        <th key={i} scope="col" className=" table-th ">
+                          {column.label}
+                        </th>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                    {data.map((row, i) => (
+                      <tr key={i}>
+                        <td className="table-td">{row.title}</td>
+                        <td className="table-td">{row.slug}</td>
+                        <td className="table-td ">{row.active ? "Active": "Inactive"}</td>
+                        <td className="table-td ">{row.published_date}</td>
+                        <td className="table-td ">{row.predesign}</td>
+                        <td className="table-td ">
+                            <Button
+                              text="Edit"
+                              className="btn-outline-primary rounded-[999px] py-2 me-2"
+                              onClick={() => 
+                                navigate(`/pages/edit/${row.slug}`)
+                              }
+                            />
+                            <Button
+                              text="Delete"
+                              className="btn-outline-primary rounded-[999px] py-2"
+                              onClick={() => setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})}
+                            />
+                            
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-          </Card>
-      )
+          </div>
+      </Card>
+    </div>
+    )
 }
 
 export default index
