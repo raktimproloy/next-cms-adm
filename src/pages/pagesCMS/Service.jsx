@@ -12,7 +12,7 @@ function Test() {
   useEffect(() => {
     async function getAllAssets() {
       try {
-        const response = await axios.get(`${API_HOST}api/pages/653a23f9a3649e246c0b83b6/content`);
+        const response = await axios.get(`${API_HOST}api/pages/about/content`);
         setHtmlData(response.data);
       } catch (error) {
         setHtmlData(error.message);

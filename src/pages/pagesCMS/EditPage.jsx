@@ -3,6 +3,7 @@ import Card from "@/components/ui/Card"
 import Textinput from "@/components/ui/Textinput"
 import Select from "@/components/ui/Select"
 import Textarea from "@/components/ui/Textarea"
+import Fileinput from "@/components/ui/Fileinput"
 import Switch from "@/components/ui/Switch"
 import Button from "@/components/ui/Button"
 import axios from 'axios'
@@ -27,17 +28,35 @@ const buttons = [
 ];
 
 function EditPage() {
-    const params = useParams()
+  const params = useParams()
+  const [selectedFile, setSelectedFile] = useState(null)
   const [pageData, setPageData] = useState({
     title: "",
     slug: "",
     active: false,
     published_date: "23 March, 2024",
-    category: "Predesign",
-    predesign: "",
+    template_category: "Predesign",
+    template: "",
     meta_title: "",
     meta_description: ""
   })
+  
+  const [metaTag, setMetaTag] = useState({
+    title: "",
+    description: "",
+    keyword: "",
+    og_title:"",
+    og_url:"",
+    og_description:"",
+    og_site_name:"",
+    og_type:"",
+    og_image:"",
+    twitter_card:"",
+    twitter_title:"",
+    twitter_description:"",
+    twitter_url: ""
+  })
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showLoading, setShowLoading] = useState(false)
@@ -50,22 +69,28 @@ function EditPage() {
 
     // Get data
     useEffect(() => {
-      console.log("slug check",params.slug)
-        axios.get(`${API_HOST}page/${params.slug}`, {
-            headers: headers
-            })
-            .then((res) => {
-                setPageData(res.data[0])
-            })
-            .catch((err) => {
-            console.log(err)
-            });
+      axios.get(`${API_HOST}page/${params.slug}`, {
+        headers: headers
+        })
+        .then((res) => {
+            setPageData(res.data[0])
+        })
+        .catch((err) => {
+        console.log(err)
+        });
     }, [])
 
 //   Edit Data
   const editHandler = () => {
     setShowLoading(true)
-    axios.put(`${API_HOST}page/update/${params.slug}`, pageData, {
+    const updatedData = {
+      ...pageData,
+      meta_property:{
+        ...metaTag,
+        og_image: selectedFile?.name
+      }
+    }
+    axios.put(`${API_HOST}page/update/${params.slug}`, updatedData, {
         headers: headers
     })
     .then((res) => {
@@ -85,9 +110,15 @@ function EditPage() {
   // Selection Handler
   function handleOptionChange(e) {
     setPageData({
-        ...pageData, category:e.target.value
+        ...pageData, template_category:e.target.value
     })
   }
+
+  const handleFileChange = (e) => {
+    // console.log(e.target.files[0]?.name)
+    // setMetaTag({...metaTag, og_image:e.target.files[0]?.name});
+    setSelectedFile(e.target.files[0]);
+  };
 
   return (
     <div>
@@ -141,8 +172,8 @@ function EditPage() {
                 id="pn2"
                 type="text"
                 placeholder="Type Your Page Slug"
-                defaultValue={pageData.predesign}
-                onChange={(e) => setPageData({...pageData, predesign:e.target.value})}
+                defaultValue={pageData.template}
+                onChange={(e) => setPageData({...pageData, template:e.target.value})}
             />
             <div>
                 <label htmlFor="" className='pb-3'>Page Active</label>
@@ -156,7 +187,7 @@ function EditPage() {
             <Select
                 options={["Predesign", "Grapesjs"]}
                 label="Page Category"
-                value={pageData.category}
+                value={pageData.template_category}
                 onChange={handleOptionChange}
             />
             
@@ -174,9 +205,116 @@ function EditPage() {
                 label="Meta Description"
                 id="pn4"
                 placeholder="Type Meta Description"
-                defaultValue={pageData.meta_description}
-                onChange={(e) => setPageData({...pageData, meta_description:e.target.value})}
+                defaultValue={metaTag.meta_description}
+                onChange={(e) => setPageData({...metaTag, meta_description:e.target.value})}
             />
+              <h5 className='mt-5'>Meta Tags</h5>
+            <div className='flex w-100 gap-10'>
+              <div className='w-2/4'>
+                <Textinput
+                  label="Property: title"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.title}
+                  onChange={(e) => setMetaTag({...metaTag, title:e.target.value})}
+                />
+                <Textarea
+                  label="Property: description"
+                  id="pn4"
+                  placeholder="Type Content"
+                  defaultValue={metaTag.description}
+                  onChange={(e) => setMetaTag({...metaTag, description:e.target.value})}
+                />
+                <Textarea
+                  label="Property: keyword"
+                  id="pn4"
+                  placeholder="Type Content"
+                  defaultValue={metaTag.keyword}
+                  onChange={(e) => setMetaTag({...metaTag, keyword:e.target.value})}
+                />
+                <Textinput
+                  label="Property: og:title"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.og_title}
+                  onChange={(e) => setMetaTag({...metaTag, og_title:e.target.value})}
+                />
+                <Textinput
+                  label="Property: og:url"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.og_url}
+                  onChange={(e) => setMetaTag({...metaTag, og_url:e.target.value})}
+                />
+                <Textarea
+                  label="Property: og:description"
+                  id="pn4"
+                  placeholder="Type Content"
+                  defaultValue={metaTag.og_description}
+                  onChange={(e) => setMetaTag({...metaTag, og_description:e.target.value})}
+                />
+                
+              </div>
+              <div className='w-2/4'>
+                <Textinput
+                  label="Property: og:site_name"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.og_site_name}
+                  onChange={(e) => setMetaTag({...metaTag, og_site_name:e.target.value})}
+                />
+                <Textinput
+                  label="Property: og:type"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.og_type}
+                  onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
+                />
+                <p className='my-3'>Property: og:image</p>
+                <Fileinput
+                  name="og_image"
+                  selectedFile={selectedFile}
+                  onChange={handleFileChange}
+                />
+                <Textinput
+                  label="Property: twitter:card"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.twitter_card}
+                  onChange={(e) => setMetaTag({...metaTag, twitter_card:e.target.value})}
+                />
+                <Textinput
+                  label="Property: twitter:title"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.twitter_title}
+                  onChange={(e) => setMetaTag({...metaTag, twitter_title:e.target.value})}
+                />
+                <Textinput
+                  label="Property: twitter:description"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.twitter_description}
+                  onChange={(e) => setMetaTag({...metaTag, twitter_description:e.target.value})}
+                />
+                <Textinput
+                  label="Property: twitter:url"
+                  id="pn3"
+                  placeholder="Type Content"
+                  type="text"
+                  defaultValue={metaTag.twitter_url}
+                  onChange={(e) => setMetaTag({...metaTag, twitter_url:e.target.value})}
+                />
+              </div>
+            </div>
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>

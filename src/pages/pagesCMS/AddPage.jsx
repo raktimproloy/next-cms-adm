@@ -21,8 +21,8 @@ function AddPage() {
     slug: "",
     active: false,
     published_date: "23 March, 2024",
-    category: "Predesign",
-    predesign: "",
+    template_category: "Predesign",
+    template: "",
     meta_title: "",
     meta_description: ""
   })
@@ -60,7 +60,7 @@ function AddPage() {
   // Selection Handler
   function handleOptionChange(e) {
     setPageData({
-        ...pageData, category:e.target.value
+        ...pageData, template_category:e.target.value
     })
   }
 
@@ -85,11 +85,11 @@ function AddPage() {
             onChange={(e) => setPageData({...pageData, slug:e.target.value})}
           />
           <Textinput
-            label="Predesign Page"
+            label="Default Template"
             id="pn2"
             type="text"
-            placeholder="Type Your Page Slug"
-            onChange={(e) => setPageData({...pageData, predesign:e.target.value})}
+            placeholder="Type Your Template File Name"
+            onChange={(e) => setPageData({...pageData, template:e.target.value})}
           />
           <div>
             <label htmlFor="" className='pb-3'>Page Active</label>
@@ -103,7 +103,7 @@ function AddPage() {
           <Textinput
             label="Meta Title"
             id="pn3"
-            placeholder=" Disabled Input"
+            placeholder="Type Meta Title"
             type="text"
             onChange={(e) => setPageData({...pageData, meta_title:e.target.value})}
           />
