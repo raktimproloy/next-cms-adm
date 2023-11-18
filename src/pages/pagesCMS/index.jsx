@@ -131,7 +131,7 @@ function index() {
                         <td className="table-td">{row.slug}</td>
                         <td className="table-td ">{row.active ? "Active": "Inactive"}</td>
                         <td className="table-td ">{row.published_date}</td>
-                        <td className="table-td ">{row.predesign}</td>
+                        <td className="table-td ">{row.template_category}</td>
                         <td className="table-td ">
                             <Button
                               text="Edit"

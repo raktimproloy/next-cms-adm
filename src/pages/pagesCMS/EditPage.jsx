@@ -6,6 +6,7 @@ import Textarea from "@/components/ui/Textarea"
 import Fileinput from "@/components/ui/Fileinput"
 import Switch from "@/components/ui/Switch"
 import Button from "@/components/ui/Button"
+import Image from "@/components/ui/Image"
 import axios from 'axios'
 import { API_HOST } from '@/utils'
 import { useCookies } from 'react-cookie'
@@ -14,6 +15,7 @@ import { useDispatch } from 'react-redux'
 import { addInfo } from '../../store/layout'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Tab } from "@headlessui/react";
+import image2 from "@/assets/images/all-img/image-2.png";
 
 
 const buttons = [
@@ -50,7 +52,7 @@ function EditPage() {
     og_description:"",
     og_site_name:"",
     og_type:"",
-    og_image:"",
+    og_image: "",
     twitter_card:"",
     twitter_title:"",
     twitter_description:"",
@@ -74,6 +76,7 @@ function EditPage() {
         })
         .then((res) => {
             setPageData(res.data[0])
+            setMetaTag(res.data[0].meta_property)
         })
         .catch((err) => {
         console.log(err)
@@ -83,14 +86,21 @@ function EditPage() {
 //   Edit Data
   const editHandler = () => {
     setShowLoading(true)
-    const updatedData = {
-      ...pageData,
-      meta_property:{
-        ...metaTag,
-        og_image: selectedFile?.name
-      }
-    }
-    axios.put(`${API_HOST}page/update/${params.slug}`, updatedData, {
+    const formData = new FormData()
+
+    formData.append("title", pageData.title)
+    formData.append("slug", pageData.slug)
+    formData.append("active", pageData.active)
+    formData.append("published_date", pageData.published_date)
+    formData.append("template_category", pageData.template_category)
+    formData.append("template", pageData.template)
+    formData.append("meta_title", pageData.meta_title)
+    formData.append("meta_description", pageData.meta_description)
+    formData.append("og_image", selectedFile)
+    formData.append("meta_property", JSON.stringify(metaTag))
+
+
+    axios.post(`${API_HOST}page/update/${params.slug}`, formData, {
         headers: headers
     })
     .then((res) => {
@@ -115,10 +125,14 @@ function EditPage() {
   }
 
   const handleFileChange = (e) => {
-    // console.log(e.target.files[0]?.name)
-    // setMetaTag({...metaTag, og_image:e.target.files[0]?.name});
     setSelectedFile(e.target.files[0]);
   };
+
+
+  useEffect(() => {
+    console.log("PageData", pageData)
+    console.log("MetaTag", metaTag)
+  }, [pageData, metaTag])
 
   return (
     <div>
@@ -205,8 +219,8 @@ function EditPage() {
                 label="Meta Description"
                 id="pn4"
                 placeholder="Type Meta Description"
-                defaultValue={metaTag.meta_description}
-                onChange={(e) => setPageData({...metaTag, meta_description:e.target.value})}
+                defaultValue={pageData.meta_description}
+                onChange={(e) => setPageData({...pageData, meta_description:e.target.value})}
             />
               <h5 className='mt-5'>Meta Tags</h5>
             <div className='flex w-100 gap-10'>
@@ -226,7 +240,7 @@ function EditPage() {
                   defaultValue={metaTag.description}
                   onChange={(e) => setMetaTag({...metaTag, description:e.target.value})}
                 />
-                <Textarea
+                <Textinput
                   label="Property: keyword"
                   id="pn4"
                   placeholder="Type Content"
@@ -256,9 +270,6 @@ function EditPage() {
                   defaultValue={metaTag.og_description}
                   onChange={(e) => setMetaTag({...metaTag, og_description:e.target.value})}
                 />
-                
-              </div>
-              <div className='w-2/4'>
                 <Textinput
                   label="Property: og:site_name"
                   id="pn3"
@@ -275,11 +286,26 @@ function EditPage() {
                   defaultValue={metaTag.og_type}
                   onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
                 />
+                
+              </div>
+              <div className='w-2/4'>
+                
                 <p className='my-3'>Property: og:image</p>
                 <Fileinput
                   name="og_image"
                   selectedFile={selectedFile}
                   onChange={handleFileChange}
+                />
+                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3 mt-5">
+                  Previous Image :
+                </span>
+                <span className="block text-base dark:text-slate-300 text-slate-500 uppercase mb-6 ">
+                  {metaTag.og_image}
+                </span>
+                <Image
+                  src={image2}
+                  alt="Small image with fluid:"
+                  className="rounded-md mb-6"
                 />
                 <Textinput
                   label="Property: twitter:card"
@@ -297,7 +323,7 @@ function EditPage() {
                   defaultValue={metaTag.twitter_title}
                   onChange={(e) => setMetaTag({...metaTag, twitter_title:e.target.value})}
                 />
-                <Textinput
+                <Textarea
                   label="Property: twitter:description"
                   id="pn3"
                   placeholder="Type Content"
