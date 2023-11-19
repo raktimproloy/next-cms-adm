@@ -58,7 +58,7 @@ const geditorConfig = (assets, slug) => {
       tailwindComponent,
       gjsBlockBasic,
       swiperComponent,
-      // grapesjsBlockBootstrap,
+      grapesjsBlockBootstrap,
       grapesjsPluginExport,
       grapesjsStyleBg,
       chartLibComponent,
@@ -76,7 +76,7 @@ const geditorConfig = (assets, slug) => {
     },
   });
 
-  console.log(editor)
+  console.log(editor.getScript)
   addEditorCommand(editor);
   editor.on("run:preview", () => {
     console.log("It will trigger when we click on preview icon");

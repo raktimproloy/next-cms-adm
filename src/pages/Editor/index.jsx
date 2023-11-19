@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import Sidebar from "@/pages/Editor/Sidebar";
 import TopNav from "@/pages/Editor/TopNav";
 import geditorConfig from "@/utils/api/geditor_config";
 import PageSection from "@/pages/Editor/PageSection";
-import {API_HOST} from "@/utils"
 import "@/styles/main.scss"
 
 const Editor = () => {
@@ -16,23 +14,6 @@ const Editor = () => {
 
   const { pageStore } = useSelector((state) => state);
   const { pages } = pageStore;
-
-  // useEffect(() => {
-  //   async function getAllAssets() {
-  //     try {
-  //       const response = await axios.get(`${API_HOST}assets/`, {
-  //         headers:{
-  //           "Access-Control-Allow-Origin": "*"
-  //         }
-  //       });
-  //       setAssets(response.data);
-  //     } catch (error) {
-  //       setAssets(error.message);
-  //     }
-  //   }
-
-  //   getAllAssets();
-  // }, []);
 
   useEffect(() => {
     const editor = geditorConfig(assets, slug);
