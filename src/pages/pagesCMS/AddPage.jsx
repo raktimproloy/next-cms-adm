@@ -36,6 +36,7 @@ function AddPage() {
   'Authorization': `Bearer ${cookie._token}`
   }
   const saveHandler = () => {
+    setShowLoading(true)
     axios.post(`${API_HOST}page/add`, pageData, {
       headers: headers
     })
@@ -43,7 +44,13 @@ function AddPage() {
       dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
       setShowLoading(false)
       createPage(pageData.title)(dispatch);
-      navigate("/pages")
+      setTimeout(() => {
+        if(pageData.template_category === "Predesign"){
+          navigate("/pages")
+        }else{
+          navigate(`/pages/editor/${pageData.slug}`)
+        }
+      }, 1000);
     })
     .catch((err) => {
       setShowLoading(false)
@@ -76,6 +83,11 @@ function AddPage() {
             placeholder="Type Your Page Title"
             onChange={(e) => setPageData({...pageData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
           />
+          <Select
+            options={["Predesign", "Grapesjs"]}
+            label="Page Category"
+            onChange={handleOptionChange}
+          />
           <Textinput
             label="Page Slug"
             id="pn2"
@@ -87,6 +99,7 @@ function AddPage() {
           <Textinput
             label="Default Template"
             id="pn2"
+            readonly={pageData.template_category.toLowerCase() == "predesign" ? false : true}
             type="text"
             placeholder="Type Your Template File Name"
             onChange={(e) => setPageData({...pageData, template:e.target.value})}
@@ -100,24 +113,6 @@ function AddPage() {
               onChange={() => setPageData({...pageData, active: !pageData.active})}
             />
           </div>
-          <Textinput
-            label="Meta Title"
-            id="pn3"
-            placeholder="Type Meta Title"
-            type="text"
-            onChange={(e) => setPageData({...pageData, meta_title:e.target.value})}
-          />
-          <Textarea
-            label="Meta Description"
-            id="pn4"
-            placeholder="Type Meta Description"
-            onChange={(e) => setPageData({...pageData, meta_description:e.target.value})}
-          />
-          <Select
-            options={["Predesign", "Grapesjs"]}
-            label="Page Category"
-            onChange={handleOptionChange}
-          />
         </div>
         <div className='text-right mt-5'>
           <Button text="Save" className="btn-warning py-2" onClick={() => {

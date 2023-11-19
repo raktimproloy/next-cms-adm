@@ -11,6 +11,7 @@ import axios from 'axios';
 import { API_HOST } from '@/utils';
 import { addInfo } from '../../store/layout';
 import { Link, useNavigate } from 'react-router-dom';
+import { deletePage } from '@/store/actions/pageAction';
 
 
 const columns = [
@@ -67,6 +68,7 @@ function index() {
       headers: headers
     })
     .then((res) => {
+      deletePage(deleteInfo.slug)(dispatch);
       dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
     })
@@ -107,7 +109,10 @@ function index() {
       <Card title="Pages" noborder>
         <div className='text-right mb-3'>
           
-            <Button text="Add Page" className="btn-warning py-2" onClick={() => {
+            <Button text="Manage Pages" className="btn-warning py-2 me-2" onClick={() => {
+              navigate("/pages/manage")
+            }}  />
+            <Button text="Add Page" className="btn-success py-2" onClick={() => {
               navigate("/pages/add")
             }}  />
         </div>
@@ -128,7 +133,7 @@ function index() {
                     {data.map((row, i) => (
                       <tr key={i}>
                         <td className="table-td">{row.title}</td>
-                        <td className="table-td">{row.slug}</td>
+                        <td className="table-td lowercase">{row.slug.toLowerCase()}</td>
                         <td className="table-td ">{row.active ? "Active": "Inactive"}</td>
                         <td className="table-td ">{row.published_date}</td>
                         <td className="table-td ">{row.template_category}</td>
@@ -143,7 +148,10 @@ function index() {
                             <Button
                               text="Delete"
                               className="btn-outline-primary rounded-[999px] py-2"
-                              onClick={() => setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})}
+                              onClick={() => {
+                                setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
+                                
+                              }}
                             />
                             
                         </td>

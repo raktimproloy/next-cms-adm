@@ -13,7 +13,7 @@ const Dashboard = lazy(() => import("./pages/dashboard"));
 const Pages = lazy(() => import("./pages/pagesCMS"))
 const AddPage = lazy(() => import("./pages/pagesCMS/AddPage"))
 const EditPage = lazy(() => import("./pages/pagesCMS/EditPage"))
-const PagesService = lazy(() => import("./pages/pagesCMS/Service"))
+const ManagePage = lazy(() => import("./pages/pagesCMS/ManagePage"))
 
 // Editor
 const Editor = lazy(() => import("./pages/Editor"))
@@ -108,7 +108,7 @@ function App() {
           <Route path="pages" element={<Pages />} />
           <Route path="pages/add" element={<AddPage />} />
           <Route path="pages/edit/:slug" element={<EditPage />} />
-          <Route path="pages/services" element={<PagesService />} />
+          <Route path="pages/manage" element={<ManagePage />} />
           <Route path="pages/editor/:slug" element={<Editor />} />
 
 

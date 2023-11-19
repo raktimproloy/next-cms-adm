@@ -99,22 +99,23 @@ function EditPage() {
     formData.append("og_image", selectedFile)
     formData.append("meta_property", JSON.stringify(metaTag))
 
-
-    axios.post(`${API_HOST}page/update/${params.slug}`, formData, {
-        headers: headers
-    })
-    .then((res) => {
-        dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
-        setShowLoading(false)
-        navigate("/pages")
-    })
-    .catch((err) => {
-        console.log(err)
-        setShowLoading(false)
-        if(err.response.data.error === "Authentication error!"){
-        removeCookie("_token")
-        }
-    });
+    if(pageData.template_category === "Grapesjs" || (pageData.template_category === "Predesign" && pageData.template !== "") ){
+      axios.post(`${API_HOST}page/update/${params.slug}`, formData, {
+          headers: headers
+      })
+      .then((res) => {
+          dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+          setShowLoading(false)
+          navigate("/pages")
+      })
+      .catch((err) => {
+          console.log(err)
+          setShowLoading(false)
+          if(err.response.data.error === "Authentication error!"){
+          removeCookie("_token")
+          }
+      });
+    }
   }
 
   // Selection Handler
@@ -127,12 +128,6 @@ function EditPage() {
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
-
-
-  useEffect(() => {
-    console.log("PageData", pageData)
-    console.log("MetaTag", metaTag)
-  }, [pageData, metaTag])
 
   return (
     <div>
@@ -173,6 +168,12 @@ function EditPage() {
                 defaultValue={pageData.title}
                 onChange={(e) => setPageData({...pageData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
             />
+            <Select
+                options={["Predesign", "Grapesjs"]}
+                label="Page Category"
+                value={pageData.template_category}
+                onChange={handleOptionChange}
+            />
             <Textinput
                 label="Page Slug"
                 id="pn2"
@@ -185,6 +186,7 @@ function EditPage() {
                 label="Predesign Page"
                 id="pn2"
                 type="text"
+                readonly={pageData.template_category.toLowerCase() == "predesign" ? false : true}
                 placeholder="Type Your Page Slug"
                 defaultValue={pageData.template}
                 onChange={(e) => setPageData({...pageData, template:e.target.value})}
@@ -198,13 +200,6 @@ function EditPage() {
                 onChange={() => setPageData({...pageData, active: !pageData.active})}
                 />
             </div>
-            <Select
-                options={["Predesign", "Grapesjs"]}
-                label="Page Category"
-                value={pageData.template_category}
-                onChange={handleOptionChange}
-            />
-            
             </Tab.Panel>
             <Tab.Panel>
             <Textinput
