@@ -11,12 +11,14 @@ const Editor = () => {
   const [editor, setEditor] = useState(null);
   const [assets, setAssets] = useState([]);
   const { slug } = useParams();
+  console.log(slug)
 
   const { pageStore } = useSelector((state) => state);
   const { pages } = pageStore;
 
   useEffect(() => {
     const editor = geditorConfig(assets, slug);
+    console.log(editor)
     setEditor(editor);
   }, [slug, assets]);
   return (

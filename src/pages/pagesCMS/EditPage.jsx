@@ -75,8 +75,8 @@ function EditPage() {
         headers: headers
         })
         .then((res) => {
-            setPageData(res.data[0])
-            setMetaTag(res.data[0].meta_property)
+            setPageData(res.data)
+            setMetaTag(res.data.meta_property)
         })
         .catch((err) => {
         console.log(err)
