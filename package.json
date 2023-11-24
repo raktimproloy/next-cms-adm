@@ -79,6 +79,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@tinymce/tinymce-react": "^4.3.2",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",

@@ -39,9 +39,13 @@ useEffect(() => {
 }, [data])
 
 function handleOptionChange(e) {
-    setUserData({
-        ...userData, role:e.value
+  data.map(role => {
+    if(role.rolename.toString() === e.value.toString()){
+      setUserData({
+        ...userData, roleId:role._id, role:e.value
     })
+    }
+  })
 }
 
   return (

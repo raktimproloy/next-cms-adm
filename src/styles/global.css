@@ -1,0 +1,6 @@
+.tox .tox-notification--warning{
+    display: none !important;
+}
+.tox .tox-statusbar__branding svg{
+    display: none;
+}

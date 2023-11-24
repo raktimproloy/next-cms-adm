@@ -21,6 +21,7 @@ import Modal from "@/components/ui/Modal";
 import axios from "axios";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
+import { getAllUserRoles } from "../../../utils/getAllUserRole";
 
 const COLUMNS = [
   {
@@ -139,16 +140,60 @@ const UserManager = () => {
 
 // User Data Fatching
 const dispatch = useDispatch();
-const data = useSelector((state) => state.users);
+const userData = useSelector((state) => state.users);
+const userRoleData = useSelector((state) => state.userRoles);
 const updateInfo = useSelector((state) => state.update);
 const [cookie, removeCookie] = useCookies()
 const headers = {
   'Authorization': `Bearer ${cookie._token}`
 }
+const [data, setData] = useState([])
+
+// Added Role Name Dynamically
+useEffect(() => {
+  setData([]);
+
+  if (userData) {
+    const fetchRoleData = async () => {
+      const promises = userData.map(async (user, index) => {
+        if (userData[index]?.permission[0] === userRoleData[index]?._id) {
+          if (userRoleData[index]) {
+            try {
+              const res = await axios.get(`${API_HOST}role/${userRoleData[index]?.role}`, {
+                headers: headers,
+              });
+
+              const newUser = { ...userData[index], role: res.data[0]?.rolename };
+              return newUser;
+            } catch (err) {
+              if (err.response.data.error === "Authentication error!") {
+                removeCookie("_token");
+              }
+              console.log(err);
+            }
+          }
+        }
+        return null;
+      });
+
+      const newUserData = await Promise.all(promises);
+      // Filter out null values (errors in axios requests)
+      const filteredUserData = newUserData.filter((user) => user !== null);
+      setData((oldData) => [...oldData, ...filteredUserData]);
+    };
+
+    fetchRoleData();
+  }
+}, [updateInfo]);
+
+
 useEffect(() => {
   if (updateInfo.userUpdate === "" || updateInfo.userUpdate === "not-updated") {
       getUser(dispatch, cookie, removeCookie);
   }
+  if (updateInfo.userRoleUpdate === "" || updateInfo.userRoleUpdate === "not-updated") {
+    getAllUserRoles(dispatch, cookie, removeCookie);
+}
 }, [dispatch, data, updateInfo]);
 
 

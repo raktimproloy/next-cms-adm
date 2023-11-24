@@ -108,10 +108,6 @@ function index() {
       </Modal>
       <Card title="Pages" noborder>
         <div className='text-right mb-3'>
-          
-            <Button text="Manage Pages" className="btn-warning py-2 me-2" onClick={() => {
-              navigate("/pages/manage")
-            }}  />
             <Button text="Add Page" className="btn-success py-2" onClick={() => {
               navigate("/pages/add")
             }}  />

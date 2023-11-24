@@ -72,7 +72,8 @@ function AddUser() {
     last_login: "30mnt ago",
     status: 0,
     password: "",
-    role: ""
+    role: "",
+    roleId: ""
   })
 
   // find current step schema
@@ -120,7 +121,7 @@ function AddUser() {
     .then(response=>{
       const userId = response.data.userId
       const roleData = {
-        role: userData.role,
+        role: userData.roleId,
         username: userData.username.toLowerCase(),
         userId: userId,
         permission: permission

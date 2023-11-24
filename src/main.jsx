@@ -11,6 +11,7 @@ import store from "./store";
 import "react-toastify/dist/ReactToastify.css";
 import "grapesjs/dist/css/grapes.min.css";
 import "bootstrap";
+import './styles/global.css'
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
