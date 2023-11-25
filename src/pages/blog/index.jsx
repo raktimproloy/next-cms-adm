@@ -6,10 +6,10 @@ import { useDispatch } from 'react-redux';
 import Popup from "@/components/ui/Popup"
 import Modal from "@/components/ui/Modal"
 import { useSelector } from 'react-redux';
-import { getAllPages } from '../../utils/getAllPages';
+import { getAllBlogs } from '../../utils/getAllBlogs';
 import axios from 'axios';
 import { API_HOST } from '@/utils';
-import { addInfo } from '../../store/layout';
+import { addBlog, addInfo, removeBlog } from '../../store/layout';
 import { Link, useNavigate } from 'react-router-dom';
 import { deletePage } from '@/store/actions/pageAction';
 
@@ -20,8 +20,8 @@ const columns = [
       field: "title",
     },
     {
-      label: "Comment",
-      field: "comment",
+      label: "slug",
+      field: "slug",
     },
     {
       label: "Publish Date",
@@ -32,8 +32,8 @@ const columns = [
       field: "status",
     },
     {
-      label: "Comment",
-      field: "comment",
+      label: "Blog Category",
+      field: "blog_category",
     },
     {
       label: "Manage",
@@ -47,7 +47,7 @@ function index() {
     showDeleteModal: false,
     slug: ""
   })
-  const data = useSelector((state) => state.pages);
+  const data = useSelector((state) => state.blogs);
   const updateInfo = useSelector((state) => state.update);
   const dispatch = useDispatch()
 
@@ -58,18 +58,19 @@ function index() {
     }
 
   useEffect(() => {
-    if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
-      getAllPages(dispatch, cookie, removeCookie);
+    if (updateInfo.blogUpdate === "" || updateInfo.blogUpdate === "not-updated") {
+      getAllBlogs(dispatch, cookie, removeCookie);
     }
   }, [dispatch, data, updateInfo]);
 
+
   const handleDelete = () => {
-    axios.delete(`${API_HOST}page/delete/${deleteInfo.slug}`, {
+    axios.delete(`${API_HOST}blog/delete/${deleteInfo.slug}`, {
       headers: headers
     })
     .then((res) => {
-      deletePage(deleteInfo.slug)(dispatch);
-      dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+      dispatch(removeBlog(deleteInfo.slug))
+      dispatch(addInfo({ field: 'blogUpdate', value: 'not-updated' }));
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
     })
     .catch((err) => {
@@ -130,9 +131,9 @@ function index() {
                       <tr key={i}>
                         <td className="table-td">{row.title}</td>
                         <td className="table-td lowercase">{row.slug.toLowerCase()}</td>
-                        <td className="table-td ">{row.active ? "Active": "Inactive"}</td>
                         <td className="table-td ">{row.published_date}</td>
-                        <td className="table-td ">{row.template_category}</td>
+                        <td className="table-td ">{row.active ? "Active": "Inactive"}</td>
+                        <td className="table-td ">{row.blog_category}</td>
                         <td className="table-td ">
                             <Button
                               text="Preview"
@@ -145,7 +146,7 @@ function index() {
                               text="Edit"
                               className="btn-outline-primary rounded-[999px] py-2 me-2"
                               onClick={() => 
-                                navigate(`/pages/edit/${row.slug}`)
+                                navigate(`/blog/edit/${row.slug}`)
                               }
                             />
                             <Button

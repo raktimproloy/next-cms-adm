@@ -33,6 +33,7 @@ const SocalMedia = lazy(() => import("./pages/content/SocalMedia"))
 // Blog Page
 const BlogPage = lazy(() => import("./pages/blog"))
 const AddBlog = lazy(() => import("./pages/blog/AddBlog"))
+const EditBlog = lazy(() => import("./pages/blog/EditBlog"))
 
 // Service Page
 const ServicePage = lazy(() => import("./pages/service"))
@@ -120,6 +121,7 @@ function App() {
           {/* Blog Page */}
           <Route path="blog" element={<BlogPage />} />
           <Route path="blog/add" element={<AddBlog />} />
+          <Route path="blog/edit/:slug" element={<EditBlog/>} />
 
           {/* Service Page */}
           <Route path="service" element={<ServicePage />} />

@@ -27,6 +27,7 @@ const Textinput = ({
   options,
   onFocus,
   defaultValue,
+  onKeyDown,
 
   ...rest
 }) => {

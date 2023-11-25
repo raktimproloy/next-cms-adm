@@ -33,7 +33,7 @@ const buttons = [
     }
 ];
 
-function AddBlog() {
+function EditBlog() {
   const params = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -83,14 +83,31 @@ function AddBlog() {
   'Authorization': `Bearer ${cookie._token}`
   }
 
-//   Save Data
-  const saveHandler = () => {
+// Get data
+useEffect(() => {
+    axios.get(`${API_HOST}blog/${params.slug}`, {
+        headers: headers
+    })
+    .then((res) => {
+        setBlogData(res.data)
+        console.log(res)
+        setBlogTag(res.data.blog_tags)
+        setValue(res.data.blog_details)
+        setMetaTag(res.data.meta_property)
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+}, [])
+
+//   Edit Data
+  const editHandler = () => {
     setShowLoading(true)
 
     const newData ={
       title: blogData.title,
       slug: blogData.slug,
-      status: blogData.status,
+      active: blogData.active,
       published_date: blogData.published_date,
       blog_category: blogData.blog_category,
       blog_tags: blogTag,
@@ -98,7 +115,7 @@ function AddBlog() {
       meta_property: metaTag
     }
 
-    axios.post(`${API_HOST}blog/add`, newData, {
+    axios.post(`${API_HOST}blog/update/${params.slug}`, newData, {
         headers: headers
     })
     .then((res) => {
@@ -120,7 +137,7 @@ function AddBlog() {
     setBlogData({
         ...blogData, blog_category:e.target.value
     })
-  }  
+  }
   function handleStatusChange(e) {
     setBlogData({
         ...blogData, status:e.target.value
@@ -219,7 +236,7 @@ function AddBlog() {
                 placeholder=" Disabled Input"
                 type="text"
                 defaultValue={metaTag.main_title}
-                onChange={(e) => setMetaTag({...metaTag, main_title:e.target.value})}
+                onChange={(e) => setMetaTag({...metaTag, title:e.target.value})}
             />
             <Textarea
                 label="Meta Description"
@@ -352,7 +369,7 @@ function AddBlog() {
         </Tab.Group>
         <div className='flex justify-end items-center mt-5'>
           <Button text="Save" className="btn-success py-2" onClick={() => {
-            saveHandler()
+            editHandler()
           }}  />
         </div>
       </Card>
@@ -360,4 +377,4 @@ function AddBlog() {
   )
 }
 
-export default AddBlog
+export default EditBlog
