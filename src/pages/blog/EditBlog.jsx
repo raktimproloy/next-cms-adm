@@ -16,7 +16,7 @@ import { addInfo } from '../../store/layout'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Tab } from "@headlessui/react";
 import {Editor} from "@tinymce/tinymce-react"
-
+import image2 from "@/assets/images/all-img/image-2.png";
 
 const buttons = [
     {
@@ -80,7 +80,8 @@ function EditBlog() {
   // Cookies
   const [cookie, removeCookie] = useCookies()
   const headers = {
-  'Authorization': `Bearer ${cookie._token}`
+  'Authorization': `Bearer ${cookie._token}`,
+  'Content-Type': 'application/json'
   }
 
 // Get data
@@ -104,18 +105,18 @@ useEffect(() => {
   const editHandler = () => {
     setShowLoading(true)
 
-    const newData ={
-      title: blogData.title,
-      slug: blogData.slug,
-      active: blogData.active,
-      published_date: blogData.published_date,
-      blog_category: blogData.blog_category,
-      blog_tags: blogTag,
-      blog_details: value,
-      meta_property: metaTag
-    }
+    const formData = new FormData();
+    formData.append('title', blogData.title);
+    formData.append('slug', blogData.slug);
+    formData.append('status', blogData.status);
+    formData.append('published_date', blogData.published_date);
+    formData.append('blog_category', blogData.blog_category);
+    formData.append('blog_tags', blogTag);
+    formData.append('blog_details', value);
+    formData.append("og_image", selectedFile)
+    formData.append("meta_property", JSON.stringify(metaTag))
 
-    axios.post(`${API_HOST}blog/update/${params.slug}`, newData, {
+    axios.post(`${API_HOST}blog/update/${params.slug}`, formData, {
         headers: headers
     })
     .then((res) => {
@@ -144,6 +145,9 @@ useEffect(() => {
     })
   }
 
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
 
   return (
     <div>

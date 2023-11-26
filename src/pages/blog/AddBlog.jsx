@@ -5,6 +5,7 @@ import Select from "@/components/ui/Select"
 import Textarea from "@/components/ui/Textarea"
 import Switch from "@/components/ui/Switch"
 import Button from "@/components/ui/Button"
+import Image from "@/components/ui/Image"
 import Keyword from "@/components/ui/Keyword"
 import Fileinput from "@/components/ui/Fileinput"
 import axios from 'axios'
@@ -16,6 +17,7 @@ import { addInfo } from '../../store/layout'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Tab } from "@headlessui/react";
 import {Editor} from "@tinymce/tinymce-react"
+import image2 from "@/assets/images/all-img/image-2.png";
 
 
 const buttons = [
@@ -80,25 +82,25 @@ function AddBlog() {
   // Cookies
   const [cookie, removeCookie] = useCookies()
   const headers = {
-  'Authorization': `Bearer ${cookie._token}`
+  'Authorization': `Bearer ${cookie._token}`,
+  // 'Content-Type': 'application/json'
   }
 
 //   Save Data
   const saveHandler = () => {
     setShowLoading(true)
+    const formData = new FormData();
+    formData.append('title', blogData.title);
+    formData.append('slug', blogData.slug);
+    formData.append('status', blogData.status);
+    formData.append('published_date', blogData.published_date);
+    formData.append('blog_category', blogData.blog_category.toLowerCase());
+    formData.append('blog_tags', JSON.stringify(blogTag));
+    formData.append('blog_details', value);
+    formData.append("og_image", selectedFile)
+    formData.append("meta_property", JSON.stringify(metaTag))
 
-    const newData ={
-      title: blogData.title,
-      slug: blogData.slug,
-      status: blogData.status,
-      published_date: blogData.published_date,
-      blog_category: blogData.blog_category,
-      blog_tags: blogTag,
-      blog_details: value,
-      meta_property: metaTag
-    }
-
-    axios.post(`${API_HOST}blog/add`, newData, {
+    axios.post(`${API_HOST}blog/add`, formData, {
         headers: headers
     })
     .then((res) => {
@@ -127,6 +129,9 @@ function AddBlog() {
     })
   }
 
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
 
   return (
     <div>
@@ -296,7 +301,7 @@ function AddBlog() {
               </div>
               <div className='w-2/4'>
                 
-                {/* <p className='my-3'>Property: og:image</p>
+                <p className='my-3'>Property: og:image</p>
                 <Fileinput
                   name="og_image"
                   selectedFile={selectedFile}
@@ -312,7 +317,7 @@ function AddBlog() {
                   src={image2}
                   alt="Small image with fluid:"
                   className="rounded-md mb-6"
-                /> */}
+                />
                 <Textinput
                   label="Property: twitter:card"
                   id="pn3"

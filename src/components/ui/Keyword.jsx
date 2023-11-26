@@ -6,7 +6,7 @@ const Keyword = ({tags, setTags}) => {
 //   const [tags, setTags] = useState([]);
 
   const handleInputChange = (event) => {
-    setTagInput(event.target.value);
+    setTagInput(event.target.value.toLowerCase());
   };
 
   const handleInputKeyDown = (event) => {
