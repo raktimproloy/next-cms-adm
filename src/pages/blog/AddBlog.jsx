@@ -22,12 +22,8 @@ import image2 from "@/assets/images/all-img/image-2.png";
 
 const buttons = [
     {
-      title: "Blog Info",
-      icon: "heroicons-outline:home",
-    },
-    {
       title: "Blog Details",
-      icon: "heroicons-outline:user",
+      icon: "heroicons-outline:home",
     },
     {
       title: "Blog Metatag",
@@ -164,58 +160,67 @@ function AddBlog() {
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel>
-            <Textinput
-                label="Blog Title"
-                id="pn"
-                type="text"
-                placeholder="Type Your Blog Title"
-                defaultValue={blogData.title}
-                onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
-            />
-            <Textinput
-                label="Blog Slug"
-                id="pn2"
-                type="text"
-                placeholder="Type Your Blog Slug"
-                defaultValue={blogData.slug}
-                onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
-            />
-            <Select
-                options={["Management", "Stories", "Development", "Updates"]}
-                label="Blog Category"
-                value={blogData.blog_category}
-                onChange={handleOptionChange}
-            />
-            <Keyword tags={blogTag} setTags={setBlogTag} />
-            <Select
-                options={["Active", "Draft"]}
-                label="Blog Status"
-                value={blogData.status}
-                onChange={handleStatusChange}
-            />
-            </Tab.Panel>
-            <Tab.Panel>
-            <Editor 
-                onEditorChange={(newValue, editor) => {
-                setValue(newValue)
-                setText(editor.getContent({format:"text"}))
-                }}
-                onInit={(evt, editor) => {
-                setText(editor.getContent({format: "text"}))
-                }}
-                // initialValue='TinyMCE rich text editor'
-                value={value}
-                
-                init={{
-                plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autoresize autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
-                // theme: 'modern',
-                keep_styles: true,
-                width: '100%',
-                inline_styles: true,
-                verify_html: false,
-                valid_children : '+body[style],-body[div],p[strong|a|#text]'
-                }}
-            />
+              <div className='flex gap-10'>
+                <div className='w-2/4'>
+                <Textinput
+                  label="Blog Title"
+                  id="pn"
+                  type="text"
+                  placeholder="Type Your Blog Title"
+                  defaultValue={blogData.title}
+                  onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
+                />
+                <Textinput
+                    label="Blog Slug"
+                    id="pn2"
+                    type="text"
+                    placeholder="Type Your Blog Slug"
+                    defaultValue={blogData.slug}
+                    onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
+                />
+                <Select
+                  options={["Management", "Stories", "Development", "Updates"]}
+                  label="Blog Category"
+                  value={blogData.blog_category}
+                  onChange={handleOptionChange}
+                />
+                </div>
+
+                <div className='w-2/4'>
+                <Keyword tags={blogTag} setTags={setBlogTag} />
+                <Select
+                    options={["Active", "Draft"]}
+                    label="Blog Status"
+                    value={blogData.status}
+                    onChange={handleStatusChange}
+                />
+                </div>
+              </div>
+              <div className='mt-5'>
+                <p className='mb-2'>Write Your Blog:</p>
+                <Editor 
+                  onEditorChange={(newValue, editor) => {
+                  setValue(newValue)
+                  setText(editor.getContent({format:"text"}))
+                  }}
+                  onInit={(evt, editor) => {
+                  setText(editor.getContent({format: "text"}))
+                  }}
+                  // initialValue='TinyMCE rich text editor'
+                  value={value}
+                  
+                  init={{
+                  plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autoresize autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
+                  // theme: 'modern',
+                  keep_styles: true,
+                  width: '100%',
+                  inline_styles: true,
+                  verify_html: false,
+                  valid_children : '+body[style],-body[div],p[strong|a|#text]'
+                  }}
+                />
+              </div>
+            
             </Tab.Panel>
             <Tab.Panel>
             <Textinput

@@ -132,7 +132,7 @@ function EditPage() {
   return (
     <div>
         <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
-        <Card title="Default Tabs">
+        <Card title="Page Edit">
         <Tab.Group>
           <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
             {buttons.map((item, i) => (
@@ -202,7 +202,9 @@ function EditPage() {
             </div>
             </Tab.Panel>
             <Tab.Panel>
-            <Textinput
+              <div className='flex w-100 justify-items-between gap-10'>
+              <div className='w-2/4'>
+              <Textinput
                 label="Meta Title"
                 id="pn3"
                 placeholder=" Disabled Input"
@@ -217,9 +219,34 @@ function EditPage() {
                 defaultValue={pageData.meta_description}
                 onChange={(e) => setPageData({...pageData, meta_description:e.target.value})}
             />
+            <p className='mt-3'>Property: og:image</p>
+                <Fileinput
+                  name="og_image"
+                  selectedFile={selectedFile}
+                  onChange={handleFileChange}
+                />
+              </div>
+              <div className='w-2/4'>
+                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
+                  Previous Image :
+                </span>
+                {/* <span className="block text-base dark:text-slate-300 text-slate-500 uppercase mb-6 ">
+                  {metaTag.og_image}
+                </span> */}
+                <div className='flex justify-center'>
+                  <Image
+                    src={image2}
+                    alt="Small image with fluid:"
+                    className="rounded-md w-[90%]"
+                  />
+                </div>
+              </div>
+              </div>
+            
               <h5 className='mt-5'>Meta Tags</h5>
             <div className='flex w-100 gap-10'>
-              <div className='w-2/4'>
+
+              <div className='w-1/3'>
                 <Textinput
                   label="Property: title"
                   id="pn3"
@@ -250,7 +277,12 @@ function EditPage() {
                   defaultValue={metaTag.og_title}
                   onChange={(e) => setMetaTag({...metaTag, og_title:e.target.value})}
                 />
-                <Textinput
+                
+                
+                
+              </div>
+              <div className='w-1/3'>
+              <Textinput
                   label="Property: og:url"
                   id="pn3"
                   placeholder="Type Content"
@@ -258,7 +290,7 @@ function EditPage() {
                   defaultValue={metaTag.og_url}
                   onChange={(e) => setMetaTag({...metaTag, og_url:e.target.value})}
                 />
-                <Textarea
+              <Textarea
                   label="Property: og:description"
                   id="pn4"
                   placeholder="Type Content"
@@ -281,27 +313,8 @@ function EditPage() {
                   defaultValue={metaTag.og_type}
                   onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
                 />
-                
               </div>
-              <div className='w-2/4'>
-                
-                <p className='my-3'>Property: og:image</p>
-                <Fileinput
-                  name="og_image"
-                  selectedFile={selectedFile}
-                  onChange={handleFileChange}
-                />
-                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3 mt-5">
-                  Previous Image :
-                </span>
-                <span className="block text-base dark:text-slate-300 text-slate-500 uppercase mb-6 ">
-                  {metaTag.og_image}
-                </span>
-                <Image
-                  src={image2}
-                  alt="Small image with fluid:"
-                  className="rounded-md mb-6"
-                />
+              <div className='w-1/3'>
                 <Textinput
                   label="Property: twitter:card"
                   id="pn3"

@@ -120,7 +120,7 @@ function index() {
                   <thead className="bg-slate-200 dark:bg-slate-700">
                     <tr>
                       {columns.map((column, i) => (
-                        <th key={i} scope="col" className=" table-th ">
+                        <th key={i} scope="col" className="table-th">
                           {column.label}
                         </th>
                       ))}
@@ -129,12 +129,12 @@ function index() {
                   <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                     {data.map((row, i) => (
                       <tr key={i}>
-                        <td className="table-td">{row.title}</td>
-                        <td className="table-td lowercase">{row.slug.toLowerCase()}</td>
-                        <td className="table-td ">{row.published_date}</td>
-                        <td className="table-td ">{row.active ? "Active": "Inactive"}</td>
-                        <td className="table-td ">{row.blog_category}</td>
-                        <td className="table-td ">
+                        <td className="table-td" style={{paddingRight: "0"}}>{row.title}</td>
+                        <td className="table-td lowercase" style={{paddingRight: "0"}}>{row.slug.toLowerCase()}</td>
+                        <td className="table-td " style={{paddingRight: "0"}}>{row.published_date}</td>
+                        <td className="table-td " style={{paddingRight: "0"}}>{row.active ? "Active": "Inactive"}</td>
+                        <td className="table-td " style={{paddingRight: "0"}}>{row.blog_category}</td>
+                        <td className="table-td " style={{paddingRight: "0"}}>
                             <Button
                               text="Preview"
                               className="btn-outline-primary rounded-[999px] py-2 me-2"
