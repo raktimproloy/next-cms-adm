@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import Popup from "@/components/ui/Popup"
 import Modal from "@/components/ui/Modal"
+import Pagination from "@/components/ui/Pagination"
 import { useSelector } from 'react-redux';
 import { getAllBlogs } from '../../utils/getAllBlogs';
 import axios from 'axios';
@@ -12,6 +13,7 @@ import { API_HOST } from '@/utils';
 import { addBlog, addInfo, removeBlog } from '../../store/layout';
 import { Link, useNavigate } from 'react-router-dom';
 import { deletePage } from '@/store/actions/pageAction';
+import { ArraySlice } from '@/utils/ArraySlice';
 
 
 const columns = [
@@ -57,11 +59,18 @@ function index() {
     'Authorization': `Bearer ${cookie._token}`
     }
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(6);
+  const [blogdata, setBlogData] = useState([])
+  
   useEffect(() => {
     if (updateInfo.blogUpdate === "" || updateInfo.blogUpdate === "not-updated") {
       getAllBlogs(dispatch, cookie, removeCookie);
     }
+    setTotalPages(Math.ceil(data.length/10) || 1)
   }, [dispatch, data, updateInfo]);
+
+
 
 
   const handleDelete = () => {
@@ -80,6 +89,20 @@ function index() {
       }
     });
   }
+
+
+
+
+  useEffect(() => {
+    console.log(data)
+    setBlogData(ArraySlice(currentPage, 10, data))
+    
+  }, [data, currentPage])
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // You can add any other logic you need here, such as making an API call to fetch data for the new page
+  };
 
   return (
     <div>
@@ -107,7 +130,7 @@ function index() {
           Do you want to delete this page?
         </div>
       </Modal>
-      <Card title="Pages" noborder>
+      <Card title="Blogs" noborder>
         <div className='text-right mb-3'>
             <Button text="Add Page" className="btn-success py-2" onClick={() => {
               navigate("/blog/add")
@@ -127,12 +150,15 @@ function index() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                    {data.map((row, i) => (
+                    {blogdata.map((row, i) => (
                       <tr key={i}>
                         <td className="table-td" style={{paddingRight: "0"}}>{row.title}</td>
                         <td className="table-td lowercase" style={{paddingRight: "0"}}>{row.slug.toLowerCase()}</td>
                         <td className="table-td " style={{paddingRight: "0"}}>{row.published_date}</td>
-                        <td className="table-td " style={{paddingRight: "0"}}>{row.active ? "Active": "Inactive"}</td>
+                        {/* <td className="table-td bg-danger-500" style={{paddingRight: "0"}}>{row.status}</td> */}
+                        <td className="table-td" style={{paddingRight: "0"}}>
+                        <span class={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row.status === "Active" ? "text-success-500 bg-success-500": "text-warning-500 bg-warning-500"}`}>{row.status}</span>
+                        </td>
                         <td className="table-td " style={{paddingRight: "0"}}>{row.blog_category}</td>
                         <td className="table-td " style={{paddingRight: "0"}}>
                             <Button
@@ -165,6 +191,14 @@ function index() {
                 </table>
               </div>
             </div>
+          </div>
+          <div>
+            <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange}
+                className={"flex justify-center py-5"}
+              />
           </div>
       </Card>
     </div>

@@ -18,6 +18,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Tab } from "@headlessui/react";
 import {Editor} from "@tinymce/tinymce-react"
 import image2 from "@/assets/images/all-img/image-2.png";
+import { CurrentDate } from '@/utils/CurrentDate'
 
 
 const buttons = [
@@ -46,7 +47,7 @@ function AddBlog() {
     title: "",
     slug: "",
     status: "",
-    published_date: "23 March, 2024",
+    published_date: CurrentDate(),
     blog_category: "",
 
   })
