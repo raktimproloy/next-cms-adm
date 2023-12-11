@@ -15,6 +15,7 @@
     "@fullcalendar/list": "^6.1.4",
     "@fullcalendar/react": "^6.1.4",
     "@fullcalendar/timegrid": "^6.1.4",
+    "@grapesjs/react": "^1.0.0",
     "@headlessui/react": "^1.7.4",
     "@hookform/resolvers": "^2.9.10",
     "@iconify/react": "^4.0.0",

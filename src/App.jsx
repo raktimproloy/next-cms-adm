@@ -94,7 +94,7 @@ function App() {
         {/* Editor */}
         
         {
-          isAuthenticated === true ?
+          isAuthenticated === true &&
         <Route path="/*" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
 
@@ -138,7 +138,7 @@ function App() {
           <Route path="*" element={<Navigate to="/404" />} />
 
         </Route> 
-        : <Route path='*' element={<Navigate to='/' replace />} />
+        // : <Route path='*' element={<Navigate to='/' replace />} />
 
         }
 

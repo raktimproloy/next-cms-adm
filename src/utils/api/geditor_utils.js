@@ -1,5 +1,8 @@
 import { API_HOST } from "@/utils";
 
+export const selectorManager = {
+  appendTo: "#styles-container",
+};
 export const styleManager = {
   appendTo: "#styles-container",
   sectors: [
@@ -398,16 +401,13 @@ export const styleManager = {
     },
   ],
 };
-
 export const layerManager = {
   appendTo: "#layers-container",
 };
 export const traitManager = {
   appendTo: "#trait-container",
 };
-export const selectorManager = {
-  appendTo: "#styles-container",
-};
+
 export const panels = {
   defaults: [
     {
@@ -440,18 +440,18 @@ export const panels = {
         {
           id: "undo",
           className: "fa fa-undo",
-          command: "undo",
+          command: "undo"
         },
         {
           id: "redo",
           className: "fa fa-repeat",
           command: "redo",
         },
-        {
-          id: "export",
-          className: "fa fa-download",
-          command: "export",
-        },
+        // {
+        //   id: "export",
+        //   className: "fa fa-download",
+        //   command: "export",
+        // },
         {
           id: "preview",
           className: "fa fa-eye",
@@ -529,9 +529,9 @@ export const addEditorCommand = (editor) => {
     run: (editor) => editor.UndoManager.redo(),
   });
 
-  editor.Commands.add("export", {
-    run: (editor) => editor.runCommand("gjs-export-zip"),
-  });
+  // editor.Commands.add("export", {
+  //   run: (editor) => editor.runCommand("gjs-export-zip"),
+  // });
 
   editor.Commands.add("new-tool-cmd", {
     run: (editor) => console.log("Checking New Toolbar"),

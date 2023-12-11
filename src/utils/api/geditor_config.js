@@ -42,10 +42,10 @@ const geditorConfig = (assets, slug) => {
     blockManager: {
       appendTo: "#blocks",
     },
-    styleManager: styleManager,
-    layerManager: layerManager,
-    traitManager: traitManager,
     selectorManager: selectorManager,
+    traitManager: traitManager,
+    layerManager: layerManager,
+    styleManager: styleManager,
     panels: panels,
     deviceManager: deviceManager,
     assetManager: { assets: assets, upload: false },
@@ -76,7 +76,6 @@ const geditorConfig = (assets, slug) => {
     },
   });
 
-  console.log(editor.getScript)
   addEditorCommand(editor);
   editor.on("run:preview", () => {
     console.log("It will trigger when we click on preview icon");

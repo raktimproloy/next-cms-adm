@@ -1,4 +1,4 @@
-@import "bootstrap/scss/bootstrap";
+// @import "bootstrap/scss/bootstrap";
 
 body {
   margin: 0;
@@ -20,17 +20,17 @@ html {
   top: 0;
   left: 0;
   width: 15%;
-  height: 100vh;
+  height: 105%;
   overflow: scroll;
   overflow-x: hidden;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: #463a3c;
   transition: 0.5s;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.3);
   .logo {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid red;
     text-transform: uppercase;
     font-size: 20px;
     font-weight: 700;
@@ -94,11 +94,11 @@ html {
 
 /* Theming */
 .gjs-one-bg {
-  background-color: #fcf6f5ff;
+  background-color: transparent !important;
 }
 
 .gjs-two-color {
-  color: #990011ff;
+  color: #b9a5a6;
 }
 
 .gjs-three-bg {
@@ -108,11 +108,18 @@ html {
 
 .gjs-four-color,
 .gjs-four-color-h:hover {
-  color: #990011ff;
+  color: #d97aa6;
 }
-
+.nav-item{
+  color: #b9a5a6;
+}
+.gjs-block-category{
+  background-color: #3F3436;
+  font-size: 13px;
+  font-weight: bold;
+}
 .gjs-pn-btn {
-  border: 1px solid #990011ff;
+  // border: 1px solid #990011ff;
 }
 
 // Customize Bootstrap CSS
@@ -134,7 +141,13 @@ html {
     }
   }
 }
-
+.gjs-editor-cont{
+  height: 100% !important;
+}
+.gjs-sm-sector-title{
+  font-size: 13px;
+  font-weight: bold;
+}
 /** Error **/
 .error {
   .bg-body {
@@ -259,4 +272,9 @@ html {
 .grp-handler-cp-wrap input[type="color"] {
   opacity: 0;
   cursor: pointer;
+}
+
+
+.main-container{
+  height: 80vh !important;
 }
