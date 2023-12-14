@@ -36,8 +36,8 @@ yarn-error.log*
 
 # vercel
 .vercel
-
-
+yarn.lock
+package-lock.json
 #others
 rz.txt
 README.txt
