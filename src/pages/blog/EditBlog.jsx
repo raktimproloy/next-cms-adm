@@ -31,6 +31,7 @@ const buttons = [
 ];
 
 function EditBlog() {
+  const tinymceApi = import.meta.env.VITE_TINYMCE_API
   const params = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -217,6 +218,7 @@ useEffect(() => {
             <div className='mt-5'>
                 <p className='mb-2'>Write Your Blog:</p>
                 <Editor 
+                    apiKey={tinymceApi}
                     onEditorChange={(newValue, editor) => {
                     setValue(newValue)
                     setText(editor.getContent({format:"text"}))
@@ -228,7 +230,7 @@ useEffect(() => {
                     value={value}
                     
                     init={{
-                    plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autoresize autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
+                    plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
                     // theme: 'modern',
                     keep_styles: true,
                     width: '100%',

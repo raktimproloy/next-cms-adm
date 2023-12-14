@@ -22,6 +22,7 @@ import { CurrentDate } from '@/utils/CurrentDate'
 import TinyMCE from './TinyMCE'
 
 
+
 const buttons = [
     {
       title: "Blog Details",
@@ -34,6 +35,8 @@ const buttons = [
 ];
 
 function AddBlog() {
+
+  const tinymceApi = import.meta.env.VITE_TINYMCE_API
   const params = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -202,7 +205,7 @@ function AddBlog() {
               <div className='mt-5'>
                 <p className='mb-2'>Write Your Blog:</p>
                 <Editor 
-                  apiKey='0zm0vhbuy4qgjdm7bfwgdj2d7smpmfawf14ee0tmzzj6uuqi'
+                  apiKey={tinymceApi}
                   onEditorChange={(newValue, editor) => {
                   setValue(newValue)
                   setText(editor.getContent({format:"text"}))
