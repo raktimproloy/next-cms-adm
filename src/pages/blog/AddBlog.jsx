@@ -160,6 +160,7 @@ function AddBlog() {
             ))}
           </Tab.List>
           <Tab.Panels>
+
             <Tab.Panel>
               <div className='flex gap-10'>
                 <div className='w-2/4'>
@@ -200,6 +201,7 @@ function AddBlog() {
               <div className='mt-5'>
                 <p className='mb-2'>Write Your Blog:</p>
                 <Editor 
+                  apiKey='0zm0vhbuy4qgjdm7bfwgdj2d7smpmfawf14ee0tmzzj6uuqi'
                   onEditorChange={(newValue, editor) => {
                   setValue(newValue)
                   setText(editor.getContent({format:"text"}))
@@ -211,37 +213,62 @@ function AddBlog() {
                   value={value}
                   
                   init={{
-                  plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autoresize autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
+                  plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
                   // theme: 'modern',
                   keep_styles: true,
                   width: '100%',
                   inline_styles: true,
                   verify_html: false,
-                  valid_children : '+body[style],-body[div],p[strong|a|#text]'
+                  valid_children : '+body[style],-body[div],p[strong|a|#text]',
+                  
                   }}
                 />
               </div>
             
             </Tab.Panel>
+
             <Tab.Panel>
-            <Textinput
-                label="Meta Title"
-                id="pn3"
-                placeholder=" Disabled Input"
-                type="text"
-                defaultValue={metaTag.main_title}
-                onChange={(e) => setMetaTag({...metaTag, main_title:e.target.value})}
-            />
-            <Textarea
-                label="Meta Description"
-                id="pn4"
-                placeholder="Type Meta Description"
-                defaultValue={metaTag.main_description}
-                onChange={(e) => setMetaTag({...metaTag, main_description:e.target.value})}
-            />
-              <h5 className='mt-5'>Meta Tags</h5>
-            <div className='flex w-100 gap-10'>
+            <div className='flex w-100 justify-items-between gap-10'>
               <div className='w-2/4'>
+                <Textinput
+                    label="Meta Title"
+                    id="pn3"
+                    placeholder=" Disabled Input"
+                    type="text"
+                    defaultValue={metaTag.main_title}
+                    onChange={(e) => setMetaTag({...metaTag, main_title:e.target.value})}
+                />
+                <Textarea
+                    label="Meta Description"
+                    id="pn4"
+                    placeholder="Type Meta Description"
+                    defaultValue={metaTag.main_description}
+                    onChange={(e) => setMetaTag({...metaTag, main_description:e.target.value})}
+                />
+                <p className='my-3'>Property: og:image</p>
+                <Fileinput
+                  name="og_image"
+                  selectedFile={selectedFile}
+                  onChange={handleFileChange}
+                />
+              </div>
+              <div className='w-2/4'>
+                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
+                  Previous Image :
+                </span>
+                <div className='flex justify-center'>
+                    <Image
+                      src={image2}
+                      alt="Small image with fluid:"
+                      className="rounded-md w-[90%]"
+                    />
+                  </div>
+              </div>
+            </div>
+
+            <h5 className='mt-5'>Meta Tags</h5>
+            <div className='flex w-100 gap-10'>
+              <div className='w-1/3'>
                 <Textinput
                   label="Property: title"
                   id="pn3"
@@ -272,6 +299,8 @@ function AddBlog() {
                   defaultValue={metaTag.og_title}
                   onChange={(e) => setMetaTag({...metaTag, og_title:e.target.value})}
                 />
+              </div>
+              <div className='w-1/3'>
                 <Textinput
                   label="Property: og:url"
                   id="pn3"
@@ -303,27 +332,10 @@ function AddBlog() {
                   defaultValue={metaTag.og_type}
                   onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
                 />
-                
               </div>
-              <div className='w-2/4'>
                 
-                <p className='my-3'>Property: og:image</p>
-                <Fileinput
-                  name="og_image"
-                  selectedFile={selectedFile}
-                  onChange={handleFileChange}
-                />
-                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3 mt-5">
-                  Previous Image :
-                </span>
-                <span className="block text-base dark:text-slate-300 text-slate-500 uppercase mb-6 ">
-                  {metaTag.og_image}
-                </span>
-                <Image
-                  src={image2}
-                  alt="Small image with fluid:"
-                  className="rounded-md mb-6"
-                />
+              
+              <div className='w-1/3'>
                 <Textinput
                   label="Property: twitter:card"
                   id="pn3"
@@ -359,6 +371,7 @@ function AddBlog() {
               </div>
             </div>
             </Tab.Panel>
+
           </Tab.Panels>
         </Tab.Group>
         <div className='flex justify-end items-center mt-5'>

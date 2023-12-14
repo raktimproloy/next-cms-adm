@@ -16,21 +16,18 @@ import { addInfo } from '../../store/layout'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Tab } from "@headlessui/react";
 import {Editor} from "@tinymce/tinymce-react"
+import Image from "@/components/ui/Image"
 import image2 from "@/assets/images/all-img/image-2.png";
 
 const buttons = [
-    {
-      title: "Blog Info",
-      icon: "heroicons-outline:home",
-    },
-    {
-      title: "Blog Details",
-      icon: "heroicons-outline:user",
-    },
-    {
-      title: "Blog Metatag",
-      icon: "heroicons-outline:user",
-    }
+  {
+    title: "Blog Details",
+    icon: "heroicons-outline:home",
+  },
+  {
+    title: "Blog Metatag",
+    icon: "heroicons-outline:user",
+  }
 ];
 
 function EditBlog() {
@@ -178,80 +175,112 @@ useEffect(() => {
               </Tab>
             ))}
           </Tab.List>
+
           <Tab.Panels>
             <Tab.Panel>
-            <Textinput
-                label="Blog Title"
-                id="pn"
-                type="text"
-                placeholder="Type Your Blog Title"
-                defaultValue={blogData.title}
-                onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
-            />
-            <Textinput
-                label="Blog Slug"
-                id="pn2"
-                type="text"
-                placeholder="Type Your Blog Slug"
-                defaultValue={blogData.slug}
-                onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
-            />
-            <Select
-                options={["Management", "Stories", "Development", "Updates"]}
-                label="Blog Category"
-                value={blogData.blog_category}
-                onChange={handleOptionChange}
-            />
-            <Keyword tags={blogTag} setTags={setBlogTag} />
-            <Select
-                options={["Active", "Draft"]}
-                label="Blog Status"
-                value={blogData.status}
-                onChange={handleStatusChange}
-            />
+            <div className='flex gap-10'>
+                <div className='w-2/4'>
+                  <Textinput
+                      label="Blog Title"
+                      id="pn"
+                      type="text"
+                      placeholder="Type Your Blog Title"
+                      defaultValue={blogData.title}
+                      onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
+                  />
+                  <Textinput
+                      label="Blog Slug"
+                      id="pn2"
+                      type="text"
+                      placeholder="Type Your Blog Slug"
+                      defaultValue={blogData.slug}
+                      onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
+                  />
+                  <Select
+                      options={["Management", "Stories", "Development", "Updates"]}
+                      label="Blog Category"
+                      value={blogData.blog_category}
+                      onChange={handleOptionChange}
+                  />
+                  
+                </div>
+                <div className='w-2/4'>
+                  <Select
+                      options={["Active", "Draft"]}
+                      label="Blog Status"
+                      value={blogData.status}
+                      onChange={handleStatusChange}
+                  />
+                  <Keyword tags={blogTag} setTags={setBlogTag} />
+                </div>
+            </div>
+            <div className='mt-5'>
+                <p className='mb-2'>Write Your Blog:</p>
+                <Editor 
+                    onEditorChange={(newValue, editor) => {
+                    setValue(newValue)
+                    setText(editor.getContent({format:"text"}))
+                    }}
+                    onInit={(evt, editor) => {
+                    setText(editor.getContent({format: "text"}))
+                    }}
+                    // initialValue='TinyMCE rich text editor'
+                    value={value}
+                    
+                    init={{
+                    plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autoresize autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
+                    // theme: 'modern',
+                    keep_styles: true,
+                    width: '100%',
+                    inline_styles: true,
+                    verify_html: false,
+                    valid_children : '+body[style],-body[div],p[strong|a|#text]'
+                    }}
+                />
+            </div>
             </Tab.Panel>
+
             <Tab.Panel>
-            <Editor 
-                onEditorChange={(newValue, editor) => {
-                setValue(newValue)
-                setText(editor.getContent({format:"text"}))
-                }}
-                onInit={(evt, editor) => {
-                setText(editor.getContent({format: "text"}))
-                }}
-                // initialValue='TinyMCE rich text editor'
-                value={value}
-                
-                init={{
-                plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autoresize autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
-                // theme: 'modern',
-                keep_styles: true,
-                width: '100%',
-                inline_styles: true,
-                verify_html: false,
-                valid_children : '+body[style],-body[div],p[strong|a|#text]'
-                }}
-            />
-            </Tab.Panel>
-            <Tab.Panel>
-            <Textinput
-                label="Meta Title"
-                id="pn3"
-                placeholder=" Disabled Input"
-                type="text"
-                defaultValue={metaTag.main_title}
-                onChange={(e) => setMetaTag({...metaTag, title:e.target.value})}
-            />
-            <Textarea
-                label="Meta Description"
-                id="pn4"
-                placeholder="Type Meta Description"
-                defaultValue={metaTag.main_description}
-                onChange={(e) => setMetaTag({...metaTag, main_description:e.target.value})}
-            />
-              <h5 className='mt-5'>Meta Tags</h5>
-            <div className='flex w-100 gap-10'>
+            <div className='flex w-100 justify-items-between gap-10'>
               <div className='w-2/4'>
+                <Textinput
+                    label="Meta Title"
+                    id="pn3"
+                    placeholder=" Disabled Input"
+                    type="text"
+                    defaultValue={metaTag.main_title}
+                    onChange={(e) => setMetaTag({...metaTag, title:e.target.value})}
+                />
+                <Textarea
+                    label="Meta Description"
+                    id="pn4"
+                    placeholder="Type Meta Description"
+                    defaultValue={metaTag.main_description}
+                    onChange={(e) => setMetaTag({...metaTag, main_description:e.target.value})}
+                />
+                <p className='my-3'>Property: og:image</p>
+                <Fileinput
+                  name="og_image"
+                  selectedFile={selectedFile}
+                  onChange={handleFileChange}
+                />
+              </div>
+              <div className='w-2/4'>
+                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
+                  Previous Image :
+                </span>
+                <div className='flex justify-center'>
+                  <Image
+                    src={`/public/upload/${metaTag.og_image}`}
+                    alt="Small image with fluid:"
+                    className="rounded-md w-[90%] h-[250px]"
+                  />
+                </div>
+              </div>
+            </div>
+            <h5 className='mt-5'>Meta Tags</h5>
+            <div className='flex w-100 gap-10'>
+              <div className='w-1/3'>
                 <Textinput
                   label="Property: title"
                   id="pn3"
@@ -282,6 +311,8 @@ useEffect(() => {
                   defaultValue={metaTag.og_title}
                   onChange={(e) => setMetaTag({...metaTag, og_title:e.target.value})}
                 />
+              </div>
+              <div className='w-1/3'>
                 <Textinput
                   label="Property: og:url"
                   id="pn3"
@@ -313,27 +344,10 @@ useEffect(() => {
                   defaultValue={metaTag.og_type}
                   onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
                 />
-                
               </div>
-              <div className='w-2/4'>
                 
-                {/* <p className='my-3'>Property: og:image</p>
-                <Fileinput
-                  name="og_image"
-                  selectedFile={selectedFile}
-                  onChange={handleFileChange}
-                />
-                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3 mt-5">
-                  Previous Image :
-                </span>
-                <span className="block text-base dark:text-slate-300 text-slate-500 uppercase mb-6 ">
-                  {metaTag.og_image}
-                </span>
-                <Image
-                  src={image2}
-                  alt="Small image with fluid:"
-                  className="rounded-md mb-6"
-                /> */}
+              
+              <div className='w-1/3'>
                 <Textinput
                   label="Property: twitter:card"
                   id="pn3"
@@ -370,6 +384,7 @@ useEffect(() => {
             </div>
             </Tab.Panel>
           </Tab.Panels>
+
         </Tab.Group>
         <div className='flex justify-end items-center mt-5'>
           <Button text="Save" className="btn-success py-2" onClick={() => {

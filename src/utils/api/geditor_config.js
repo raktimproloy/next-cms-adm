@@ -75,7 +75,6 @@ const geditorConfig = (assets, slug) => {
       chartLibComponent: {},
     },
   });
-
   addEditorCommand(editor);
   editor.on("run:preview", () => {
     console.log("It will trigger when we click on preview icon");

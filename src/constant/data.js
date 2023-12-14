@@ -14,11 +14,11 @@ export const menuItems = [
     icon: "heroicons-outline:document",
     link: "blog",
   },
-  {
-    title: "Service",
-    icon: "carbon:vehicle-services",
-    link: "service",
-  },
+  // {
+  //   title: "Service",
+  //   icon: "carbon:vehicle-services",
+  //   link: "service",
+  // },
   // {
   //   title: "Pages",
   //   icon: "streamline:interface-content-book-page-pages-content-books-book-open",
@@ -77,9 +77,9 @@ export const menuItems = [
     link: "email",
   },
   {
-    title: "Content",
+    title: "Settings",
     icon: "fluent:content-view-32-regular",
-    link: "content",
+    link: "settings",
     isOpen: true,
     isHide: true,
     child: [
@@ -88,8 +88,8 @@ export const menuItems = [
         childlink: "contact",
       },
       {
-        childtitle: "Metadata",
-        childlink: "metadata",
+        childtitle: "Site Info",
+        childlink: "site-info",
       },
       {
         childtitle: "Socal Media",
@@ -98,10 +98,6 @@ export const menuItems = [
       {
         childtitle: "Logo",
         childlink: "logo",
-      },
-      {
-        childtitle: "Hero Section",
-        childlink: "hero-section",
       }
     ],
   },

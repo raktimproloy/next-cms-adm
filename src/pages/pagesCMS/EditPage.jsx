@@ -201,46 +201,44 @@ function EditPage() {
                 />
             </div>
             </Tab.Panel>
+
             <Tab.Panel>
               <div className='flex w-100 justify-items-between gap-10'>
-              <div className='w-2/4'>
-              <Textinput
-                label="Meta Title"
-                id="pn3"
-                placeholder=" Disabled Input"
-                type="text"
-                defaultValue={pageData.meta_title}
-                onChange={(e) => setPageData({...pageData, meta_title:e.target.value})}
-            />
-            <Textarea
-                label="Meta Description"
-                id="pn4"
-                placeholder="Type Meta Description"
-                defaultValue={pageData.meta_description}
-                onChange={(e) => setPageData({...pageData, meta_description:e.target.value})}
-            />
-            <p className='mt-3'>Property: og:image</p>
-                <Fileinput
-                  name="og_image"
-                  selectedFile={selectedFile}
-                  onChange={handleFileChange}
+                <div className='w-2/4'>
+                <Textinput
+                  label="Meta Title"
+                  id="pn3"
+                  placeholder=" Disabled Input"
+                  type="text"
+                  defaultValue={pageData.meta_title}
+                  onChange={(e) => setPageData({...pageData, meta_title:e.target.value})}
                 />
-              </div>
-              <div className='w-2/4'>
-                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
-                  Previous Image :
-                </span>
-                {/* <span className="block text-base dark:text-slate-300 text-slate-500 uppercase mb-6 ">
-                  {metaTag.og_image}
-                </span> */}
-                <div className='flex justify-center'>
-                  <Image
-                    src={image2}
-                    alt="Small image with fluid:"
-                    className="rounded-md w-[90%]"
+                <Textarea
+                    label="Meta Description"
+                    id="pn4"
+                    placeholder="Type Meta Description"
+                    defaultValue={pageData.meta_description}
+                    onChange={(e) => setPageData({...pageData, meta_description:e.target.value})}
+                />
+                <p className='mt-3'>Property: og:image</p>
+                  <Fileinput
+                    name="og_image"
+                    selectedFile={selectedFile}
+                    onChange={handleFileChange}
                   />
                 </div>
-              </div>
+                <div className='w-2/4'>
+                  <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
+                    Previous Image :
+                  </span>
+                  <div className='flex justify-center'>
+                    <Image
+                      src={image2}
+                      alt="Small image with fluid:"
+                      className="rounded-md w-[90%]"
+                    />
+                  </div>
+                </div>
               </div>
             
               <h5 className='mt-5'>Meta Tags</h5>
@@ -277,9 +275,6 @@ function EditPage() {
                   defaultValue={metaTag.og_title}
                   onChange={(e) => setMetaTag({...metaTag, og_title:e.target.value})}
                 />
-                
-                
-                
               </div>
               <div className='w-1/3'>
               <Textinput

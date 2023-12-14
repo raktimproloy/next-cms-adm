@@ -7,32 +7,6 @@ export const styleManager = {
   appendTo: "#styles-container",
   sectors: [
     {
-      name: "General",
-      buildProps: [
-        "float",
-        "display",
-        "position",
-        "top",
-        "right",
-        "left",
-        "bottom",
-      ],
-      properties: [
-        {
-          name: "Alignment",
-          property: "float",
-          type: "radio",
-          defaults: "none",
-          list: [
-            { value: "none", className: "fa fa-times" },
-            { value: "left", className: "fa fa-align-left" },
-            { value: "right", className: "fa fa-align-right" },
-          ],
-        },
-        { property: "position", type: "select" },
-      ],
-    },
-    {
       name: "Dimension",
       open: false,
       buildProps: [
@@ -74,6 +48,33 @@ export const styleManager = {
         },
       ],
     },
+    {
+      name: "General",
+      buildProps: [
+        "float",
+        "display",
+        "position",
+        "top",
+        "right",
+        "left",
+        "bottom",
+      ],
+      properties: [
+        {
+          name: "Alignment",
+          property: "float",
+          type: "radio",
+          defaults: "none",
+          list: [
+            { value: "none", className: "fa fa-times" },
+            { value: "left", className: "fa fa-align-left" },
+            { value: "right", className: "fa fa-align-right" },
+          ],
+        },
+        { property: "position", type: "select" },
+      ],
+    },
+    
     {
       name: "Typography",
       open: false,
@@ -429,13 +430,24 @@ export const panels = {
       buttons: [
         {
           id: "saveDb",
-          className: "fa fa-paper-plane btn-save",
-          command: "saveDb",
+          // active: true, // active by default
+          className: "btn-toggle-borders",
+          label: `
+            <div class="bg-red-500">
+              <i class="fa fa-paper-plane btn-save"></i>
+            </div>
+          `,
+          command: "saveDb",// Built-in command
         },
+        // {
+        //   id: "saveDb",
+        //   className: "fa fa-paper-plane btn-save",
+        //   command: "save",
+        // },
         {
-          id: "cmd-clear",
+          id: "open-code",
           className: "fa fa-trash",
-          command: "cmd-clear",
+          command: "open-code",
         },
         {
           id: "undo",
@@ -506,7 +518,9 @@ export const addEditorCommand = (editor) => {
   // Save Button
   editor.Commands.add("saveDb", {
     run: (editor, sender) => {
+      // alert("Hello")
       sender && sender.set("active");
+      console.log(editor)
       editor.store();
     },
   });
