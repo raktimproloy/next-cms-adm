@@ -19,6 +19,7 @@ import { Tab } from "@headlessui/react";
 import {Editor} from "@tinymce/tinymce-react"
 import image2 from "@/assets/images/all-img/image-2.png";
 import { CurrentDate } from '@/utils/CurrentDate'
+import TinyMCE from './TinyMCE'
 
 
 const buttons = [
@@ -223,6 +224,7 @@ function AddBlog() {
                   
                   }}
                 />
+                {/* <TinyMCE/> */}
               </div>
             
             </Tab.Panel>
@@ -333,8 +335,6 @@ function AddBlog() {
                   onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
                 />
               </div>
-                
-              
               <div className='w-1/3'>
                 <Textinput
                   label="Property: twitter:card"
