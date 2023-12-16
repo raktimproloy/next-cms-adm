@@ -25,7 +25,7 @@ html {
   overflow-x: hidden;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  background-color: #463a3c;
+  background-color: rgb(30 41 59);
   transition: 0.5s;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.3);
@@ -83,6 +83,7 @@ html {
     height: 100%;
 
     .gjs-blocks-c {
+      background-color: #2B3544;
       align-items: center;
       justify-content: center;
     }
@@ -93,8 +94,38 @@ html {
 }
 
 /* Theming */
+.gjs-field-integer input::placeholder {
+  color: white;
+}
+.gjs-field-integer input{
+  color: white;
+}
+.gjs-clm-header-label{
+  color: white;
+}
+.gjs-clm-sels-info{
+  color: white;
+}
+.gjs-sm-input-holder select{
+  color: white;
+}
+.gjs-radio-item-label{
+  color: white;
+}
+.gjs-input-unit{
+  color: white !important;
+}
+.gjs-sm-label{
+  color: white;
+}
+.gjs-title{
+  font-size: 13px !important;
+  font-weight: bold !important;
+  color:  #93D7D7;
+}
 .gjs-one-bg {
-  background-color: transparent !important;
+  color: #DEDFEF;
+  background-color: #233047;
 }
 
 .gjs-two-color {
@@ -102,24 +133,47 @@ html {
 }
 
 .gjs-three-bg {
-  background-color: #990011ff;
+  background-color: #233047;
   color: #fcf6f5ff;
 }
-
+.gjs-label{
+  color: white;
+}
+.gjs-clm-tags-btn{
+  color: white;
+}
+.gjs-field-text input{
+  color: white;
+}
+.gjs-field-class_select select{
+  color: black;
+}
+.gjs-field-text input::placeholder{
+  color: white;
+}
 .gjs-four-color,
 .gjs-four-color-h:hover {
   color: #d97aa6;
 }
 .nav-item{
-  color: #b9a5a6;
+  color: #DEDFEF;
 }
 .gjs-block-category{
-  background-color: #3F3436;
+  background-color: #233047;
   font-size: 13px;
   font-weight: bold;
 }
 .gjs-pn-btn {
-  // border: 1px solid #990011ff;
+  color: #DEDFEF;
+}
+.panel__editor{
+  background-color: transparent;
+}
+.panel__devices{
+  background-color: transparent;
+}
+.panel__basic-actions{
+  background-color: transparent;
 }
 
 // Customize Bootstrap CSS
@@ -145,6 +199,7 @@ html {
   height: 100% !important;
 }
 .gjs-sm-sector-title{
+  color: #93D7D7;
   font-size: 13px;
   font-weight: bold;
 }

@@ -74,6 +74,7 @@
     "serve": "^14.2.1",
     "simplebar-react": "^2.4.3",
     "sort-by": "^1.2.0",
+    "sweetalert": "^2.1.2",
     "swiper": "^8.4.5",
     "uuid": "^9.0.1",
     "uuidv4": "^6.2.13",

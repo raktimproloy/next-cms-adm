@@ -5,7 +5,7 @@ function TopNav() {
     toggleSidebar(false);
   };
   return (
-    <nav className="navbar container" style={{background: "#463a3c", display: "flex", justifyContent: "space-between", maxWidth: "100%"}}>
+    <nav className="navbar container" style={{background: "rgb(30 41 59)", display: "flex", justifyContent: "space-between", maxWidth: "100%"}}>
       <div className="panel__devices"></div>
       <div className="panel__editor"></div>
       <div className="panel__basic-actions"></div>

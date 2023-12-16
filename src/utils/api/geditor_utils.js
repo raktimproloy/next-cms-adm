@@ -1,4 +1,5 @@
 import { API_HOST } from "@/utils";
+import swal from "sweetalert";
 
 export const selectorManager = {
   appendTo: "#styles-container",
@@ -433,17 +434,13 @@ export const panels = {
           // active: true, // active by default
           className: "btn-toggle-borders",
           label: `
-            <div class="bg-red-500">
-              <i class="fa fa-paper-plane btn-save"></i>
+            <div class="bg-red-500 flex px-4 py-1 rounded-full border-2 shadow-xl">
+              <svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M21,20V8.414a1,1,0,0,0-.293-.707L16.293,3.293A1,1,0,0,0,15.586,3H4A1,1,0,0,0,3,4V20a1,1,0,0,0,1,1H20A1,1,0,0,0,21,20ZM9,8h4a1,1,0,0,1,0,2H9A1,1,0,0,1,9,8Zm7,11H8V15a1,1,0,0,1,1-1h6a1,1,0,0,1,1,1Z"></path></g></svg>
+              <p class="ml-1">save</p>
             </div>
           `,
           command: "saveDb",// Built-in command
         },
-        // {
-        //   id: "saveDb",
-        //   className: "fa fa-paper-plane btn-save",
-        //   command: "save",
-        // },
         {
           id: "open-code",
           className: "fa fa-trash",
@@ -518,10 +515,10 @@ export const addEditorCommand = (editor) => {
   // Save Button
   editor.Commands.add("saveDb", {
     run: (editor, sender) => {
-      // alert("Hello")
       sender && sender.set("active");
       console.log(editor)
       editor.store();
+      swal("Nice", "Your design was saved", "success")
     },
   });
 
