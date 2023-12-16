@@ -69,7 +69,19 @@ export const menuItems = [
   {
     title: "Menu",
     icon: "gg:menu-round",
-    link: "menu",
+    // link: "menu",
+    isOpen: true,
+    isHide: true,
+    child: [
+      {
+        childtitle: "Menu Manager",
+        childlink: "menu/menu-manager",
+      },
+      {
+        childtitle: "Menu Type",
+        childlink: "menu/menu-type",
+      }
+    ],
   },
   {
     title: "Email",

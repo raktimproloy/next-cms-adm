@@ -24,16 +24,24 @@ const columns = [
       field: "slug",
     },
     {
+      label: "Menu Type",
+      field: "menu-type",
+    },
+    {
       label: "Status",
       field: "status",
     },
-    {
-      label: "Publish",
-      field: "publish",
-    },
+    // {
+    //   label: "Publish",
+    //   field: "publish",
+    // },
     {
       label: "Category",
       field: "category",
+    },
+    {
+      label: "Order",
+      field: "order",
     },
     {
       label: "Manage",
@@ -130,26 +138,30 @@ function index() {
                       <tr key={i}>
                         <td className="table-td">{row.title}</td>
                         <td className="table-td lowercase">{row.slug.toLowerCase()}</td>
-                        <td className="table-td ">{row.active ? "Active": "Inactive"}</td>
-                        <td className="table-td ">{row.published_date}</td>
+                        <td className="table-td ">{row.menu_type}</td>
+                        {/* <td className="table-td ">{row.active ? "Active": "Inactive"}</td> */}
+                        <td className="table-td" style={{paddingRight: "0"}}>
+                        <span class={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row.active ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500"}`}>{row.active ? "Active": "Inactive"}</span>
+                        </td>
+                        {/* <td className="table-td ">{row.published_date}</td> */}
                         <td className="table-td ">{row.template_category}</td>
+                        <td className="table-td ">{row.order}</td>
                         <td className="table-td ">
-                            <Button
-                              text="Edit"
-                              className="btn-outline-primary rounded-[999px] py-2 me-2"
-                              onClick={() => 
-                                navigate(`/pages/edit/${row.slug}`)
-                              }
-                            />
-                            <Button
-                              text="Delete"
-                              className="btn-outline-primary rounded-[999px] py-2"
-                              onClick={() => {
-                                setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
-                                
-                              }}
-                            />
-                            
+                          <Button
+                            text="Edit"
+                            className="btn-outline-primary rounded-[999px] py-2 me-2"
+                            onClick={() => 
+                              navigate(`/pages/edit/${row.slug}`)
+                            }
+                          />
+                          <Button
+                            text="Delete"
+                            className="btn-outline-primary rounded-[999px] py-2"
+                            onClick={() => {
+                              setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
+                              
+                            }}
+                          />
                         </td>
                       </tr>
                     ))}

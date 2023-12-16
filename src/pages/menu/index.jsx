@@ -9,16 +9,8 @@ const columns = [
       field: "title",
     },
     {
-      label: "Link",
-      field: "link",
-    },
-    {
       label: "Status",
       field: "status",
-    },
-    {
-      label: "Order",
-      field: "order",
     },
     {
       label: "Manage",
@@ -47,9 +39,7 @@ function MenuPage() {
                   {rows.map((row, i) => (
                     <tr key={i}>
                       <td className="table-td">Services</td>
-                      <td className="table-td">/service</td>
                       <td className="table-td ">Active</td>
-                      <td className="table-td ">0</td>
                       <td className="table-td ">
                           <Button
                             text="Edit"

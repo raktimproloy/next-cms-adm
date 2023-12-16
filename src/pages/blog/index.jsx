@@ -90,9 +90,6 @@ function index() {
     });
   }
 
-
-
-
   useEffect(() => {
     console.log(data)
     setBlogData(ArraySlice(currentPage, 10, data))

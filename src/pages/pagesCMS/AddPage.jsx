@@ -20,6 +20,8 @@ function AddPage() {
     title: "",
     slug: "",
     active: false,
+    order: "",
+    menu_type: "",
     published_date: "23 March, 2024",
     template_category: "Predesign",
     template: "",
@@ -70,6 +72,11 @@ function AddPage() {
         ...pageData, template_category:e.target.value
     })
   }
+  function handleMenuChange(e) {
+    setPageData({
+        ...pageData, menu_type:(e.target.value).toLowerCase().replace(" ", "_")
+    })
+  }
 
   return (
     <div>
@@ -103,6 +110,18 @@ function AddPage() {
             type="text"
             placeholder="Type Your Template File Name"
             onChange={(e) => setPageData({...pageData, template:e.target.value})}
+          />
+          <Textinput
+            label="Page Order"
+            id="pn2"
+            type="number"
+            placeholder="Type Your Template File Name"
+            onChange={(e) => setPageData({...pageData, order:e.target.value})}
+          />
+          <Select
+            options={["Top Menu", "Side Menu", "Footer Menu"]}
+            label="Menu Type"
+            onChange={handleMenuChange}
           />
           <div>
             <label htmlFor="" className='pb-3'>Page Active</label>

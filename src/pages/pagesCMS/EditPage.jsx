@@ -36,6 +36,8 @@ function EditPage() {
     title: "",
     slug: "",
     active: false,
+    order: "",
+    menu_type: "",
     published_date: "23 March, 2024",
     template_category: "Predesign",
     template: "",
@@ -91,6 +93,8 @@ function EditPage() {
     formData.append("title", pageData.title)
     formData.append("slug", pageData.slug)
     formData.append("active", pageData.active)
+    formData.append("order", pageData.order)
+    formData.append("menu_type", pageData.menu_type)
     formData.append("published_date", pageData.published_date)
     formData.append("template_category", pageData.template_category)
     formData.append("template", pageData.template)
@@ -128,6 +132,12 @@ function EditPage() {
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
+
+  function handleMenuChange(e) {
+    setPageData({
+        ...pageData, menu_type:(e.target.value).toLowerCase().replace(" ", "_")
+    })
+  }
 
   return (
     <div>
@@ -183,13 +193,27 @@ function EditPage() {
                 onChange={(e) => setPageData({...pageData, slug:e.target.value})}
             />
             <Textinput
-                label="Predesign Page"
-                id="pn2"
-                type="text"
-                readonly={pageData.template_category.toLowerCase() == "predesign" ? false : true}
-                placeholder="Type Your Page Slug"
-                defaultValue={pageData.template}
-                onChange={(e) => setPageData({...pageData, template:e.target.value})}
+              label="Predesign Page"
+              id="pn2"
+              type="text"
+              readonly={pageData.template_category.toLowerCase() == "predesign" ? false : true}
+              placeholder="Type Your Page Slug"
+              defaultValue={pageData.template}
+              onChange={(e) => setPageData({...pageData, template:e.target.value})}
+            />
+            <Textinput
+              label="Page Order"
+              id="pn2"
+              type="number"
+              placeholder="Type Your Template File Name"
+              defaultValue={pageData.order}
+              onChange={(e) => setPageData({...pageData, order:e.target.value})}
+            />
+            <Select
+              options={["Top Menu", "Side Menu", "Footer Menu"]}
+              label="Menu Type"
+              defaultValue={pageData.menu_type}
+              onChange={handleMenuChange}
             />
             <div>
                 <label htmlFor="" className='pb-3'>Page Active</label>
