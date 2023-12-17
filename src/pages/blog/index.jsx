@@ -154,7 +154,7 @@ function index() {
                         <td className="table-td " style={{paddingRight: "0"}}>{row.published_date}</td>
                         {/* <td className="table-td bg-danger-500" style={{paddingRight: "0"}}>{row.status}</td> */}
                         <td className="table-td" style={{paddingRight: "0"}}>
-                        <span class={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row.status === "Active" ? "text-success-500 bg-success-500": "text-warning-500 bg-warning-500"}`}>{row.status}</span>
+                        <span className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row.status === "Active" ? "text-success-500 bg-success-500": "text-warning-500 bg-warning-500"}`}>{row.status}</span>
                         </td>
                         <td className="table-td " style={{paddingRight: "0"}}>{row.blog_category}</td>
                         <td className="table-td " style={{paddingRight: "0"}}>

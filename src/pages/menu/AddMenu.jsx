@@ -15,18 +15,13 @@ import { useNavigate } from 'react-router-dom'
 import { createPage } from "@/store/actions/pageAction";
 
 
-function AddPage() {
-  const [pageData, setPageData] = useState({
+function AddMenu() {
+  const [menuData, setMenuData] = useState({
     title: "",
-    slug: "",
-    active: false,
-    order: "",
-    menu_type: "top-menu",
-    published_date: "23 March, 2024",
-    template_category: "Predesign",
+    alias: "",
+    status: false,
     template: "",
-    meta_title: "",
-    meta_description: ""
+    date: "17 December, 2023",
   })
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -39,20 +34,15 @@ function AddPage() {
   }
   const saveHandler = () => {
     setShowLoading(true)
-    axios.post(`${API_HOST}page/add`, pageData, {
+    axios.post(`${API_HOST}menu/add`, menuData, {
       headers: headers
     })
     .then((res) => {
-      dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+      dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
       setShowLoading(false)
-      createPage(pageData.title)(dispatch);
       setTimeout(() => {
-        if(pageData.template_category === "Predesign"){
-          navigate("/pages")
-        }else{
-          navigate(`/pages/editor/${pageData.slug}`)
-        }
-      }, 1000);
+        navigate("/menu/menu-type")
+      }, 500);
     })
     .catch((err) => {
       setShowLoading(false)
@@ -62,21 +52,12 @@ function AddPage() {
     });
   }
 
-  useEffect(() => {
-
-  }, [])
-
   // Selection Handler
-  function handleOptionChange(e) {
-    setPageData({
-        ...pageData, template_category:e.target.value
-    })
-  }
-  function handleMenuChange(e) {
-    setPageData({
-        ...pageData, menu_type:(e.target.value).toLowerCase().replace(" ", "-")
-    })
-  }
+  // function handleOptionChange(e) {
+  //   setPageData({
+  //       ...pageData, template_category:e.target.value
+  //   })
+  // }
 
   return (
     <div>
@@ -84,52 +65,39 @@ function AddPage() {
         <Card title="Add Page">
         <div className="space-y-3">
           <Textinput
-            label="Page Title"
+            label="Menu Title"
             id="pn"
             type="text"
             placeholder="Type Your Page Title"
-            onChange={(e) => setPageData({...pageData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
+            onChange={(e) => setMenuData({...menuData, title:e.target.value, alias: e.target.value.replace(/ /g, "-").toLowerCase()})}
           />
-          <Select
+          {/* <Select
             options={["Predesign", "Grapesjs"]}
             label="Page Category"
             onChange={handleOptionChange}
-          />
+          /> */}
           <Textinput
-            label="Page Slug"
+            label="Menu Alias"
             id="pn2"
             type="text"
             placeholder="Type Your Page Slug"
-            defaultValue={pageData.slug}
-            onChange={(e) => setPageData({...pageData, slug:e.target.value})}
+            defaultValue={menuData.alias}
+            onChange={(e) => setMenuData({...menuData, alias:e.target.value})}
           />
           <Textinput
-            label="Default Template"
+            label="Template"
             id="pn2"
-            readonly={pageData.template_category.toLowerCase() == "predesign" ? false : true}
             type="text"
             placeholder="Type Your Template File Name"
-            onChange={(e) => setPageData({...pageData, template:e.target.value})}
-          />
-          <Textinput
-            label="Page Order"
-            id="pn2"
-            type="number"
-            placeholder="Type Your Template File Name"
-            onChange={(e) => setPageData({...pageData, order:e.target.value})}
-          />
-          <Select
-            options={["Top Menu", "Side Menu", "Footer Menu"]}
-            label="Menu Type"
-            onChange={handleMenuChange}
+            onChange={(e) => setMenuData({...menuData, template:e.target.value})}
           />
           <div>
-            <label htmlFor="" className='pb-3'>Page Active</label>
+            <label htmlFor="" className='pb-3'>Menu Status</label>
             <Switch
               label="Page Active Status"
               activeClass="bg-danger-500"
-              value={pageData.active}
-              onChange={() => setPageData({...pageData, active: !pageData.active})}
+              value={menuData.status}
+              onChange={() => setMenuData({...menuData, status: !menuData.status})}
             />
           </div>
         </div>
@@ -143,4 +111,4 @@ function AddPage() {
   )
 }
 
-export default AddPage
+export default AddMenu

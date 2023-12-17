@@ -1,9 +1,218 @@
-import React from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import { useCookies } from 'react-cookie';
+import { useDispatch } from 'react-redux';
+import Popup from "@/components/ui/Popup"
+import Select from "@/components/ui/Select"
+import Modal from "@/components/ui/Modal"
+import { useSelector } from 'react-redux';
+import { getAllPages } from '../../utils/getAllPages';
+import axios from 'axios';
+import { API_HOST } from '@/utils';
+import { addInfo } from '../../store/layout';
+import { Link, useNavigate } from 'react-router-dom';
+import { deletePage } from '@/store/actions/pageAction';
+
+
+const columns = [
+    {
+      label: "Title",
+      field: "title",
+    },
+    {
+      label: "Slug",
+      field: "slug",
+    },
+    {
+      label: "Menu Type",
+      field: "menu-type",
+    },
+    {
+      label: "Status",
+      field: "status",
+    },
+    // {
+    //   label: "Publish",
+    //   field: "publish",
+    // },
+    // {
+    //   label: "Category",
+    //   field: "category",
+    // },
+    {
+      label: "Order",
+      field: "order",
+    },
+    {
+      label: "Manage",
+      field: "manage",
+    },
+];
+
+const furits = [
+  { value: "top-menu", label: "Top Menu" },
+  { value: "side-menu", label: "Side Menu" },
+  { value: "footer-menu", label: "Footer Menu" },
+  { value: "main-menu", label: "Main Menu" },
+];
+
+const styles = {
+  option: (provided, state) => ({
+    ...provided,
+    fontSize: "14px",
+  }),
+};
 
 function MenuManager() {
+  const navigate = useNavigate()
+  const [selectionValue, setSelectionValue] = useState("top-menu")
+  const [deleteInfo, setDeleteInfo] = useState({
+    showDeleteModal: false,
+    slug: ""
+  })
+  const [menuData, setMenuData] = useState([])
+  const data = useSelector((state) => state.pages);
+  const updateInfo = useSelector((state) => state.update);
+  const dispatch = useDispatch()
+
+  // Cookies
+  const [cookie, removeCookie] = useCookies()
+  const headers = {
+    'Authorization': `Bearer ${cookie._token}`
+    }
+
+  useEffect(() => {
+    if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
+      getAllPages(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, data, updateInfo]);
+
+  useEffect(() => {
+    setMenuData([])
+    data.map(value => {
+      if(selectionValue === value.menu_type){
+        setMenuData(data => [...data, value])
+      }
+    })
+  }, [selectionValue, data])
+
+
+  const handleDelete = () => {
+    axios.delete(`${API_HOST}page/delete/${deleteInfo.slug}`, {
+      headers: headers
+    })
+    .then((res) => {
+      deletePage(deleteInfo.slug)(dispatch);
+      dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+      setDeleteInfo({...deleteInfo, showDeleteModal: false})
+    })
+    .catch((err) => {
+      console.log(err)
+      if(err.response.data.error === "Authentication error!"){
+        removeCookie("_token")
+      }
+    });
+  }
+
+  // handle selection
+  const handleChange = (e) => {
+    setSelectionValue(e.target.value)
+  }
+
   return (
-    <div>MenuManager</div>
-  )
+    <div>
+      <Modal
+        title="Warning"
+        label=""
+        labelClass="btn-outline-warning p-1"
+        themeClass="bg-warning-500"
+        activeModal={deleteInfo.showDeleteModal}
+        onClose={() => {
+          setDeleteInfo({...deleteInfo, showDeleteModal: false})
+        }}
+        footerContent={
+          <Button
+            text="Accept"
+            className="btn-warning "
+            onClick={handleDelete}
+          />
+        }
+      >
+        <h4 className="font-medium text-lg mb-3 text-slate-900">
+          Delete Page
+        </h4>
+        <div className="text-base text-slate-600 dark:text-slate-300">
+          Do you want to delete this page?
+        </div>
+      </Modal>
+      <Card title="Pages" noborder>
+        <div className='flex justify-between mb-3'>
+          <Select
+            className="react-select"
+            classNamePrefix="select"
+            defaultValue={furits[0]}
+            options={furits}
+            styles={styles}
+            onChange={handleChange}
+            id="hh"
+          />
+          <Button text="Add Page" className="btn-success py-2" onClick={() => {
+            navigate("/pages/add")
+          }}  />
+        </div>
+          <div className="overflow-x-auto -mx-6">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden ">
+                <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                  <thead className="bg-slate-200 dark:bg-slate-700">
+                    <tr>
+                      {columns.map((column, i) => (
+                        <th key={i} scope="col" className=" table-th ">
+                          {column.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                    {menuData.map((row, i) => (
+                      <tr key={i}>
+                        <td className="table-td">{row.title}</td>
+                        <td className="table-td lowercase">{row.slug}</td>
+                        <td className="table-td ">{row.menu_type}</td>
+                        <td className="table-td" style={{paddingRight: "0"}}>
+                        <span className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row.active ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500"}`}>{row.active ? "Active": "Inactive"}</span>
+                        </td>
+                        {/* <td className="table-td ">{row.published_date}</td> */}
+                        {/* <td className="table-td ">{row.template_category}</td> */}
+                        <td className="table-td ">{row.order}</td>
+                        <td className="table-td ">
+                          <Button
+                            text="Edit"
+                            className="btn-outline-primary rounded-[999px] py-2 me-2"
+                            onClick={() => 
+                              navigate(`/pages/edit/${row.slug}`)
+                            }
+                          />
+                          <Button
+                            text="Delete"
+                            className="btn-outline-primary rounded-[999px] py-2"
+                            onClick={() => {
+                              setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
+                              
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+      </Card>
+    </div>
+    )
 }
 
 export default MenuManager

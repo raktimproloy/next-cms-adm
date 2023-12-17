@@ -135,7 +135,7 @@ function EditPage() {
 
   function handleMenuChange(e) {
     setPageData({
-        ...pageData, menu_type:(e.target.value).toLowerCase().replace(" ", "_")
+        ...pageData, menu_type:(e.target.value).toLowerCase().replace(" ", "-")
     })
   }
 

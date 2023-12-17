@@ -44,7 +44,7 @@ const ServiceDetailsPage = lazy(() => import("./pages/service/service-details"))
 const EmailPage = lazy(() => import("./pages/email"))
 
 // Menu Page
-const Menu = lazy(() => import("./pages/menu"))
+const AddMenu = lazy(() => import("./pages/menu/AddMenu"))
 const MenuManager = lazy(() => import("./pages/menu/MenuManager"))
 const MenuType = lazy(() => import("./pages/menu/MenuType"))
 
@@ -132,7 +132,7 @@ function App() {
           <Route path="service-details" element={<ServiceDetailsPage />} />
 
           {/* Menu Page */}
-          <Route path="menu" element={<Menu />} />
+          <Route path="menu/add" element={<AddMenu />} />
           <Route path="menu/menu-type" element={<MenuType />} />
           <Route path="menu/menu-manager" element={<MenuManager />} />
 

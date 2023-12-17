@@ -1,5 +1,7 @@
 import { API_HOST } from "@/utils";
 import swal from "sweetalert";
+import { useNavigate } from "react-router-dom";
+// const navigate = useNavigate()
 
 export const selectorManager = {
   appendTo: "#styles-container",
@@ -434,17 +436,34 @@ export const panels = {
           // active: true, // active by default
           className: "btn-toggle-borders",
           label: `
-            <div class="bg-red-500 flex px-4 py-1 rounded-full border-2 shadow-xl">
+            <div class="flex items-center bg-sky-800 px-4 py-1 rounded-full shadow-xl">
               <svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M21,20V8.414a1,1,0,0,0-.293-.707L16.293,3.293A1,1,0,0,0,15.586,3H4A1,1,0,0,0,3,4V20a1,1,0,0,0,1,1H20A1,1,0,0,0,21,20ZM9,8h4a1,1,0,0,1,0,2H9A1,1,0,0,1,9,8Zm7,11H8V15a1,1,0,0,1,1-1h6a1,1,0,0,1,1,1Z"></path></g></svg>
-              <p class="ml-1">save</p>
+              <p class="ml-1 text-sm">save</p>
             </div>
           `,
           command: "saveDb",// Built-in command
         },
         {
           id: "open-code",
-          className: "fa fa-trash",
+          // className: "fa fa-trash",
+          label: `
+            <div class="flex items-center bg-sky-800 px-4 py-1 rounded-full shadow-xl">
+              <i class="fa fa-trash"></i>
+              <p class="ml-1 text-sm">delete</p>
+            </div>
+          `,
           command: "open-code",
+        },
+        {
+          id: "preview",
+          // className: "fa fa-eye",
+          label: `
+            <div class="flex items-center bg-sky-800 px-4 py-1 rounded-full shadow-xl">
+              <i class="fa fa-eye"></i>
+              <p class="ml-1 text-sm">preview</p>
+            </div>
+          `,
+          command: "preview",
         },
         {
           id: "undo",
@@ -461,17 +480,24 @@ export const panels = {
         //   className: "fa fa-download",
         //   command: "export",
         // },
-        {
-          id: "preview",
-          className: "fa fa-eye",
-          command: "preview",
-        },
+        
       ],
     },
     {
       id: "panel-devices",
       el: ".panel__devices",
       buttons: [
+        {
+          id: "back",
+          label: `
+            <div class="flex items-center bg-red-900 px-4 py-1 rounded-full shadow-xl">
+              <svg viewBox="0 0 24 24" width="20px" height="20px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M11.7071 4.29289C12.0976 4.68342 12.0976 5.31658 11.7071 5.70711L6.41421 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H6.41421L11.7071 18.2929C12.0976 18.6834 12.0976 19.3166 11.7071 19.7071C11.3166 20.0976 10.6834 20.0976 10.2929 19.7071L3.29289 12.7071C3.10536 12.5196 3 12.2652 3 12C3 11.7348 3.10536 11.4804 3.29289 11.2929L10.2929 4.29289C10.6834 3.90237 11.3166 3.90237 11.7071 4.29289Z" fill="#ffffff"></path> </g></svg>
+              <p class="ml-1 text-sm">back</p>
+            </div>
+          `,
+          command: "back-page",
+          // togglable: false,
+        },
         {
           id: "device-desktop",
           label: '<i class="fa fa-television"></i>',
@@ -485,6 +511,7 @@ export const panels = {
           command: "set-device-mobile",
           togglable: false,
         },
+        
       ],
     },
   ],
@@ -511,6 +538,15 @@ export const addEditorCommand = (editor) => {
   editor.Commands.add("set-device-mobile", {
     run: (editor) => editor.setDevice("Mobile"),
   });
+
+
+    // Save Button
+    editor.Commands.add("back-page", {
+      run: (editor, sender) => {
+        // navigate("/pages")
+        window.location.href = "/pages"
+      },
+    });
 
   // Save Button
   editor.Commands.add("saveDb", {
