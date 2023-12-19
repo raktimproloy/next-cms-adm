@@ -13,16 +13,19 @@ import { useDispatch } from 'react-redux'
 import { addInfo } from '../../store/layout'
 import { useNavigate } from 'react-router-dom'
 import { createPage } from "@/store/actions/pageAction";
-
+import { useSelector } from 'react-redux'
+import { getAllMenus } from '../../utils/getAllMenus'
+import { getAllPages } from '../../utils/getAllPages'
+import MultipleSelect from "@/pages/shared/MultipleSelect"
+import {CurrentDate} from "@/utils/CurrentDate"
 
 function AddPage() {
   const [pageData, setPageData] = useState({
     title: "",
     slug: "",
     active: false,
-    order: "",
-    menu_type: "top-menu",
-    published_date: "23 March, 2024",
+    menu_type: [],
+    published_date: CurrentDate(),
     template_category: "Predesign",
     template: "",
     meta_title: "",
@@ -32,11 +35,29 @@ function AddPage() {
   const dispatch = useDispatch()
   const [showLoading, setShowLoading] = useState(false)
 
+  const [menuType, setMenuType] = useState([])
+  const [selectedMenuType, setSelectedMenuType] = useState([])
+  const menuTypeData = useSelector((state) => state.menus);
+  const pagesData = useSelector((state) => state.pages);
+  const updateInfo = useSelector((state) => state.update);
+
   // Cookies
   const [cookie, removeCookie] = useCookies()
   const headers = {
   'Authorization': `Bearer ${cookie._token}`
   }
+
+  useEffect(() => {
+    if (updateInfo.menuUpdate === "" || updateInfo.menuUpdate === "not-updated") {
+      getAllMenus(dispatch, cookie, removeCookie);
+    }
+    if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
+      getAllPages(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, pageData, updateInfo]);
+
+
+
   const saveHandler = () => {
     setShowLoading(true)
     axios.post(`${API_HOST}page/add`, pageData, {
@@ -63,18 +84,27 @@ function AddPage() {
   }
 
   useEffect(() => {
+    const data = []
+    selectedMenuType.map(selectedData => {
+      data.push(selectedData.value)
+    })
+    setPageData({
+      ...pageData, menu_type: data
+    })
+  }, [selectedMenuType])
 
-  }, [])
+  // update Menu Type
+  useEffect(() => {
+    setMenuType([])
+    menuTypeData.map(type => {
+      setMenuType(oldType => [...oldType, { value: type._id, label: type.title }])
+    })
+  }, [menuTypeData])
 
   // Selection Handler
   function handleOptionChange(e) {
     setPageData({
         ...pageData, template_category:e.target.value
-    })
-  }
-  function handleMenuChange(e) {
-    setPageData({
-        ...pageData, menu_type:(e.target.value).toLowerCase().replace(" ", "-")
     })
   }
 
@@ -111,18 +141,7 @@ function AddPage() {
             placeholder="Type Your Template File Name"
             onChange={(e) => setPageData({...pageData, template:e.target.value})}
           />
-          <Textinput
-            label="Page Order"
-            id="pn2"
-            type="number"
-            placeholder="Type Your Template File Name"
-            onChange={(e) => setPageData({...pageData, order:e.target.value})}
-          />
-          <Select
-            options={["Top Menu", "Side Menu", "Footer Menu"]}
-            label="Menu Type"
-            onChange={handleMenuChange}
-          />
+          <MultipleSelect label={"Select Menu Type"} option={menuType} setReturnArray={setSelectedMenuType} usage={"add"}/>
           <div>
             <label htmlFor="" className='pb-3'>Page Active</label>
             <Switch

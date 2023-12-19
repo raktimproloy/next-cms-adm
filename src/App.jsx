@@ -44,9 +44,13 @@ const ServiceDetailsPage = lazy(() => import("./pages/service/service-details"))
 const EmailPage = lazy(() => import("./pages/email"))
 
 // Menu Page
-const AddMenu = lazy(() => import("./pages/menu/AddMenu"))
 const MenuManager = lazy(() => import("./pages/menu/MenuManager"))
+const AddMenu = lazy(() => import("./pages/menu/AddMenu"))
+const EditMenu = lazy(() => import("./pages/menu/EditMenu"))
+
 const MenuType = lazy(() => import("./pages/menu/MenuType"))
+const AddMenuType = lazy(() => import("./pages/menu/AddMenuType"))
+const EditMenuType = lazy(() => import("./pages/menu/EditMenuType"))
 
 // Profile page
 const Profile = lazy(() => import("./pages/profile"))
@@ -132,9 +136,13 @@ function App() {
           <Route path="service-details" element={<ServiceDetailsPage />} />
 
           {/* Menu Page */}
-          <Route path="menu/add" element={<AddMenu />} />
           <Route path="menu/menu-type" element={<MenuType />} />
+          <Route path="menu/menu-type/add" element={<AddMenuType />} />
+          <Route path="menu/menu-type/edit" element={<EditMenuType />} />
+
           <Route path="menu/menu-manager" element={<MenuManager />} />
+          <Route path="menu/menu-manager/add" element={<AddMenu />} />
+          <Route path="menu/menu-manager/edit" element={<EditMenu />} />
 
           {/* profile page */}
           <Route path="profile/:username" element={<Profile />} />

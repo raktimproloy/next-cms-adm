@@ -30,10 +30,6 @@ const columns = [
       field: "status",
     },
     {
-      label: "Date",
-      field: "date",
-    },
-    {
       label: "Manage",
       field: "manage",
     },
@@ -104,10 +100,10 @@ function MenuType() {
           Do you want to delete this menu?
         </div>
       </Modal>
-      <Card title="Table Head" noborder>
+      <Card title="Menu Type" noborder>
         <div className='text-right mb-3'>
             <Button text="Add Menu" className="btn-success py-2" onClick={() => {
-              navigate("/menu/add")
+              navigate("/menu/menu-type/add")
             }}  />
         </div>
           <div className="overflow-x-auto -mx-6">
@@ -132,18 +128,19 @@ function MenuType() {
                         <td className="table-td" style={{paddingRight: "0"}}>
                         <span className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row.status ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500"}`}>{row.status ? "Active": "Inactive"}</span>
                         </td>
-                        <td className="table-td ">17 December, 2023</td>
                         <td className="table-td ">
                             <Button
                               text="Edit"
                               className="btn-outline-primary rounded-[999px] py-2 me-2"
+                              onClick={() => {
+                                navigate("/menu/menu-type/edit")
+                              }}
                             />
                             <Button
                               text="Delete"
                               className="btn-outline-primary rounded-[999px] py-2"
                               onClick={() => {
                                 setDeleteInfo({...deleteInfo, showDeleteModal: true, alias: row.alias})
-                                
                               }}
                             />
                         </td>

@@ -16,6 +16,9 @@ import { addInfo } from '../../store/layout'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Tab } from "@headlessui/react";
 import image2 from "@/assets/images/all-img/image-2.png";
+import { useSelector } from 'react-redux'
+import { getAllMenus } from '../../utils/getAllMenus'
+import MultipleSelect from "@/pages/shared/MultipleSelect"
 
 
 const buttons = [
@@ -29,15 +32,31 @@ const buttons = [
     }
 ];
 
+const styles = {
+  option: (provided, state) => ({
+    ...provided,
+    fontSize: "14px",
+  }),
+};
+
 function EditPage() {
   const params = useParams()
   const [selectedFile, setSelectedFile] = useState(null)
+
+  const [menuData, setMenuData] = useState([])
+  const [menuType, setMenuType] = useState([])
+  const [selectedMenuType, setSelectedMenuType] = useState([])
+  const menuTypeData = useSelector((state) => state.menus);
+  const updateInfo = useSelector((state) => state.update);
+
+  const [checkGetData, setCheckGetData] = useState(false)
+
   const [pageData, setPageData] = useState({
     title: "",
     slug: "",
     active: false,
-    order: "",
-    menu_type: "",
+    order: 0,
+    menu_type: [],
     published_date: "23 March, 2024",
     template_category: "Predesign",
     template: "",
@@ -71,12 +90,21 @@ function EditPage() {
   'Authorization': `Bearer ${cookie._token}`
   }
 
+
+  
+  useEffect(() => {
+    if (updateInfo.menuUpdate === "" || updateInfo.menuUpdate === "not-updated") {
+      getAllMenus(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, pageData, updateInfo]);
+
     // Get data
     useEffect(() => {
       axios.get(`${API_HOST}page/${params.slug}`, {
         headers: headers
         })
         .then((res) => {
+          setCheckGetData(true)
             setPageData(res.data)
             setMetaTag(res.data.meta_property)
         })
@@ -85,16 +113,18 @@ function EditPage() {
         });
     }, [])
 
+
 //   Edit Data
   const editHandler = () => {
     setShowLoading(true)
+    console.log(pageData)
     const formData = new FormData()
 
     formData.append("title", pageData.title)
     formData.append("slug", pageData.slug)
     formData.append("active", pageData.active)
     formData.append("order", pageData.order)
-    formData.append("menu_type", pageData.menu_type)
+    formData.append("menu_type", JSON.stringify(pageData.menu_type))
     formData.append("published_date", pageData.published_date)
     formData.append("template_category", pageData.template_category)
     formData.append("template", pageData.template)
@@ -122,6 +152,27 @@ function EditPage() {
     }
   }
 
+
+  useEffect(() => {
+    const data = []
+    selectedMenuType.map(selectedData => {
+      data.push(selectedData.value)
+    })
+    setPageData({
+      ...pageData, menu_type: data
+    })
+  }, [selectedMenuType])
+
+
+  // update Menu Type
+  useEffect(() => {
+    setMenuType([])
+    menuTypeData.map(type => {
+      setMenuType(oldType => [...oldType, { value: type._id, label: type.title }])
+    })
+  }, [menuTypeData])
+
+
   // Selection Handler
   function handleOptionChange(e) {
     setPageData({
@@ -132,12 +183,6 @@ function EditPage() {
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
-
-  function handleMenuChange(e) {
-    setPageData({
-        ...pageData, menu_type:(e.target.value).toLowerCase().replace(" ", "-")
-    })
-  }
 
   return (
     <div>
@@ -209,12 +254,21 @@ function EditPage() {
               defaultValue={pageData.order}
               onChange={(e) => setPageData({...pageData, order:e.target.value})}
             />
-            <Select
-              options={["Top Menu", "Side Menu", "Footer Menu"]}
+            {/* <Select
+              className="react-select"
               label="Menu Type"
+              classNamePrefix="select"
               defaultValue={pageData.menu_type}
+              options={menuType}
+              styles={styles}
               onChange={handleMenuChange}
-            />
+              id="hh"
+            /> */}
+            {
+              checkGetData && menuType.length > 0 ? 
+            <MultipleSelect option={menuType} setReturnArray={setSelectedMenuType} defaultArray={pageData.menu_type} usage={"edit"}/>
+            : ""
+            }
             <div>
                 <label htmlFor="" className='pb-3'>Page Active</label>
                 <Switch
