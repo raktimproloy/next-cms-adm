@@ -27,6 +27,7 @@ const UserEdit = lazy(() => import("./pages/system/user/userEdit"))
 
 // Settings
 const Contact = lazy(() => import("./pages/settings/Contact"))
+const GenarelSetting = lazy(() => import("./pages/settings/GenarelSetting"))
 const Logo = lazy(() => import("./pages/settings/Logo"))
 const SocalMedia = lazy(() => import("./pages/settings/SocalMedia"))
 const SiteInfo = lazy(() => import("./pages/settings/SiteInfo"))
@@ -45,7 +46,7 @@ const EmailPage = lazy(() => import("./pages/email"))
 
 // Menu Page
 const MenuManager = lazy(() => import("./pages/menu/MenuManager"))
-const AddMenu = lazy(() => import("./pages/menu/AddMenu"))
+const AddLink = lazy(() => import("./pages/menu/AddLink"))
 const EditMenu = lazy(() => import("./pages/menu/EditMenu"))
 
 const MenuType = lazy(() => import("./pages/menu/MenuType"))
@@ -120,8 +121,9 @@ function App() {
           <Route path="pages/editor/:slug" element={<Editor />} />
 
 
-          {/* Content */}
+          {/* Setting */}
           <Route path="contact" element={<Contact />} />
+          <Route path="genarel-setting" element={<GenarelSetting />} />
           <Route path="logo" element={<Logo />} />
           <Route path="socal-media" element={<SocalMedia />} />
           <Route path="site-info" element={<SiteInfo />} />
@@ -141,7 +143,7 @@ function App() {
           <Route path="menu/menu-type/edit" element={<EditMenuType />} />
 
           <Route path="menu/menu-manager" element={<MenuManager />} />
-          <Route path="menu/menu-manager/add" element={<AddMenu />} />
+          <Route path="menu/menu-manager/add" element={<AddLink />} />
           <Route path="menu/menu-manager/edit" element={<EditMenu />} />
 
           {/* profile page */}

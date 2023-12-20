@@ -17,6 +17,7 @@ import { createPage } from "@/store/actions/pageAction";
 import { useSelector } from 'react-redux'
 import { getAllMenus } from '../../utils/getAllMenus'
 import MultipleSelect from "@/pages/shared/MultipleSelect"
+import { getAllPages } from '../../utils/getAllPages'
 
 
 
@@ -31,23 +32,25 @@ const buttons = [
     },
   ];
 
-function AddMenu() {
-  const [pageData, setPageData] = useState({
+function AddLink() {
+  const [linkData, setLinkData] = useState({
     title: "",
-    slug: "",
-    active: false,
-    order: "",
+    // link_type: "",
+    // internal_link: "",
+    external_link: "",
+    // active: false,
     menu_type: [],
-    published_date: "23 March, 2024",
-    link: "",
   })
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showLoading, setShowLoading] = useState(false)
+  const [linkSelection, setLinkSelection] = useState("Article")
 
   const [menuType, setMenuType] = useState([])
   const [selectedMenuType, setSelectedMenuType] = useState([])
+  const [selectedPages, setSelectedPages] = useState([])
   const menuTypeData = useSelector((state) => state.menus);
+  const pageData = useSelector((state) => state.pages);
   const updateInfo = useSelector((state) => state.update);
 
   // Cookies
@@ -60,33 +63,52 @@ function AddMenu() {
     if (updateInfo.menuUpdate === "" || updateInfo.menuUpdate === "not-updated") {
       getAllMenus(dispatch, cookie, removeCookie);
     }
+    if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
+      getAllPages(dispatch, cookie, removeCookie);
+    }
   }, [dispatch, pageData, updateInfo]);
+
+
+  useEffect(() => {
+    setSelectedPages([])
+    pageData.map(page => {
+      setSelectedPages(oldPage => [...oldPage, { value: page.slug, label: page.title }])
+    })
+    // if(pageData.length > 0){
+    //   if(linkData.internal_link === ""){
+    //     linkData.internal_link = pageData[0].slug
+    //   }
+    // }
+  }, [pageData])
 
 
 
   const saveHandler = () => {
+    linkData.link_type = linkSelection
     setShowLoading(true)
-    axios.post(`${API_HOST}page/add`, pageData, {
-      headers: headers
-    })
-    .then((res) => {
-      dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
-      setShowLoading(false)
-      createPage(pageData.title)(dispatch);
-      setTimeout(() => {
-        if(pageData.template_category === "Predesign"){
-          navigate("/pages")
-        }else{
-          navigate(`/pages/editor/${pageData.slug}`)
+    if(linkSelection === "External"){
+      axios.post(`${API_HOST}link/add`, linkData, {
+        headers: headers
+      })
+      .then((res) => {
+        // dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+        setShowLoading(false)
+        // createPage(pageData.title)(dispatch);
+        // setTimeout(() => {
+        //   if(pageData.template_category === "Predesign"){
+        //     navigate("/pages")
+        //   }else{
+        //     navigate(`/pages/editor/${pageData.slug}`)
+        //   }
+        // }, 1000);
+      })
+      .catch((err) => {
+        setShowLoading(false)
+        if(err.response.data.error === "Authentication error!"){
+            removeCookie("_token")
         }
-      }, 1000);
-    })
-    .catch((err) => {
-      setShowLoading(false)
-      if(err.response.data.error === "Authentication error!"){
-          removeCookie("_token")
-      }
-    });
+      });
+    }
   }
 
 
@@ -95,8 +117,8 @@ function AddMenu() {
     selectedMenuType.map(selectedData => {
       data.push(selectedData.value)
     })
-    setPageData({
-      ...pageData, menu_type: data
+    setLinkData({
+      ...linkData, menu_type: data
     })
   }, [selectedMenuType])
 
@@ -110,39 +132,32 @@ function AddMenu() {
 
   // Selection Handler
   function handleOptionChange(e) {
-    setPageData({
-        ...pageData, template_category:e.target.value
+    setLinkData({
+        ...linkData, internal_link:e.target.value
     })
   }
 
   return (
     <div>
-        <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
-        <Card title="Add Page">
+        <Popup showLoading={showLoading} popupText={"Link Adding..."}  />
+        <Card title="Add Link">
         <div className="space-y-3">
           <Textinput
-            label="Page Title"
+            label="Link Title"
             id="pn"
             type="text"
-            placeholder="Type Your Page Title"
-            onChange={(e) => setPageData({...pageData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
-          />
-          <Textinput
-            label="Page Slug"
-            id="pn2"
-            type="text"
-            placeholder="Type Your Page Slug"
-            defaultValue={pageData.slug}
-            onChange={(e) => setPageData({...pageData, slug:e.target.value})}
+            placeholder="Type Your Link Title"
+            onChange={(e) => setLinkData({...linkData, title:e.target.value})}
           />
           <p>Links: </p>
-          <Card>
+          <Card className="removePadding" >
                 <Tab.Group>
                 <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
                     {buttons.map((item, i) => (
                     <Tab as={Fragment} key={i}>
                         {({ selected }) => (
                         <button
+                        onClick={() => setLinkSelection(item.title)}
                             className={` text-sm font-medium mb-7 capitalize bg-white
                     dark:bg-slate-800 ring-0 foucs:ring-0 focus:outline-none px-2
                     transition duration-150 before:transition-all before:duration-150 relative 
@@ -165,41 +180,25 @@ function AddMenu() {
                 <Tab.Panels>
                     <Tab.Panel>
                     <Select
-                        options={["Predesign", "Grapesjs"]}
-                        label="Page Category"
+                        options={selectedPages}
+                        label="Select Page"
                         onChange={handleOptionChange}
                     />
                     </Tab.Panel>
                     <Tab.Panel>
                     <Textinput
-                        label="Page Slug"
+                        label="External Link"
                         id="pn2"
                         type="text"
                         placeholder="http://"
-                        defaultValue={pageData.slug}
-                        onChange={(e) => setPageData({...pageData, slug:e.target.value})}
+                        // defaultValue={pageData.slug}
+                        onChange={(e) => setLinkData({...linkData, external_link:e.target.value})}
                     />
                     </Tab.Panel>
                 </Tab.Panels>
                 </Tab.Group>
             </Card>
-          <Textinput
-            label="Page Order"
-            id="pn2"
-            type="number"
-            placeholder="Type Your Template File Name"
-            onChange={(e) => setPageData({...pageData, order:e.target.value})}
-          />
-          <MultipleSelect option={menuType} setReturnArray={setSelectedMenuType}/>
-          <div>
-            <label htmlFor="" className='pb-3'>Page Active</label>
-            <Switch
-              label="Page Active Status"
-              activeClass="bg-danger-500"
-              value={pageData.active}
-              onChange={() => setPageData({...pageData, active: !pageData.active})}
-            />
-          </div>
+          <MultipleSelect label={"Select Menu Type"} option={menuType} setReturnArray={setSelectedMenuType} usage={"add"}/>
         </div>
         <div className='text-right mt-5'>
           <Button text="Save" className="btn-warning py-2" onClick={() => {
@@ -211,4 +210,4 @@ function AddMenu() {
   )
 }
 
-export default AddMenu
+export default AddLink

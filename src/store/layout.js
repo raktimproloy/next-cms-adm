@@ -207,6 +207,20 @@ export const blogSlice = createSlice({
   },
 });
 
+// Link Data Slice
+export const linkSlice = createSlice({
+  name: "link",
+  initialState: [],
+  reducers: {
+    addLink: (state, action) => {
+      return [...action.payload]; // Concatenate the new users with the existing ones
+    },
+    removeLink(state, action) {
+      state.splice(action.payload, 1)
+    },
+  },
+});
+
 
 // All Update info Slice
 export const updateInfoSlice = createSlice({
@@ -218,6 +232,7 @@ export const updateInfoSlice = createSlice({
     pageUpdate: "",
     menuUpdate: "",
     blogUpdate: "",
+    linkUpdate: "",
   },
   reducers: {
     addInfo: (state, action) => {
@@ -234,6 +249,8 @@ export const updateInfoSlice = createSlice({
         state.menuUpdate = value;
       } else if (field === 'blogUpdate') {
         state.blogUpdate = value;
+      } else if (field === 'linkUpdate') {
+        state.linkUpdate = value;
       }
     }
   }
@@ -246,6 +263,7 @@ export const {addRole, removeRole} = roleSlice.actions
 export const {addPage, removePage} = pageSlice.actions
 export const {addMenu, removeMenu} = menuSlice.actions
 export const {addBlog, removeBlog} = blogSlice.actions
+export const {addLink, removeLink} = linkSlice.actions
 export const {addInfo} = updateInfoSlice.actions
 
 export const {

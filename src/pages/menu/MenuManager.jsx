@@ -37,18 +37,6 @@ const columns = [
       label: "Status",
       field: "status",
     },
-    // {
-    //   label: "Publish",
-    //   field: "publish",
-    // },
-    // {
-    //   label: "Category",
-    //   field: "category",
-    // },
-    {
-      label: "Order",
-      field: "order",
-    },
     {
       label: "Manage",
       field: "manage",
@@ -94,8 +82,6 @@ function MenuManager() {
     }
   }, [dispatch, pageData, updateInfo]);
 
-
-
   useEffect(() => {
     if(menuTypeData.length > 0){
       menuTypeData.map(type => {
@@ -104,20 +90,7 @@ function MenuManager() {
         }
       })
     }
-  }, [menuTypeData, selectionValue])
-
-
-  // useEffect(() => {
-  //   setMenuData([]);
-    
-  //   const filteredPages = pageData.filter(value => 
-  //     value.menu_type !== undefined && value.menu_type.includes(selectionValue)
-  //   );
-  
-  //   const sortedPages = filteredPages.sort((a, b) => a.order - b.order);
-  
-  //   setMenuData(sortedPages);
-  // }, [selectionValue, pageData]);
+  }, [menuTypeData, selectionValue, pageData])
 
 
   // Menu Items sort and set Page data
@@ -127,16 +100,19 @@ function MenuManager() {
     if(menuData.title !== ""){
       const sortItems = [...menuData.items].sort((a, b) => a.order - b.order);
       sortItems.map((item) => {
-          pageData.map((page) => {
-              if(page.slug === item.menu_slug){
-                  pagesData.push(page)
-              }
-          })
+         if(item.link_type === "external"){
+            pagesData.push(item.link)
+         }else{
+           pageData.map((page) => {
+               if(page.slug === item.menu_slug){
+                   pagesData.push(page)
+               }
+           })
+         }
       })
     }
     setShowingPages(pagesData)
-  }, [menuData])
-
+  }, [menuData, menuTypeData, pageData])
 
 
   // update Menu Type
@@ -145,18 +121,22 @@ function MenuManager() {
     menuTypeData.map(type => {
       setMenuType(oldType => [...oldType, { value: type._id, label: type.title }])
     })
-    menuTypeData.length > 0 && setSelectionValue(menuTypeData[0]._id)
+    if(selectionValue === ""){
+      menuTypeData.length > 0 && setSelectionValue(menuTypeData[0]._id)
+    }
   }, [menuTypeData])
 
 
 
   const handleDelete = () => {
-    axios.delete(`${API_HOST}page/delete/${deleteInfo.slug}`, {
+    axios.post(`${API_HOST}menu/delete/item/${selectionValue}`, {
+      slug: deleteInfo.slug
+    }, {
       headers: headers
     })
     .then((res) => {
-      deletePage(deleteInfo.slug)(dispatch);
-      dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+      // deletePage(deleteInfo.slug)(dispatch);
+      dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
     })
     .catch((err) => {
@@ -293,7 +273,7 @@ function MenuManager() {
             onChange={handleChange}
             id="hh"
           />
-          <Button text="Add Menu" className="btn-success py-2" onClick={() => {
+          <Button text="Add Link" className="btn-success py-2" onClick={() => {
             navigate("/menu/menu-manager/add")
           }}  />
         </div>
@@ -342,9 +322,6 @@ function MenuManager() {
                         <td className="table-td" style={{paddingRight: "0"}}>
                         <span className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row.active ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500"}`}>{row.active ? "Active": "Inactive"}</span>
                         </td>
-                        {/* <td className="table-td ">{row.published_date}</td> */}
-                        {/* <td className="table-td ">{row.template_category}</td> */}
-                        <td className="table-td ">{row.order}</td>
                         <td className="table-td ">
                           <Button
                             text="Edit"

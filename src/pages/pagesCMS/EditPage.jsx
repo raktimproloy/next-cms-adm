@@ -139,6 +139,7 @@ function EditPage() {
       })
       .then((res) => {
           dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+          dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
           setShowLoading(false)
           navigate("/pages")
       })

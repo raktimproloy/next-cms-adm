@@ -65,6 +65,7 @@ function AddPage() {
     })
     .then((res) => {
       dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+      dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
       setShowLoading(false)
       createPage(pageData.title)(dispatch);
       setTimeout(() => {

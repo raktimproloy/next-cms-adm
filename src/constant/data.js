@@ -96,21 +96,21 @@ export const menuItems = [
     isHide: true,
     child: [
       {
-        childtitle: "Contact",
-        childlink: "contact",
+        childtitle: "Genarel Setting",
+        childlink: "genarel-setting",
       },
-      {
-        childtitle: "Site Info",
-        childlink: "site-info",
-      },
-      {
-        childtitle: "Socal Media",
-        childlink: "socal-media",
-      },
-      {
-        childtitle: "Logo",
-        childlink: "logo",
-      }
+      // {
+      //   childtitle: "Site Info",
+      //   childlink: "site-info",
+      // },
+      // {
+      //   childtitle: "Socal Media",
+      //   childlink: "socal-media",
+      // },
+      // {
+      //   childtitle: "Logo",
+      //   childlink: "logo",
+      // }
     ],
   },
   {
