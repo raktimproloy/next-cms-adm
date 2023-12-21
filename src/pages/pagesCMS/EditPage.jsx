@@ -105,8 +105,8 @@ function EditPage() {
         })
         .then((res) => {
           setCheckGetData(true)
-            setPageData(res.data)
-            setMetaTag(res.data.meta_property)
+          setPageData(res.data)
+          setMetaTag(res.data.meta_property)
         })
         .catch((err) => {
         console.log(err)
@@ -255,16 +255,6 @@ function EditPage() {
               defaultValue={pageData.order}
               onChange={(e) => setPageData({...pageData, order:e.target.value})}
             />
-            {/* <Select
-              className="react-select"
-              label="Menu Type"
-              classNamePrefix="select"
-              defaultValue={pageData.menu_type}
-              options={menuType}
-              styles={styles}
-              onChange={handleMenuChange}
-              id="hh"
-            /> */}
             {
               checkGetData && menuType.length > 0 ? 
             <MultipleSelect option={menuType} setReturnArray={setSelectedMenuType} defaultArray={pageData.menu_type} usage={"edit"}/>
