@@ -35,10 +35,7 @@ const buttons = [
 function AddLink() {
   const [linkData, setLinkData] = useState({
     title: "",
-    // link_type: "",
-    // internal_link: "",
     external_link: "",
-    // active: false,
     menu_type: [],
   })
   const navigate = useNavigate()
@@ -49,6 +46,10 @@ function AddLink() {
   const [menuType, setMenuType] = useState([])
   const [selectedMenuType, setSelectedMenuType] = useState([])
   const [selectedPages, setSelectedPages] = useState([])
+  const [selectPage, setSelectPage] = useState("")
+  const [selectedPageData, setSelectedPageData] = useState({
+    menu_type: []
+  })
   const menuTypeData = useSelector((state) => state.menus);
   const pageData = useSelector((state) => state.pages);
   const updateInfo = useSelector((state) => state.update);
@@ -70,16 +71,22 @@ function AddLink() {
 
 
   useEffect(() => {
-    setSelectedPages([])
+    setSelectedPages([{value: "none", label: "None"}])
     pageData.map(page => {
       setSelectedPages(oldPage => [...oldPage, { value: page.slug, label: page.title }])
     })
-    // if(pageData.length > 0){
-    //   if(linkData.internal_link === ""){
-    //     linkData.internal_link = pageData[0].slug
-    //   }
-    // }
   }, [pageData])
+
+  useEffect(() => {
+    if(pageData.length > 0){
+      pageData.map(page => {
+        if(page.slug === selectPage){
+          setSelectedPageData(page)
+        }
+      })
+    }
+  }, [selectPage])
+
 
 
 
@@ -91,16 +98,10 @@ function AddLink() {
         headers: headers
       })
       .then((res) => {
-        // dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+        console.log(res)
+        dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
         setShowLoading(false)
-        // createPage(pageData.title)(dispatch);
-        // setTimeout(() => {
-        //   if(pageData.template_category === "Predesign"){
-        //     navigate("/pages")
-        //   }else{
-        //     navigate(`/pages/editor/${pageData.slug}`)
-        //   }
-        // }, 1000);
+        // navigate("/pages")
       })
       .catch((err) => {
         setShowLoading(false)
@@ -108,6 +109,23 @@ function AddLink() {
             removeCookie("_token")
         }
       });
+    }else{
+      axios.post(`${API_HOST}page/update/${selectedPageData.slug}`, selectedPageData, {
+        headers: headers
+      })
+      .then((res) => {
+          dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+          dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
+          setShowLoading(false)
+      })
+      .catch((err) => {
+          console.log(err)
+          setShowLoading(false)
+          if(err.response.data.error === "Authentication error!"){
+          removeCookie("_token")
+          }
+      });
+
     }
   }
 
@@ -117,6 +135,15 @@ function AddLink() {
     selectedMenuType.map(selectedData => {
       data.push(selectedData.value)
     })
+    // Extracting the 'value' property from the first array
+    const valuesToPush = selectedMenuType.map(item => item.value);
+    // Checking and pushing values that don't already exist in array2
+    const newArray2 = [...selectedPageData.menu_type, ...valuesToPush.filter(value => !selectedPageData.menu_type.includes(value))];
+    
+    setSelectedPageData(prevState => ({
+      ...prevState,
+      menu_type: newArray2
+    }));
     setLinkData({
       ...linkData, menu_type: data
     })
@@ -132,9 +159,7 @@ function AddLink() {
 
   // Selection Handler
   function handleOptionChange(e) {
-    setLinkData({
-        ...linkData, internal_link:e.target.value
-    })
+    setSelectPage(e.target.value)
   }
 
   return (
@@ -198,7 +223,11 @@ function AddLink() {
                 </Tab.Panels>
                 </Tab.Group>
             </Card>
-          <MultipleSelect label={"Select Menu Type"} option={menuType} setReturnArray={setSelectedMenuType} usage={"add"}/>
+            {
+              menuType.length > 0 ? 
+            <MultipleSelect option={menuType} setReturnArray={setSelectedMenuType} defaultArray={selectedPageData.menu_type} usage={"add"}/>
+            : ""
+            }
         </div>
         <div className='text-right mt-5'>
           <Button text="Save" className="btn-warning py-2" onClick={() => {
