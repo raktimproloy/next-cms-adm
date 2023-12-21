@@ -26,11 +26,8 @@ const UserManager = lazy(() => import("./pages/system/user"))
 const UserEdit = lazy(() => import("./pages/system/user/userEdit"))
 
 // Settings
-const Contact = lazy(() => import("./pages/settings/Contact"))
 const GenarelSetting = lazy(() => import("./pages/settings/GenarelSetting"))
-const Logo = lazy(() => import("./pages/settings/Logo"))
-const SocalMedia = lazy(() => import("./pages/settings/SocalMedia"))
-const SiteInfo = lazy(() => import("./pages/settings/SiteInfo"))
+const Blogs_Pages = lazy(() => import("./pages/settings/Blogs_Pages"))
 
 // Blog Page
 const BlogPage = lazy(() => import("./pages/blog"))
@@ -122,11 +119,8 @@ function App() {
 
 
           {/* Setting */}
-          <Route path="contact" element={<Contact />} />
           <Route path="genarel-setting" element={<GenarelSetting />} />
-          <Route path="logo" element={<Logo />} />
-          <Route path="socal-media" element={<SocalMedia />} />
-          <Route path="site-info" element={<SiteInfo />} />
+          <Route path="blogs-pages" element={<Blogs_Pages />} />
 
           {/* Blog Page */}
           <Route path="blog" element={<BlogPage />} />

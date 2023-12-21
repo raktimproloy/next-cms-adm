@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import Popup from "@/components/ui/Popup"
 import Modal from "@/components/ui/Modal"
+import Select from "@/components/ui/Select"
 import { useSelector } from 'react-redux';
 import { getAllPages } from '../../utils/getAllPages';
 import axios from 'axios';
@@ -41,8 +42,23 @@ const columns = [
     },
 ];
 
+const styles = {
+  option: (provided, state) => ({
+    ...provided,
+    fontSize: "14px",
+  }),
+};
+
+const category = [
+  {value: "predesign", label: "Predesign"},
+  {value: "grapesjs", label: "Grapesjs"}
+]
+
+
 function index() {
   const navigate = useNavigate()
+  const [selectionValue, setSelectionValue] = useState("predesign")
+  const [showingData, setShowingData] = useState([])
   const [deleteInfo, setDeleteInfo] = useState({
     showDeleteModal: false,
     slug: ""
@@ -55,7 +71,8 @@ function index() {
   const [cookie, removeCookie] = useCookies()
   const headers = {
     'Authorization': `Bearer ${cookie._token}`
-    }
+  }
+
 
   useEffect(() => {
     if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
@@ -79,6 +96,22 @@ function index() {
         removeCookie("_token")
       }
     });
+  }
+
+  useEffect(() => {
+    setShowingData([])
+    if(data.length > 0){
+      data.map(page => {
+        if(page.template_category.toLowerCase() === selectionValue){
+          setShowingData(oldPage => [...oldPage, page])
+        }
+      })
+    }
+  }, [data, selectionValue])
+
+  // handle selection
+  const handleChange = (e) => {
+    setSelectionValue(e.target.value)
   }
 
   return (
@@ -108,7 +141,16 @@ function index() {
         </div>
       </Modal>
       <Card title="Pages" noborder>
-        <div className='text-right mb-3'>
+        <div className='flex justify-between mb-3'>
+          <Select
+              className="react-select"
+              classNamePrefix="select"
+              defaultValue={category[0]}
+              options={category}
+              styles={styles}
+              onChange={handleChange}
+              id="hh"
+            />
             <Button text="Add Page" className="btn-success py-2" onClick={() => {
               navigate("/pages/add")
             }}  />
@@ -127,7 +169,7 @@ function index() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                    {data.map((row, i) => (
+                    {showingData.map((row, i) => (
                       <tr key={i}>
                         <td className="table-td">{row.title}</td>
                         <td className="table-td lowercase">{row.slug}</td>

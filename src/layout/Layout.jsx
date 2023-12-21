@@ -112,7 +112,7 @@ const Layout = () => {
       </div>
       {width < breakpoints.md && <MobileFooter />}
       {width > breakpoints.md && (
-        !pathname.includes("/pages/editor") && <Footer className={width > breakpoints.xl ? switchHeaderClass() : ""} />
+        <Footer className={width > breakpoints.xl ? switchHeaderClass() : ""} />
       )}
     </>
   );
