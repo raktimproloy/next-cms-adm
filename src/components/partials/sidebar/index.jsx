@@ -7,10 +7,28 @@ import useSidebar from "@/hooks/useSidebar";
 import useSemiDark from "@/hooks/useSemiDark";
 import useSkin from "@/hooks/useSkin";
 import svgRabitImage from "@/assets/images/svg/rabit.svg";
+import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
+import { useSelector } from "react-redux";
+import { getSetting } from "../../../utils/getSetting";
 
 const Sidebar = () => {
   const scrollableNodeRef = useRef();
   const [scroll, setScroll] = useState(false);
+
+    // Get Store Data
+    const dispatch = useDispatch();
+    const [cookie, setCookie, removeCookie] = useCookies();
+  
+    const settingData = useSelector((state) => state.setting);
+    const updateInfo = useSelector((state) => state.update);
+  
+    useEffect(() => {
+      if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
+          getSetting(dispatch, cookie, removeCookie);
+      }
+    }, [dispatch, settingData, updateInfo]);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,7 +68,7 @@ const Sidebar = () => {
           setMenuHover(false);
         }}
       >
-        <SidebarLogo menuHover={menuHover} />
+        <SidebarLogo menuHover={menuHover} settingData={settingData} />
         <div
           className={`h-[60px]  absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none ${
             scroll ? " opacity-100" : " opacity-0"

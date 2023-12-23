@@ -6,11 +6,8 @@ import useSidebar from "@/hooks/useSidebar";
 import useSemiDark from "@/hooks/useSemiDark";
 import useSkin from "@/hooks/useSkin";
 
-// import images
-import MobileLogo from "@/assets/images/logo/logo-c.svg";
-import MobileLogoWhite from "@/assets/images/logo/logo-c-white.svg";
 
-const SidebarLogo = ({ menuHover }) => {
+const SidebarLogo = ({ menuHover, settingData }) => {
   const [isDark] = useDarkMode();
   const [collapsed, setMenuCollapsed] = useSidebar();
   // semi dark
@@ -29,23 +26,23 @@ const SidebarLogo = ({ menuHover }) => {
       
       `}
     >
-      <Link to="/dashboard">
+      <Link to="/">
         <div className="flex items-center space-x-4">
-          <div className="logo-icon">
+          <div className="logo-icon w-[9rem]">
             {!isDark && !isSemiDark ? (
-              <img src={MobileLogo} alt="" />
+              <img src={`/upload/setting/${settingData.logo}`} alt=""  />
             ) : (
-              <img src={MobileLogoWhite} alt="" />
+              <img src={`/upload/setting/${settingData.logo}`} alt="" />
             )}
           </div>
 
-          {(!collapsed || menuHover) && (
+          {/* {(!collapsed || menuHover) && (
             <div>
               <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
                 DashCode
               </h1>
             </div>
-          )}
+          )} */}
         </div>
       </Link>
 

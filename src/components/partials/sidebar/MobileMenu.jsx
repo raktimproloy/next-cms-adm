@@ -14,8 +14,13 @@ import Icon from "@/components/ui/Icon";
 import MobileLogo from "@/assets/images/logo/logo-c.svg";
 import MobileLogoWhite from "@/assets/images/logo/logo-c-white.svg";
 import svgRabitImage from "@/assets/images/svg/rabit.svg";
+import { useSelector } from "react-redux";
 
 const MobileMenu = ({ className = "custom-class" }) => {
+  const settingData = useSelector((state) => state.setting);
+
+
+  
   const scrollableNodeRef = useRef();
   const [scroll, setScroll] = useState(false);
   useEffect(() => {
@@ -41,17 +46,12 @@ const MobileMenu = ({ className = "custom-class" }) => {
       <div className="logo-segment flex justify-between items-center bg-white dark:bg-slate-800 z-[9] h-[85px]  px-4 ">
         <Link to="/dashboard">
           <div className="flex items-center space-x-4">
-            <div className="logo-icon">
+            <div className="logo-icon w-[10rem]">
               {!isDark && !isSemiDark ? (
-                <img src={MobileLogo} alt="" />
+                <img src={`/upload/setting/${settingData.logo}`} alt="" />
               ) : (
-                <img src={MobileLogoWhite} alt="" />
+                <img src={`/upload/setting/${settingData.logo}`} alt="" />
               )}
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                DashCode
-              </h1>
             </div>
           </div>
         </Link>

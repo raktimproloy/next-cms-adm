@@ -13,6 +13,7 @@ import image2 from "@/assets/images/all-img/image-2.png";
 import axios from 'axios';
 import { API_HOST } from '../../utils';
 import { useCookies } from 'react-cookie';
+import { addInfo } from '../../store/layout';
 
 
 const buttons = [
@@ -102,6 +103,7 @@ function GenarelSetting() {
     })
     .then(res => {
       console.log(res);
+      dispatch(addInfo({ field: 'settingUpdate', value: 'not-updated' }));
     })
     .catch(err => {
       console.log(err);

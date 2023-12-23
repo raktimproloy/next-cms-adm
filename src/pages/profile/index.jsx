@@ -4,36 +4,34 @@ import Icon from "@/components/ui/Icon";
 import Card from "@/components/ui/Card";
 
 // import images
-import ProfileImage from "@/assets/images/users/user-1.jpg";
 import axios from "axios";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
+import ProfileImage from "/public/default_profile.png"
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { getProfile } from "../../utils/getProfile";
 
 const Index = () => {
 
-  const [profileData, setProfileData] =useState({})
+  // Get Profile Data
+  const dispatch = useDispatch();
+  const [cookie, removeCookie] = useCookies();
 
-  // Cookies
-  const [cookie, removeCookie] = useCookies()
-  const headers = {
-    'Authorization': `Bearer ${cookie._token}`
-  }
+  const profileData = useSelector((state) => state.profile);
+  const updateInfo = useSelector((state) => state.update);
 
-  const { username } = useParams();
+  // useEffect(() => {
+  //   if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
+  //       getProfile(dispatch, cookie, removeCookie);
+  //   }
+  // }, [dispatch, profileData, updateInfo]);
+
+
   useEffect(() => {
-    axios.get(`${API_HOST}user/${username}`, {
-      headers: headers
-    })
-    .then(res => {
-      setProfileData(res.data[0])
-    })
-    .catch(error => {
-      if(error.response.data.error === "Authentication error!"){
-        removeCookie("_token")
-      }
-      console.log(error)
-    })
-  }, [])
+    console.log(profileData)
+  }, [profileData])
+
   return (
     <div>
       <div className="space-y-5 profile-page">
@@ -42,27 +40,27 @@ const Index = () => {
           <div className="profile-box flex-none md:text-start text-center">
             <div className="md:flex items-end md:space-x-6 rtl:space-x-reverse">
               <div className="flex-none">
-                <div className="md:h-[186px] md:w-[186px] h-[140px] w-[140px] md:ml-0 md:mr-0 ml-auto mr-auto md:mb-0 mb-4 rounded-full ring-4 ring-slate-100 relative">
+                <div className="md:h-[186px] md:w-[186px] h-[140px] w-[140px] md:ml-0 md:mr-0 ml-auto mr-auto md:mb-0 mb-4 rounded-full ring-4 ring-slate-100 relative bg-white">
                   <img
                     src={ProfileImage}
                     alt=""
                     className="w-full h-full object-cover rounded-full"
                   />
-                  <Link
+                  {/* <Link
                     to="#"
                     className="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center md:top-[140px] top-[100px]"
                   >
                     <Icon icon="heroicons:pencil-square" />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
               <div className="flex-1">
                 <div className="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
                   {profileData.fullName}
                 </div>
-                <div className="text-sm font-light text-slate-600 dark:text-slate-400">
+                {/* <div className="text-sm font-light text-slate-600 dark:text-slate-400">
                   Front End Developer
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -112,7 +110,7 @@ const Index = () => {
                       href="mailto:someone@example.com"
                       className="text-base text-slate-600 dark:text-slate-50"
                     >
-                      info-500@dashcode.com
+                      {profileData.email}
                     </a>
                   </div>
                 </li>
@@ -126,15 +124,15 @@ const Index = () => {
                       PHONE
                     </div>
                     <a
-                      href="tel:0189749676767"
+                      href={`tel:${profileData.phone}`}
                       className="text-base text-slate-600 dark:text-slate-50"
                     >
-                      +1-202-555-0151
+                      {profileData.phone}
                     </a>
                   </div>
                 </li>
 
-                <li className="flex space-x-3 rtl:space-x-reverse">
+                {/* <li className="flex space-x-3 rtl:space-x-reverse">
                   <div className="flex-none text-2xl text-slate-600 dark:text-slate-300">
                     <Icon icon="heroicons:map" />
                   </div>
@@ -146,7 +144,7 @@ const Index = () => {
                       Home# 320/N, Road# 71/B, Mohakhali, Dhaka-1207, Bangladesh
                     </div>
                   </div>
-                </li>
+                </li> */}
               </ul>
             </Card>
           </div>

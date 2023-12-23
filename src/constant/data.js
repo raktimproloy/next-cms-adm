@@ -83,11 +83,11 @@ export const menuItems = [
       }
     ],
   },
-  {
-    title: "Email",
-    icon: "line-md:email",
-    link: "email",
-  },
+  // {
+  //   title: "Email",
+  //   icon: "line-md:email",
+  //   link: "email",
+  // },
   {
     title: "Settings",
     icon: "fluent:content-view-32-regular",

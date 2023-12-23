@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Icon from "@/components/ui/Icon";
 import SwitchDark from "./Tools/SwitchDark";
 import HorizentalMenu from "./Tools/HorizentalMenu";
@@ -12,8 +12,28 @@ import Profile from "./Tools/Profile";
 import Message from "./Tools/Message";
 import useRtl from "@/hooks/useRtl";
 import useMobileMenu from "@/hooks/useMobileMenu";
+import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
+import { useSelector } from "react-redux";
+import { getSetting } from "../../../utils/getSetting";
+
 
 const Header = ({ className = "custom-class" }) => {
+    // Get Store Data
+    const dispatch = useDispatch();
+    const [cookie, setCookie, removeCookie] = useCookies();
+  
+    const settingData = useSelector((state) => state.setting);
+    const updateInfo = useSelector((state) => state.update);
+  
+    useEffect(() => {
+      if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
+          getSetting(dispatch, cookie, removeCookie);
+      }
+    }, [dispatch, settingData, updateInfo]);
+
+
+
   const [collapsed, setMenuCollapsed] = useSidebar();
   const { width, breakpoints } = useWidth();
   const [navbarType] = useNavbarType();
@@ -79,7 +99,7 @@ const Header = ({ className = "custom-class" }) => {
                   )}
                 </button>
               )}
-              {width < breakpoints.xl && <Logo />}
+              {width < breakpoints.xl && <Logo settingData={settingData}/>}
               {/* open mobile menu handlaer*/}
               {width < breakpoints.xl && width >= breakpoints.md && (
                 <div
@@ -113,7 +133,7 @@ const Header = ({ className = "custom-class" }) => {
           {/* Nav Tools  */}
           <div className="nav-tools flex items-center lg:space-x-6 space-x-3 rtl:space-x-reverse">
             <SwitchDark />
-            {width >= breakpoints.md && <Message />}
+            {/* {width >= breakpoints.md && <Message />} */}
             {width >= breakpoints.md && <Profile />}
             {width <= breakpoints.md && (
               <div

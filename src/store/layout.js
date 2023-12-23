@@ -120,6 +120,36 @@ export const layoutSlice = createSlice({
   },
 });
 
+
+// Setting Data Slice
+export const settingSlice = createSlice({
+  name: "setting",
+  initialState: {},
+  reducers: {
+    addSetting: (state, action) => {
+      return {...action.payload}; // Concatenate the new users with the existing ones
+    },
+    removeSetting(state, action) {
+      state.splice(action.payload, 1)
+    },
+  },
+});
+
+
+// Profile Data Slice
+export const profileSlice = createSlice({
+  name: "profile",
+  initialState: {},
+  reducers: {
+    addProfile: (state, action) => {
+      return {...action.payload}; // Concatenate the new users with the existing ones
+    },
+    removeProfile(state, action) {
+      state.splice(action.payload, 1)
+    },
+  },
+});
+
 // User Data Slice
 export const userSlice = createSlice({
   name: "user",
@@ -133,8 +163,6 @@ export const userSlice = createSlice({
     },
   },
 });
-
-
 
 // User Role Data SLice
 export const userRoleSlice = createSlice({
@@ -226,6 +254,8 @@ export const linkSlice = createSlice({
 export const updateInfoSlice = createSlice({
   name: "updateInfo",
   initialState: {
+    profileUpdate: "",
+    settingUpdate: "",
     userUpdate: "",
     userRoleUpdate: "",
     roleUpdate: "",
@@ -251,12 +281,18 @@ export const updateInfoSlice = createSlice({
         state.blogUpdate = value;
       } else if (field === 'linkUpdate') {
         state.linkUpdate = value;
+      } else if (field === 'profileUpdate') {
+        state.profileUpdate = value;
+      } else if (field === 'settingUpdate') {
+        state.settingUpdate = value;
       }
     }
   }
 });
 
 
+export const {addProfile, removeProfile} = profileSlice.actions
+export const {addSetting, removeSetting} = settingSlice.actions
 export const {addUser, removeUser} = userSlice.actions
 export const {addUserRole, removeUserRole} = userRoleSlice.actions
 export const {addRole, removeRole} = roleSlice.actions
