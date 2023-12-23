@@ -152,21 +152,20 @@ function MenuManager() {
       headers: headers
     })
     .then((res) => {
-        dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
+      dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
     })
     .catch((err) => {
-        console.log(err)
-        if(err.response.data.error === "Authentication error!"){
-        removeCookie("_token")
-        }
+      console.log(err)
+      if(err.response.data.error === "Authentication error!"){
+      removeCookie("_token")
+      }
     });
   }
+
   // handle selection
   const handleChange = (e) => {
     setSelectionValue(e.target.value)
   }
-
-  
 
   // Handle Position
   const handleUpButton = (slug) => {
@@ -200,6 +199,7 @@ function MenuManager() {
     };
 
     updateApi(updatedMenuData)
+    swal("Updated", "The page moved to up!", "success")
   }
   
 
@@ -234,6 +234,7 @@ function MenuManager() {
     };
 
     updateApi(updatedMenuData)
+    swal("Updated", "The page moved to down!", "success")
   }
 
   return (

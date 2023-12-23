@@ -44,6 +44,7 @@ const columns = [
 ];
 
 function index() {
+  const CMS_API = import.meta.env.VITE_CMS_LINK
   const navigate = useNavigate()
   const [deleteInfo, setDeleteInfo] = useState({
     showDeleteModal: false,
@@ -100,6 +101,12 @@ function index() {
     setCurrentPage(page);
     // You can add any other logic you need here, such as making an API call to fetch data for the new page
   };
+
+  // Handle Preview
+  const handlePreview = (slug) => {
+    console.log(slug)
+    window.open(`${CMS_API}blog/${slug.toLowerCase()}`, '_blank');
+  }
 
   return (
     <div>
@@ -162,7 +169,7 @@ function index() {
                               text="Preview"
                               className="btn-outline-primary rounded-[999px] py-2 me-2"
                               onClick={() => 
-                                navigate(`/pages/edit/${row.slug}`)
+                                handlePreview(row.slug.toLowerCase())
                               }
                             />
                             <Button

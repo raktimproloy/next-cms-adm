@@ -21,7 +21,7 @@ const Editor = () => {
     setEditor(editor);
   }, [slug, assets]);
   return (
-    <div className="App main-container flex d-flex">
+    <div className="App main-container flex d-flex mb-5">
       <div
         className="main-content position-relative w-85 start-15"
         id="main-content"

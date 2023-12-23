@@ -117,7 +117,6 @@ function EditPage() {
 //   Edit Data
   const editHandler = () => {
     setShowLoading(true)
-    console.log(pageData)
     const formData = new FormData()
 
     formData.append("title", pageData.title)

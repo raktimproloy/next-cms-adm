@@ -12,6 +12,7 @@ import Accordion from "@/components/ui/Accordion";
 import image2 from "@/assets/images/all-img/image-2.png";
 import axios from 'axios';
 import { API_HOST } from '../../utils';
+import { useCookies } from 'react-cookie';
 
 
 const buttons = [
@@ -42,6 +43,17 @@ function GenarelSetting() {
   const [settingData, setSettingData] = useState({})
   const [settingMetaData, setSettingMetaData] = useState({})
   const [settingSocalData, setSettingSocalData] = useState({})
+  const [favIcon, setFavIcon] = useState(null)
+  const [logo, setLogo] = useState(null)
+  const [metaImage, setMetaImage] = useState(null)
+
+
+  // Cookies
+  const [cookie, removeCookie] = useCookies()
+  const headers = {
+    'Authorization': `Bearer ${cookie._token}`,
+    // 'Content-Type': 'multipart/form-data',
+  };
 
 
   useEffect(() => {
@@ -57,21 +69,64 @@ function GenarelSetting() {
   }, [])
 
   const editHandler = () => {
-    const updatedData = {
-      ...settingData,
-      meta_property: settingMetaData,
-      socal_media: settingSocalData
-    }
-    
-    axios.post(`${API_HOST}setting/update/${settingData._id}`, updatedData)
+    const formData = new FormData();
+  
+    formData.append("title", settingData.title);
+    formData.append("description", settingData.description);
+    formData.append("fav_icon", favIcon);
+    formData.append("logo", logo);
+    formData.append("phone", settingData.phone)
+    formData.append("uk_phone", settingData.uk_phone)
+    formData.append("email", settingData.email)
+    formData.append("address", settingData.address)
+    formData.append("uk_address", settingData.uk_address)
+    formData.append("city", settingData.city)
+    formData.append("uk_city", settingData.uk_city)
+    formData.append("country", settingData.country)
+    formData.append("uk_country", settingData.uk_country)
+    formData.append("map_url", settingData.map_url)
+    formData.append("uk_map_url", settingData.uk_map_url)
+    formData.append("google_analytics_id", settingData.google_analytics_id)
+    formData.append("blog_show_amount", settingData.blog_show_amount)
+    formData.append("language", settingData.language)
+    formData.append("popup", settingData.popup)
+    formData.append("meta_image", metaImage)
+    formData.append("meta_property", JSON.stringify(settingMetaData))
+    formData.append("socal_media", JSON.stringify(settingSocalData))
+  
+    axios.post(`${API_HOST}setting/update/${settingData._id}`, formData, {
+      headers: {
+        'Authorization': `Bearer ${cookie._token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
     .then(res => {
-      console.log(res)
+      console.log(res);
     })
     .catch(err => {
-      console.log(err)
+      console.log(err);
+    });
+  };
+  
+
+  // Handle Language
+  function handleOptionChange(e) {
+    setSettingData({
+        ...settingData, language:e.target.value
     })
   }
 
+  // Handle Image Upload
+  const handleFavIcon = (e) => {
+    setFavIcon(e.target.files[0]);
+  };
+  const handleIcon = (e) => {
+    setLogo(e.target.files[0]);
+  };
+
+  const handleMetaImage = (e) => {
+    setMetaImage(e.target.files[0]);
+  };
 
   return (
     <>
@@ -126,29 +181,27 @@ function GenarelSetting() {
                   defaultValue={settingData.google_analytics_id}
                   onChange={(e) => setSettingData({...settingData, google_analytics_id:e.target.value})}
                 />
-                <Textinput
-                  label="Language"
-                  id="pn2"
-                  type="text"
-                  placeholder="Type Your Language"
-                  defaultValue={settingData.language}
-                  onChange={(e) => setSettingData({...settingData, language:e.target.value})}
+                <Select
+                  options={["english", "bangla"]}
+                  label="Page Category"
+                  value={settingData.value}
+                  onChange={handleOptionChange}
                 />
                 </div>
                 <div className='w-1/3'>
                   <p className='mt-3 mb-1'>Fav Icon</p>
                   <Fileinput
-                    name="og_image"
-                    // selectedFile={selectedFile}
-                    // onChange={handleFileChange}
+                    name="fav_icon"
+                    selectedFile={favIcon}
+                    onChange={handleFavIcon}
                   />
                   <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
                     Previous Image :
                   </span>
                   <div className='flex justify-center'>
                     <Image
-                      src={image2}
-                      alt="Small image with fluid:"
+                      src={`/public/upload/setting/${settingData.fav_icon}`}
+                      alt="fav_icon"
                       className="rounded-md w-[90%]"
                     />
                   </div>
@@ -157,17 +210,17 @@ function GenarelSetting() {
                 <div className='w-1/3'>
                 <p className='mt-3 mb-1'>Logo</p>
                   <Fileinput
-                    name="og_image"
-                    // selectedFile={selectedFile}
-                    // onChange={handleFileChange}
+                    name="logo"
+                    selectedFile={logo}
+                    onChange={handleIcon}
                   />
                   <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
                     Previous Image :
                   </span>
                   <div className='flex justify-center'>
                     <Image
-                      src={image2}
-                      alt="Small image with fluid:"
+                      src={`/public/upload/setting/${settingData.logo}`}
+                      alt="logo"
                       className="rounded-md w-[90%]"
                     />
                   </div>
@@ -325,8 +378,8 @@ function GenarelSetting() {
                 <p className='mt-3'>Property: og:image</p>
                   <Fileinput
                     name="og_image"
-                    // selectedFile={selectedFile}
-                    // onChange={handleFileChange}
+                    selectedFile={metaImage}
+                    onChange={handleMetaImage}
                   />
                 </div>
                 <div className='w-2/4'>
@@ -335,8 +388,8 @@ function GenarelSetting() {
                   </span>
                   <div className='flex justify-center'>
                     <Image
-                      src={image2}
-                      alt="Small image with fluid:"
+                      src={`/public/upload/setting/${settingMetaData.og_image}`}
+                      alt="default og_image"
                       className="rounded-md w-[90%]"
                     />
                   </div>

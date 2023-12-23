@@ -56,6 +56,7 @@ const category = [
 
 
 function index() {
+  const CMS_API = import.meta.env.VITE_CMS_LINK
   const navigate = useNavigate()
   const [selectionValue, setSelectionValue] = useState("predesign")
   const [showingData, setShowingData] = useState([])
@@ -112,6 +113,12 @@ function index() {
   // handle selection
   const handleChange = (e) => {
     setSelectionValue(e.target.value)
+  }
+
+  // Handle Preview
+  const handlePreview = (slug) => {
+    console.log(slug)
+    window.open(`${CMS_API}${slug.toLowerCase()}`, '_blank');
   }
 
   return (
@@ -181,6 +188,13 @@ function index() {
                         <td className="table-td ">{row.template_category}</td>
                         {/* <td className="table-td ">{row.order}</td> */}
                         <td className="table-td ">
+                            <Button
+                              text="Preview"
+                              className="btn-outline-primary rounded-[999px] py-2 me-2"
+                              onClick={() => 
+                                handlePreview(row.slug)
+                              }
+                            />
                           <Button
                             text="Edit"
                             className="btn-outline-primary rounded-[999px] py-2 me-2"
