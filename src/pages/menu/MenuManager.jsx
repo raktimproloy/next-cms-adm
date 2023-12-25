@@ -14,6 +14,7 @@ import { addInfo } from '../../store/layout';
 import { Link, useNavigate } from 'react-router-dom';
 import { deletePage } from '@/store/actions/pageAction';
 import { getAllMenus } from '../../utils/getAllMenus';
+import swal from 'sweetalert';
 
 
 const columns = [
@@ -327,8 +328,13 @@ function MenuManager() {
                           <Button
                             text="Edit"
                             className="btn-outline-primary rounded-[999px] py-2 me-2"
-                            onClick={() => 
-                              navigate(`/menu/menu-manager/edit/${row.slug}`)
+                            onClick={() => {
+                              if(row.slug.includes("http")){
+
+                              }else{
+                                navigate(`/pages/edit/${row.slug}`)
+                              }
+                            }
                             }
                           />
                           <Button

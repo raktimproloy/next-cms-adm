@@ -34,6 +34,7 @@ const buttons = [
 
 function AddLink() {
   const [linkData, setLinkData] = useState({
+    active: true,
     title: "",
     external_link: "",
     menu_type: [],
@@ -98,10 +99,9 @@ function AddLink() {
         headers: headers
       })
       .then((res) => {
-        console.log(res)
         dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
         setShowLoading(false)
-        // navigate("/pages")
+        navigate("/menu/menu-manager")
       })
       .catch((err) => {
         setShowLoading(false)

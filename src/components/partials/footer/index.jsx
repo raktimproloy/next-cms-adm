@@ -5,9 +5,6 @@ import { useSelector } from "react-redux";
 const Footer = ({ className = "custom-class" }) => {
   const [footerType] = useFooterType();
   const settingData = useSelector((state) => state.setting);
-  useEffect(() => {
-    console.log(settingData)
-  }, [settingData])
   const footerclassName = () => {
     switch (footerType) {
       case "sticky":
