@@ -235,6 +235,23 @@ export const blogSlice = createSlice({
   },
 });
 
+// Blog Data Slice
+export const blogPageSlice = createSlice({
+  name: "blog",
+  initialState: {},
+  reducers: {
+    addBlogPage: (state, action) => {
+      const { page, data } = action.payload;
+      return { ...state, [page]: data };
+    },
+    removeBlogPage: (state, action) => {
+      const pageToRemove = action.payload;
+      const { [pageToRemove]: _, ...newState } = state;
+      return newState;
+    },
+  },
+});
+
 // Link Data Slice
 export const linkSlice = createSlice({
   name: "link",
@@ -299,6 +316,7 @@ export const {addRole, removeRole} = roleSlice.actions
 export const {addPage, removePage} = pageSlice.actions
 export const {addMenu, removeMenu} = menuSlice.actions
 export const {addBlog, removeBlog} = blogSlice.actions
+export const {addBlogPage, removeBlogPage} = blogPageSlice.actions
 export const {addLink, removeLink} = linkSlice.actions
 export const {addInfo} = updateInfoSlice.actions
 

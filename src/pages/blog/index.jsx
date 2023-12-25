@@ -14,6 +14,7 @@ import { addBlog, addInfo, removeBlog } from '../../store/layout';
 import { Link, useNavigate } from 'react-router-dom';
 import { deletePage } from '@/store/actions/pageAction';
 import { ArraySlice } from '@/utils/ArraySlice';
+import { getBlogsByPage } from '../../utils/getBlogByPage';
 
 
 const columns = [
@@ -60,7 +61,7 @@ function index() {
     'Authorization': `Bearer ${cookie._token}`
     }
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(2);
   const [totalPages, setTotalPages] = useState(6);
   const [blogdata, setBlogData] = useState([])
   
@@ -72,34 +73,48 @@ function index() {
   }, [dispatch, data, updateInfo]);
 
 
+  // useEffect(() => {
+  //   axios.get(`${API_HOST}blog/all/${currentPage}`)
+  //   .then(res => {
+  //     console.log(res)
+  //   })
+  //   .catch(err => {
+  //     console.log(err)
+  //   })
+  // }, [])
+  
+    // Check if data for the current page is already in Redux
+    const pageDataInRedux = useSelector((state) => state.blogsPage[currentPage]);
+
+  useEffect(() => {
+    getBlogsByPage(dispatch, currentPage, cookie, removeCookie, pageDataInRedux);
+  }, [currentPage, cookie, removeCookie, dispatch, pageDataInRedux]);
 
 
   const handleDelete = () => {
-    axios.delete(`${API_HOST}blog/delete/${deleteInfo.slug}`, {
-      headers: headers
-    })
-    .then((res) => {
-      dispatch(removeBlog(deleteInfo.slug))
-      dispatch(addInfo({ field: 'blogUpdate', value: 'not-updated' }));
-      setDeleteInfo({...deleteInfo, showDeleteModal: false})
-    })
-    .catch((err) => {
-      console.log(err)
-      if(err.response.data.error === "Authentication error!"){
-        removeCookie("_token")
-      }
-    });
+  axios.delete(`${API_HOST}blog/delete/${deleteInfo.slug}`, {
+    headers: headers
+  })
+  .then((res) => {
+    dispatch(removeBlog(deleteInfo.slug))
+    dispatch(addInfo({ field: 'blogUpdate', value: 'not-updated' }));
+    setDeleteInfo({...deleteInfo, showDeleteModal: false})
+  })
+  .catch((err) => {
+    console.log(err)
+    if(err.response.data.error === "Authentication error!"){
+      removeCookie("_token")
+    }
+  });
   }
 
   useEffect(() => {
-    console.log(data)
     setBlogData(ArraySlice(currentPage, 10, data))
     
   }, [data, currentPage])
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // You can add any other logic you need here, such as making an API call to fetch data for the new page
   };
 
   // Handle Preview
