@@ -20,7 +20,7 @@ function EditButton({row}) {
     const [showLoading, setShowLoading] = useState(false)
     const [roleData, setRoleData] = useState({
         rolename: "",
-        user: false,
+        page: false,
         info: false,
         service: false,
         blog: false
@@ -109,8 +109,8 @@ function EditButton({row}) {
                 <Switch
                 label="User"
                 activeClass="bg-danger-500"
-                value={roleData.user}
-                onChange={() => setRoleData({...roleData, user: !roleData.user})}
+                value={roleData.page}
+                onChange={() => setRoleData({...roleData, page: !roleData.page})}
                 />
                 <Switch
                 label="Info"

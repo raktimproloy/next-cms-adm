@@ -25,6 +25,7 @@ function AddMenuType() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showLoading, setShowLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
   // Cookies
   const [cookie, removeCookie] = useCookies()
@@ -44,19 +45,13 @@ function AddMenuType() {
       }, 500);
     })
     .catch((err) => {
+      setErrorMessage(err.response.data.error)
       setShowLoading(false)
       if(err.response.data.error === "Authentication error!"){
           removeCookie("_token")
       }
     });
   }
-
-  // Selection Handler
-  // function handleOptionChange(e) {
-  //   setPageData({
-  //       ...pageData, template_category:e.target.value
-  //   })
-  // }
 
   return (
     <div>
@@ -77,12 +72,17 @@ function AddMenuType() {
           /> */}
           <Textinput
             label="Menu Alias"
+            className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
             id="pn2"
             type="text"
             placeholder="Type Your Menu Slug"
             defaultValue={menuData.alias}
             onChange={(e) => setMenuData({...menuData, alias:e.target.value})}
           />
+          {
+            errorMessage.includes("dup key") &&
+            <p className='text-red-500 text-sm'>This alias already used!</p>
+          }
           <Textinput
             label="Template"
             id="pn2"

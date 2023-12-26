@@ -43,12 +43,12 @@ const COLUMNS = [
     },
   },
   {
-    Header: "User",
-    accessor: "user",
+    Header: "Page",
+    accessor: "page",
     Cell: (row) => {
       return (
         <Switch
-          label="User"
+          label="Page"
           activeClass="bg-danger-500"
           disabled={true}
           value={row?.cell?.value}
@@ -140,7 +140,7 @@ useEffect(() => {
 const [showAddModal, setShowAddModal] = useState(false)
 
 const [roleName, setRoleName] = useState("")
-const [userCheck, SetUserCheck] = useState(false)
+const [pageCheck, SetPageCheck] = useState(false)
 const [infoCheck, SetInfoCheck] = useState(false)
 const [serviceCheck, SetServiceCheck] = useState(false)
 const [blogCheck, SetBlogCheck] = useState(false)
@@ -192,7 +192,7 @@ const [blogCheck, SetBlogCheck] = useState(false)
     setShowLoading(true)
     const permissionData = {
       rolename: roleName,
-      user: userCheck,
+      page: pageCheck,
       info: infoCheck,
       service: serviceCheck,
       blog: blogCheck,
@@ -218,7 +218,7 @@ const [blogCheck, SetBlogCheck] = useState(false)
   return (
     <div>
       <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
-      <HomeBredCurbs title="User" />
+      <HomeBredCurbs title="Role Management" />
       <div className="lg:flex flex-wrap blog-posts lg:space-x-5 space-y-5 lg:space-y-0 rtl:space-x-reverse">
         <div className="flex-1">
         <Card>
@@ -257,10 +257,10 @@ const [blogCheck, SetBlogCheck] = useState(false)
               <div className="mt-4 w-2/4 mx-auto">
                 <div className="flex justify-between py-3">
                   <Switch
-                    label="User"
+                    label="Page"
                     activeClass="bg-danger-500"
-                    value={userCheck}
-                    onChange={() => SetUserCheck(!userCheck)}
+                    value={pageCheck}
+                    onChange={() => SetPageCheck(!pageCheck)}
                   />
                   <Switch
                     label="Info"

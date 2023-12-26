@@ -452,7 +452,7 @@ export const panels = {
               <p class="ml-1 text-sm">delete</p>
             </div>
           `,
-          command: "open-code",
+          command: "cmd-clear",
         },
         {
           id: "preview",
@@ -544,7 +544,7 @@ export const addEditorCommand = (editor) => {
     editor.Commands.add("back-page", {
       run: (editor, sender) => {
         // navigate("/pages")
-        window.location.href = "/pages"
+        window.location.href = "/"
       },
     });
 

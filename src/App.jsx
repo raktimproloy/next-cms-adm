@@ -13,7 +13,6 @@ const Dashboard = lazy(() => import("./pages/dashboard"));
 const Pages = lazy(() => import("./pages/pagesCMS"))
 const AddPage = lazy(() => import("./pages/pagesCMS/AddPage"))
 const EditPage = lazy(() => import("./pages/pagesCMS/EditPage"))
-const ManagePage = lazy(() => import("./pages/pagesCMS/ManagePage"))
 
 // Editor
 const Editor = lazy(() => import("./pages/Editor"))
@@ -63,10 +62,24 @@ import Loading from "./components/Loading";
 
 import { useDispatch } from "react-redux";
 import useAuthCheck from "@/hooks/useAuthCheck";
+import { useSelector } from "react-redux";
+import { getProfile } from "./utils/getProfile";
+import { useCookies } from "react-cookie";
 
 function App() {
   const dispatch = useDispatch()
   const [isAuthenticated] = useAuthCheck();
+  const [cookie, setCookie, removeCookie] = useCookies();
+
+  const profileData = useSelector((state) => state.profile);
+  const updateInfo = useSelector((state) => state.update);
+
+  useEffect(() => {
+    if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
+        getProfile(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, profileData, updateInfo]);
+
 
   useEffect(() => {
     pageLoad()(dispatch);
@@ -103,42 +116,62 @@ function App() {
         <Route path="/*" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
 
-          {/* System */}
-          <Route path="add-user" element={<AddUser />} />
-          <Route path="change-password" element={<ChangePassword />} />
-          <Route path="role-management" element={<RoleManager />} />
-          <Route path="user-management" element={<UserManager />} />
-          <Route path="user-management/edit/:username" element={<UserEdit />} />
 
-          {/* Pages */}
-          <Route path="pages" element={<Pages />} />
-          <Route path="pages/add" element={<AddPage />} />
-          <Route path="pages/edit/:slug" element={<EditPage />} />
-          <Route path="pages/manage" element={<ManagePage />} />
-          <Route path="pages/editor/:slug" element={<Editor />} />
+          {
+            profileData.rolename === "Admin" || profileData?.permission?.page ?
+            (
+              <>
+                {/* Pages */}
+                <Route path="pages" element={<Pages />} />
+                <Route path="pages/add" element={<AddPage />} />
+                <Route path="pages/edit/:slug" element={<EditPage />} />
+                <Route path="pages/editor/:slug" element={<Editor />} />
+              </>
+            ): ""
+          }
+          
+          {
+            profileData.rolename === "Admin" && (
+              <>
+                {/* System */}
+                <Route path="add-user" element={<AddUser />} />
+                <Route path="change-password" element={<ChangePassword />} />
+                <Route path="role-management" element={<RoleManager />} />
+                <Route path="user-management" element={<UserManager />} />
+                <Route path="user-management/edit/:username" element={<UserEdit />} />
 
+                {/* Setting */}
+                <Route path="genarel-setting" element={<GenarelSetting />} />
+                <Route path="blogs-pages" element={<Blogs_Pages />} />
 
-          {/* Setting */}
-          <Route path="genarel-setting" element={<GenarelSetting />} />
-          <Route path="blogs-pages" element={<Blogs_Pages />} />
+                {/* Menu Page */}
+                <Route path="menu/menu-type" element={<MenuType />} />
+                <Route path="menu/menu-type/add" element={<AddMenuType />} />
+                <Route path="menu/menu-type/edit/:alias" element={<EditMenuType />} />
 
-          {/* Blog Page */}
-          <Route path="blog" element={<BlogPage />} />
-          <Route path="blog/add" element={<AddBlog />} />
-          <Route path="blog/edit/:slug" element={<EditBlog/>} />
+                <Route path="menu/menu-manager" element={<MenuManager />} />
+                <Route path="menu/menu-manager/add" element={<AddLink />} />
+                <Route path="menu/menu-manager/edit" element={<EditMenu />} />
+              </>
+            )
+          }
+          {
+            profileData.rolename === "Admin" || profileData?.permission?.blog ? 
+              <>
+                {/* Blog Page */}
+                <Route path="blog" element={<BlogPage />} />
+                <Route path="blog/add" element={<AddBlog />} />
+                <Route path="blog/edit/:slug" element={<EditBlog/>} />
+              </>
+            : ""
+          }
+          
 
           {/* Service Page */}
-          <Route path="service" element={<ServicePage />} />
-          <Route path="service-details" element={<ServiceDetailsPage />} />
+          {/* <Route path="service" element={<ServicePage />} />
+          <Route path="service-details" element={<ServiceDetailsPage />} /> */}
 
-          {/* Menu Page */}
-          <Route path="menu/menu-type" element={<MenuType />} />
-          <Route path="menu/menu-type/add" element={<AddMenuType />} />
-          <Route path="menu/menu-type/edit" element={<EditMenuType />} />
 
-          <Route path="menu/menu-manager" element={<MenuManager />} />
-          <Route path="menu/menu-manager/add" element={<AddLink />} />
-          <Route path="menu/menu-manager/edit" element={<EditMenu />} />
 
           {/* profile page */}
           <Route path="profile/:username" element={<Profile />} />

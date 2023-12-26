@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput"
+import Select from "@/components/ui/Select"
 import Button from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
 import { useCookies } from 'react-cookie';
@@ -14,6 +15,7 @@ function userEdit() {
   const [profileData, setProfileData] = useState({})
   const [userPermission, setUserPermission] = useState({})
   const [permissionData, setPermissionData] = useState({})
+  const [errorMessage, setErrorMessage] = useState("")
   // Show Loading
   const [showLoading, setShowLoading] = useState(false)
   const navigate = useNavigate()
@@ -47,7 +49,6 @@ function userEdit() {
     })
     .then(res => {
       setProfileData(res.data[0])
-      console.log(res.data[0])
 
       // get permission data
       axios.get(`${API_HOST}user-role/${res.data[0].permission[0]}`, {
@@ -89,11 +90,20 @@ function userEdit() {
         setShowLoading(false)
     })
     .catch(err => {
-        console.log(err)
+      setErrorMessage(err.response.data.error)
         setShowLoading(false)
+        if(err.response.data.error === "Authentication error!"){
+          removeCookie("_token")
+        }
     })
   }
 
+
+  const handleStatusChange = (e) => {
+    setProfileData({
+      ...profileData, status: e.target.value === "active" ? true : false
+    })
+  }
 
   return (
     <div>
@@ -126,11 +136,16 @@ function userEdit() {
             id="pn2"
             type="text"
             register={register}
+            className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
             name="email"
             placeholder="Change Email"
             defaultValue={profileData.email}
             onChange={handleChange}
           />
+          {
+            errorMessage.includes("dup key") &&
+            <p className='text-red-500 text-sm'>This email already used!</p>
+          }
           <Textinput
             label="Phone Number"
             id="pn4"
@@ -141,31 +156,40 @@ function userEdit() {
             defaultValue={profileData.phone}
             onChange={handleChange}
           />
+          {
+            profileData &&
+            <Select
+              options={["active", "inactive"]}
+              label="User Status"
+              value={profileData.status === true ? "active" : "inactive"}
+              onChange={handleStatusChange}
+            />
+          }
 
           <h4 className='pt-5'>Permissions</h4>
           <div className='flex align-center gap-20 py-5'>
             <Switch
-            label="User"
+            label="Page"
             activeClass="bg-danger-500"
-            value={permissionData.user}
-            onChange={() => setPermissionData({...permissionData, user: !permissionData.user})}
+            value={permissionData.page || false}
+            onChange={() => setPermissionData({...permissionData, page: !permissionData.page})}
             />
             <Switch
             label="Info"
             activeClass="bg-danger-500"
-            value={permissionData.info}
+            value={permissionData.info || false}
             onChange={() => setPermissionData({...permissionData, info: !permissionData.info})}
             />
             <Switch
             label="Service"
             activeClass="bg-danger-500"
-            value={permissionData.service}
+            value={permissionData.service || false}
             onChange={() => setPermissionData({...permissionData, service: !permissionData.service})}
             />
             <Switch
             label="Blog"
             activeClass="bg-danger-500"
-            value={permissionData.blog}
+            value={permissionData.blog || false}
             onChange={() => setPermissionData({...permissionData, blog: !permissionData.blog})}
             />
           </div>

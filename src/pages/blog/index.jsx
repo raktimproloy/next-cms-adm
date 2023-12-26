@@ -46,6 +46,7 @@ const columns = [
 
 function index() {
   const CMS_API = import.meta.env.VITE_CMS_LINK
+  const [showLoading, setShowLoading] = useState(false)
   const navigate = useNavigate()
   const [deleteInfo, setDeleteInfo] = useState({
     showDeleteModal: false,
@@ -71,17 +72,6 @@ function index() {
     }
     setTotalPages(Math.ceil(data.length/10) || 1)
   }, [dispatch, data, updateInfo]);
-
-
-  // useEffect(() => {
-  //   axios.get(`${API_HOST}blog/all/${currentPage}`)
-  //   .then(res => {
-  //     console.log(res)
-  //   })
-  //   .catch(err => {
-  //     console.log(err)
-  //   })
-  // }, [])
   
     // Check if data for the current page is already in Redux
     const pageDataInRedux = useSelector((state) => state.blogsPage[currentPage]);
@@ -92,6 +82,7 @@ function index() {
 
 
   const handleDelete = () => {
+    setShowLoading(true)
   axios.delete(`${API_HOST}blog/delete/${deleteInfo.slug}`, {
     headers: headers
   })
@@ -99,12 +90,14 @@ function index() {
     dispatch(removeBlog(deleteInfo.slug))
     dispatch(addInfo({ field: 'blogUpdate', value: 'not-updated' }));
     setDeleteInfo({...deleteInfo, showDeleteModal: false})
+    setShowLoading(false)
   })
   .catch((err) => {
     console.log(err)
     if(err.response.data.error === "Authentication error!"){
       removeCookie("_token")
     }
+    setShowLoading(false)
   });
   }
 
@@ -125,6 +118,7 @@ function index() {
 
   return (
     <div>
+      <Popup showLoading={showLoading} popupText={"Blog Deleting..."}  />
       <Modal
         title="Warning"
         label=""
@@ -199,7 +193,6 @@ function index() {
                               className="btn-outline-primary rounded-[999px] py-2"
                               onClick={() => {
                                 setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
-                                
                               }}
                             />
                             

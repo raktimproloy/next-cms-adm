@@ -42,6 +42,7 @@ const styles = {
 function EditPage() {
   const params = useParams()
   const [selectedFile, setSelectedFile] = useState(null)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const [menuData, setMenuData] = useState([])
   const [menuType, setMenuType] = useState([])
@@ -143,7 +144,7 @@ function EditPage() {
           navigate("/pages")
       })
       .catch((err) => {
-          console.log(err)
+          setErrorMessage(err.response.data.error)
           setShowLoading(false)
           if(err.response.data.error === "Authentication error!"){
           removeCookie("_token")
@@ -231,12 +232,17 @@ function EditPage() {
             />
             <Textinput
                 label="Page Slug"
+                className={errorMessage.includes("duplicate key") && "border-1 dark:border-red-700"}
                 id="pn2"
                 type="text"
                 placeholder="Type Your Page Slug"
                 defaultValue={pageData.slug}
                 onChange={(e) => setPageData({...pageData, slug:e.target.value})}
             />
+            {
+            errorMessage.includes("duplicate key") &&
+            <p className='text-red-500 text-sm'>This slug already used!</p>
+            }
             <Textinput
               label="Predesign Page"
               id="pn2"

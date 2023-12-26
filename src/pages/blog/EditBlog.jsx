@@ -35,6 +35,7 @@ function EditBlog() {
   const params = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [errorMessage, setErrorMessage] = useState("")
   
   const [text, setText] = useState("")
   const [value, setValue] = useState("<p>TinyMCE Editor text</p>")
@@ -123,7 +124,7 @@ useEffect(() => {
         navigate("/blog")
     })
     .catch((err) => {
-        console.log(err)
+        setErrorMessage(err.response.data.error)
         setShowLoading(false)
         if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
@@ -150,7 +151,7 @@ useEffect(() => {
   return (
     <div>
         <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
-        <Card title="Default Tabs">
+        <Card title="Blog Edit">
         <Tab.Group>
           <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
             {buttons.map((item, i) => (
@@ -191,12 +192,17 @@ useEffect(() => {
                   />
                   <Textinput
                       label="Blog Slug"
+                      className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
                       id="pn2"
                       type="text"
                       placeholder="Type Your Blog Slug"
                       defaultValue={blogData.slug}
                       onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
                   />
+                  {
+                    errorMessage.includes("dup key") &&
+                    <p className='text-red-500 text-sm'>This slug already used!</p>
+                  }
                   <Select
                       options={["Management", "Stories", "Development", "Updates"]}
                       label="Blog Category"

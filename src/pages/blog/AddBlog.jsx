@@ -12,6 +12,7 @@ import axios from 'axios'
 import { API_HOST } from '@/utils'
 import { useCookies } from 'react-cookie'
 import Popup from "@/components/ui/Popup"
+import MessagePopup from "@/components/ui/Popup/MessagePopup"
 import { useDispatch } from 'react-redux'
 import { addInfo } from '../../store/layout'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -40,6 +41,8 @@ function AddBlog() {
   const params = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [errorMessage, setErrorMessage] = useState("")
+  const [showMessagePopup, setShowMessagePopup] = useState(false)
   
   const [text, setText] = useState("")
   const [value, setValue] = useState("<p>TinyMCE Editor text</p>")
@@ -110,8 +113,11 @@ function AddBlog() {
         navigate("/blog")
     })
     .catch((err) => {
-        console.log(err)
+        setErrorMessage(err.response.data.error)
         setShowLoading(false)
+        if(err.response.data.error.includes("is required")){
+          setShowMessagePopup(true)
+        }
         if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
         }
@@ -136,7 +142,8 @@ function AddBlog() {
 
   return (
     <div>
-        <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
+        <MessagePopup showMessagePopup={showMessagePopup} setShowMessagePopup={setShowMessagePopup} popupText={"Please Fill Required Input"} aleart={"error"} />
+        <Popup showLoading={showLoading} popupText={"Blog Adding..."}  />
         <Card title="Default Tabs">
         <Tab.Group>
           <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
@@ -169,7 +176,7 @@ function AddBlog() {
               <div className='flex gap-10'>
                 <div className='w-2/4'>
                 <Textinput
-                  label="Blog Title"
+                  label="Blog Title*"
                   id="pn"
                   type="text"
                   placeholder="Type Your Blog Title"
@@ -177,16 +184,21 @@ function AddBlog() {
                   onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
                 />
                 <Textinput
-                    label="Blog Slug"
+                    label="Blog Slug*"
+                    className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
                     id="pn2"
                     type="text"
                     placeholder="Type Your Blog Slug"
                     defaultValue={blogData.slug}
                     onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
                 />
+                {
+                  errorMessage.includes("dup key") &&
+                  <p className='text-red-500 text-sm'>This slug already used!</p>
+                }
                 <Select
                   options={["Management", "Stories", "Development", "Updates"]}
-                  label="Blog Category"
+                  label="Blog Category*"
                   value={blogData.blog_category}
                   onChange={handleOptionChange}
                 />

@@ -3,9 +3,30 @@ import { NavLink, useLocation } from "react-router-dom";
 import { Collapse } from "react-collapse";
 import Icon from "@/components/ui/Icon";
 import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
+import { useSelector } from "react-redux";
+import { getProfile } from "../../../utils/getProfile";
 
 const Navmenu = ({ menus }) => {
+  const dispatch = useDispatch()
   const [activeSubmenu, setActiveSubmenu] = useState(null);
+
+  const [cookie, setCookie, removeCookie] = useCookies();
+  const [showingMenu, setShowingMenu] = useState([])
+
+  const profileData = useSelector((state) => state.profile);
+  const updateInfo = useSelector((state) => state.update);
+
+  useEffect(() => {
+    if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
+        getProfile(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, profileData, updateInfo]);
+
+
+  // useEffect(() => {
+  //   console.log(profileData)
+  // }, [profileData])
 
   const toggleSubmenu = (i) => {
     if (activeSubmenu === i) {
@@ -17,31 +38,70 @@ const Navmenu = ({ menus }) => {
 
   const location = useLocation();
   const locationName = location.pathname.replace("/", "");
-  const dispatch = useDispatch();
   useEffect(() => {
     let submenuIndex = null;
-    menus.map((item, i) => {
-      if (!item.child) return;
-      if (item.link === locationName) {
-        submenuIndex = null;
-      } else {
-        const ciIndex = item.child.findIndex(
-          (ci) => ci.childlink === locationName
-        );
-        if (ciIndex !== -1) {
-          submenuIndex = i;
-        }
-      }
-    });
+    if(Object.keys(profileData).length !== 0){
+      menus.map((item, i) => {
+        // if(item.title === "Blog" && profileData.permission.blog){
+        //   menuSetup(item, i, submenuIndex)
+        // }
+      });
+    }
+
     document.title = `Dashcode  | ${locationName}`;
 
     setActiveSubmenu(submenuIndex);
-  }, [location]);
+  }, [profileData]);
+
+
+  const menuSetup = (item, i, submenuIndex) => {
+    if (!item.child) return;
+    if (item.link === locationName) {
+      submenuIndex = null;
+    } else {
+      const ciIndex = item.child.findIndex(
+        (ci) => ci.childlink === locationName
+      );
+      if (ciIndex !== -1) {
+        submenuIndex = i;
+      }
+    }
+  }
+
+
+  useEffect(() => {
+    setShowingMenu([])
+    if(Object.keys(profileData).length !== 0){
+      menus.map(item => {
+        if(profileData.rolename === "Admin"){
+          setShowingMenu(oldItem => [...oldItem, item])
+        }else{
+          if(item.title === "System" || item.title === "Menu" || item.title === "Settings"){
+
+          }else{
+            if(item.title === "Blog"){
+              if(profileData.permission.blog){
+                setShowingMenu(oldItem => [...oldItem, item])
+              }
+            }else if(item.title === "Page") {
+              if(profileData.permission.page){
+                setShowingMenu(oldItem => [...oldItem, item])
+              }
+            }else{
+
+              setShowingMenu(oldItem => [...oldItem, item])
+            }
+          }
+        }
+      })
+    }
+
+  }, [menus, profileData])
 
   return (
     <>
       <ul>
-        {menus.map((item, i) => (
+        {showingMenu.map((item, i) => (
           <li
             key={i}
             className={` single-sidebar-menu 

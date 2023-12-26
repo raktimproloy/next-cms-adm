@@ -23,6 +23,7 @@ const LoginForm = () => {
   // Cookies store
   const [cookies, setCookie] = useCookies(['_token'])
   const [error, setError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(false)
   const [showLoading, setShowLoading] = useState(false)
 
   const [loginData, setLoginData] = useState({
@@ -57,7 +58,7 @@ const LoginForm = () => {
     })
     .catch(error=>{
         setShowLoading(false)
-        console.log(error)
+        setErrorMessage(error.response.data.error)
         setError(true)
     })
 
@@ -73,8 +74,10 @@ const LoginForm = () => {
     <div className="text-red-500 dark:text-red-400 text-base text-center mb-3">
       {
         error ?
-        "Your credential do not matching !" :
-        ""
+          errorMessage === "You don't have login access!" ?
+          errorMessage 
+          : "Your credential do not matching !" 
+        : ""
       }
     </div>
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">

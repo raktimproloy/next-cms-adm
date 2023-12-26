@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux'
 import { getAllMenus } from '../../utils/getAllMenus'
 import MultipleSelect from "@/pages/shared/MultipleSelect"
 import { getAllPages } from '../../utils/getAllPages'
+import { getAllBlogs } from '../../utils/getAllBlogs'
 
 
 
@@ -26,6 +27,10 @@ const buttons = [
       title: "Article",
       icon: "heroicons-outline:home",
     },
+    // {
+    //   title: "Blog",
+    //   icon: "heroicons-outline:home",
+    // },
     {
       title: "External",
       icon: "heroicons-outline:user",
@@ -47,12 +52,14 @@ function AddLink() {
   const [menuType, setMenuType] = useState([])
   const [selectedMenuType, setSelectedMenuType] = useState([])
   const [selectedPages, setSelectedPages] = useState([])
+  const [selectedBlogs, setSelectedBlogs] = useState([])
   const [selectPage, setSelectPage] = useState("")
   const [selectedPageData, setSelectedPageData] = useState({
     menu_type: []
   })
   const menuTypeData = useSelector((state) => state.menus);
   const pageData = useSelector((state) => state.pages);
+  const blogData = useSelector((state) => state.blogs);
   const updateInfo = useSelector((state) => state.update);
 
   // Cookies
@@ -68,8 +75,23 @@ function AddLink() {
     if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
       getAllPages(dispatch, cookie, removeCookie);
     }
-  }, [dispatch, pageData, updateInfo]);
+    // if (updateInfo.blogUpdate === "" || updateInfo.blogUpdate === "not-updated") {
+    //   getAllBlogs(dispatch, cookie, removeCookie);
+    // }
+  }, [dispatch, pageData, updateInfo, blogData]);
 
+
+  // useEffect(() => {
+  //   console.log(blogData)
+  // }, [blogData])
+
+
+  useEffect(() => {
+    setSelectedPages([{value: "none", label: "None"}])
+    pageData.map(page => {
+      setSelectedPages(oldPage => [...oldPage, { value: page.slug, label: page.title }])
+    })
+  }, [pageData])
 
   useEffect(() => {
     setSelectedPages([{value: "none", label: "None"}])
@@ -117,6 +139,7 @@ function AddLink() {
           dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
           dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
           setShowLoading(false)
+          navigate("/menu/menu-manager")
       })
       .catch((err) => {
           console.log(err)
@@ -158,7 +181,7 @@ function AddLink() {
   }, [menuTypeData])
 
   // Selection Handler
-  function handleOptionChange(e) {
+  function handlePageChange(e) {
     setSelectPage(e.target.value)
   }
 
@@ -177,6 +200,7 @@ function AddLink() {
           <p>Links: </p>
           <Card className="removePadding" >
                 <Tab.Group>
+
                 <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
                     {buttons.map((item, i) => (
                     <Tab as={Fragment} key={i}>
@@ -202,14 +226,27 @@ function AddLink() {
                     </Tab>
                     ))}
                 </Tab.List>
+
                 <Tab.Panels>
+                  {/* Article Or Page */}
                     <Tab.Panel>
                     <Select
                         options={selectedPages}
                         label="Select Page"
-                        onChange={handleOptionChange}
+                        onChange={handlePageChange}
                     />
                     </Tab.Panel>
+
+                    {/* Blogs */}
+                    {/* <Tab.Panel>
+                    <Select
+                        options={selectedBlogs}
+                        label="Select Blog"
+                        onChange={handlePageChange}
+                    />
+                    </Tab.Panel> */}
+
+                    {/* External Link */}
                     <Tab.Panel>
                     <Textinput
                         label="External Link"
@@ -220,6 +257,7 @@ function AddLink() {
                         onChange={(e) => setLinkData({...linkData, external_link:e.target.value})}
                     />
                     </Tab.Panel>
+
                 </Tab.Panels>
                 </Tab.Group>
             </Card>

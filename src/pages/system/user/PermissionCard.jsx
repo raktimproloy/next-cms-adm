@@ -8,8 +8,8 @@ import { getAllRoles } from '@/utils/getAllRoles';
 
 const columns = [
     {
-      label: "User",
-      field: "user",
+      label: "Page",
+      field: "page",
     },
     {
       label: "Info",
@@ -45,7 +45,7 @@ function PermissionCard({userData, permission, setPermission}) {
         data.map(role => {
             if(userData.role === role.rolename){
                 setPermission({
-                    user: role.user,
+                    page: role.page,
                     info: role.info,
                     service: role.service,
                     blog: role.blog,
@@ -79,10 +79,10 @@ function PermissionCard({userData, permission, setPermission}) {
                     <tr>
                         <td className="table-td">
                         <Switch
-                            label="User"
+                            label="Page"
                             activeClass="bg-danger-500"
-                            value={permission.user}
-                            onChange={() => setPermission({...permission, user: !permission.user})}
+                            value={permission.page}
+                            onChange={() => setPermission({...permission, page: !permission.page})}
                         />
                         </td>
                         <td className="table-td">

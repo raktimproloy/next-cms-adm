@@ -54,6 +54,7 @@ const styles = {
 function MenuManager() {
   const navigate = useNavigate()
   const [selectionValue, setSelectionValue] = useState("")
+  const [showLoading, setShowLoading] = useState(false)
   const [deleteInfo, setDeleteInfo] = useState({
     showDeleteModal: false,
     slug: ""
@@ -130,6 +131,7 @@ function MenuManager() {
 
 
   const handleDelete = () => {
+    setShowLoading(true)
     axios.post(`${API_HOST}menu/delete/item/${selectionValue}`, {
       slug: deleteInfo.slug
     }, {
@@ -139,12 +141,14 @@ function MenuManager() {
       // deletePage(deleteInfo.slug)(dispatch);
       dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
+      setShowLoading(false)
     })
     .catch((err) => {
       console.log(err)
       if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
       }
+      setShowLoading(false)
     });
   }
 
@@ -240,6 +244,7 @@ function MenuManager() {
 
   return (
     <div>
+      <Popup showLoading={showLoading} popupText={"Menu Deleting..."}  />
       <Modal
         title="Warning"
         label=""

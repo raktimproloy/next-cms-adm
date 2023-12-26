@@ -8,29 +8,28 @@ import axios from "axios";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
 import ProfileImage from "/public/default_profile.png"
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { getProfile } from "../../utils/getProfile";
 
 const Index = () => {
-
-  // Get Profile Data
-  const dispatch = useDispatch();
+  const [profileData, setProfileData] = useState({})
+  const params = useParams()
   const [cookie, removeCookie] = useCookies();
-
-  const profileData = useSelector((state) => state.profile);
-  const updateInfo = useSelector((state) => state.update);
-
-  // useEffect(() => {
-  //   if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
-  //       getProfile(dispatch, cookie, removeCookie);
-  //   }
-  // }, [dispatch, profileData, updateInfo]);
-
+  const headers = {
+    'Authorization': `Bearer ${cookie._token}`
+  };
 
   useEffect(() => {
-    console.log(profileData)
-  }, [profileData])
+    if(Object.keys(profileData).length === 0){
+      axios.get(`${API_HOST}user/${params.username}`, {
+        headers: headers
+      })
+      .then(res => {
+        setProfileData(res.data[0])
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+  }, [params])
 
   return (
     <div>
@@ -46,21 +45,12 @@ const Index = () => {
                     alt=""
                     className="w-full h-full object-cover rounded-full"
                   />
-                  {/* <Link
-                    to="#"
-                    className="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center md:top-[140px] top-[100px]"
-                  >
-                    <Icon icon="heroicons:pencil-square" />
-                  </Link> */}
                 </div>
               </div>
               <div className="flex-1">
                 <div className="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
                   {profileData.fullName}
                 </div>
-                {/* <div className="text-sm font-light text-slate-600 dark:text-slate-400">
-                  Front End Developer
-                </div> */}
               </div>
             </div>
           </div>
@@ -131,20 +121,6 @@ const Index = () => {
                     </a>
                   </div>
                 </li>
-
-                {/* <li className="flex space-x-3 rtl:space-x-reverse">
-                  <div className="flex-none text-2xl text-slate-600 dark:text-slate-300">
-                    <Icon icon="heroicons:map" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
-                      LOCATION
-                    </div>
-                    <div className="text-base text-slate-600 dark:text-slate-50">
-                      Home# 320/N, Road# 71/B, Mohakhali, Dhaka-1207, Bangladesh
-                    </div>
-                  </div>
-                </li> */}
               </ul>
             </Card>
           </div>

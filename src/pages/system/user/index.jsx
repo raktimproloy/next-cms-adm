@@ -60,18 +60,18 @@ const COLUMNS = [
         <span className="block w-full">
           <span
             className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-              row?.cell?.value == "1"
+              row?.cell?.value 
                 ? "text-success-500 bg-success-500"
                 : ""
             } 
             ${
-              row?.cell?.value == "0"
+              !row?.cell?.value
                 ? "text-warning-500 bg-warning-500"
                 : ""
             }
              `}
           >
-            {row?.cell?.value === "1" ? "Active" : "Inactive"}
+            {row?.cell?.value ? "Active" : "Inactive"}
           </span>
         </span>
       );

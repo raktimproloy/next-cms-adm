@@ -57,6 +57,7 @@ const category = [
 
 function index() {
   const CMS_API = import.meta.env.VITE_CMS_LINK
+  const [showLoading, setShowLoading] = useState(false)
   const navigate = useNavigate()
   const [selectionValue, setSelectionValue] = useState("predesign")
   const [showingData, setShowingData] = useState([])
@@ -83,6 +84,7 @@ function index() {
 
 
   const handleDelete = () => {
+    setShowLoading(true)
     axios.delete(`${API_HOST}page/delete/${deleteInfo.slug}`, {
       headers: headers
     })
@@ -90,12 +92,14 @@ function index() {
       deletePage(deleteInfo.slug)(dispatch);
       dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
+      setShowLoading(false)
     })
     .catch((err) => {
       console.log(err)
       if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
       }
+      setShowLoading(false)
     });
   }
 
@@ -123,6 +127,7 @@ function index() {
 
   return (
     <div>
+      <Popup showLoading={showLoading} popupText={"Page Deleting..."}  />
       <Modal
         title="Warning"
         label=""

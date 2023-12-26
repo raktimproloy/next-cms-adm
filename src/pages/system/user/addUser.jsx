@@ -50,6 +50,7 @@ function AddUser() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [stepNumber, setStepNumber] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("")
 
   // Cookies
   const [cookie, removeCookie] = useCookies()
@@ -58,7 +59,7 @@ function AddUser() {
   const [showLoading, setShowLoading] = useState(false)
 
   const [permission, setPermission] = useState({
-    user: false,
+    page: false,
     info: false,
     service: false,
     blog: false
@@ -70,7 +71,7 @@ function AddUser() {
     email: "",
     phone: "",
     last_login: "30mnt ago",
-    status: 0,
+    status: true,
     password: "",
     role: "",
     roleId: ""
@@ -138,7 +139,11 @@ function AddUser() {
       })
     })
     .catch(error=>{
-        console.log(error)
+        setShowLoading(false)
+        setErrorMessage(error.response.data.error)
+        if(error.response.data.error === "Email already used" || error.response.data.error.includes("dup key")){
+          setStepNumber(stepNumber - 1)
+        }
         if(error.response.data.error === "Authentication error!"){
           removeCookie("_token")
         }
@@ -221,24 +226,38 @@ function AddUser() {
                       register={register}
                       onChange={handleChange}
                     />
-                    <Textinput
-                      label="Username"
-                      type="text"
-                      placeholder="Type your User Name"
-                      name="username"
-                      error={errors.username}
-                      register={register}
-                      onChange={handleChange}
-                    />
-                    <Textinput
-                      label="Email"
-                      type="email"
-                      placeholder="Type your email"
-                      name="email"
-                      error={errors.email}
-                      register={register}
-                      onChange={handleChange}
-                    />
+                    <div>
+                      <Textinput
+                        label="Username"
+                        type="text"
+                        className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
+                        placeholder="Type your User Name"
+                        name="username"
+                        error={errors.username}
+                        register={register}
+                        onChange={handleChange}
+                      />
+                        {
+                          errorMessage.includes("dup key") &&
+                          <p className='text-red-500 text-sm'>This username already used!</p>
+                        }
+                    </div>
+                    <div>
+                      <Textinput
+                        label="Email"
+                        type="email"
+                        className={errorMessage.includes("Email already used") && "border-1 dark:border-red-700"}
+                        placeholder="Type your email"
+                        name="email"
+                        error={errors.email}
+                        register={register}
+                        onChange={handleChange}
+                      />
+                      {
+                        errorMessage.includes("Email already used") &&
+                        <p className='text-red-500 text-sm'>This email already used!</p>
+                      }
+                    </div>
                     <InputGroup
                       label="Phone Number"
                       type="text"

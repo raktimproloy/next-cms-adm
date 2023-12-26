@@ -7,6 +7,7 @@ import Switch from "@/components/ui/Switch";
 import Image from "@/components/ui/Image";
 import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
+import Popup from "@/components/ui/Popup";
 import { Tab, Disclosure, Transition } from "@headlessui/react";
 import Accordion from "@/components/ui/Accordion";
 import image2 from "@/assets/images/all-img/image-2.png";
@@ -14,6 +15,9 @@ import axios from 'axios';
 import { API_HOST } from '../../utils';
 import { useCookies } from 'react-cookie';
 import { addInfo } from '../../store/layout';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { getSetting } from '../../utils/getSetting';
 
 
 const buttons = [
@@ -40,36 +44,34 @@ const buttons = [
 ];
 
 function GenarelSetting() {
-
+  const [showLoading, setShowLoading] = useState(false)
   const [settingData, setSettingData] = useState({})
   const [settingMetaData, setSettingMetaData] = useState({})
   const [settingSocalData, setSettingSocalData] = useState({})
   const [favIcon, setFavIcon] = useState(null)
   const [logo, setLogo] = useState(null)
   const [metaImage, setMetaImage] = useState(null)
-
+  const dispatch = useDispatch()
 
   // Cookies
   const [cookie, removeCookie] = useCookies()
-  const headers = {
-    'Authorization': `Bearer ${cookie._token}`,
-    // 'Content-Type': 'multipart/form-data',
-  };
-
+  const data = useSelector((state) => state.setting);
+  const updateInfo = useSelector((state) => state.update);
 
   useEffect(() => {
-    axios.get(`${API_HOST}setting/get`)
-    .then(res => {
-      setSettingData(res.data)
-      setSettingMetaData(res.data.meta_property)
-      setSettingSocalData(res.data.socal_media)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }, [])
+    if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
+        getSetting(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, settingData, updateInfo]);
+
+  useEffect(() => {
+    if(Object.keys(settingData).length === 0){
+      setSettingData(data)
+    }
+  }, [data])
 
   const editHandler = () => {
+    setShowLoading(true)
     const formData = new FormData();
   
     formData.append("title", settingData.title);
@@ -102,11 +104,15 @@ function GenarelSetting() {
       },
     })
     .then(res => {
-      console.log(res);
       dispatch(addInfo({ field: 'settingUpdate', value: 'not-updated' }));
+      setShowLoading(false)
     })
     .catch(err => {
       console.log(err);
+      if(err.response.data.error === "Authentication error!"){
+        removeCookie("_token")
+      }
+      setShowLoading(false)
     });
   };
   
@@ -132,6 +138,7 @@ function GenarelSetting() {
 
   return (
     <>
+      <Popup showLoading={showLoading} popupText={"Setting Updating..."}  />
       <Card title="Justify Tabs">
         <Tab.Group>
           <Tab.List className="lg:space-x-6 md:space-x-3 space-x-0 rtl:space-x-reverse">

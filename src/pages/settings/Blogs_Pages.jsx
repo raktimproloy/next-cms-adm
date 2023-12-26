@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
+import Popup from "@/components/ui/Popup";
 import Fileinput from "@/components/ui/Fileinput";
 import Textarea from "@/components/ui/Textarea"
 import Switch from "@/components/ui/Switch";
@@ -14,6 +15,9 @@ import axios from 'axios';
 import { API_HOST } from '../../utils';
 import { useCookies } from 'react-cookie';
 import { addInfo } from '../../store/layout';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { getSetting } from '../../utils/getSetting';
 
 
 const buttons = [
@@ -28,7 +32,8 @@ const buttons = [
 ];
 
 function Blogs_Pages() {
-
+  const [showLoading, setShowLoading] = useState(false)
+  const dispatch = useDispatch()
   const [settingData, setSettingData] = useState({})
 
   // Cookies
@@ -38,18 +43,23 @@ function Blogs_Pages() {
     // 'Content-Type': 'multipart/form-data',
   };
 
+  const data = useSelector((state) => state.setting);
+  const updateInfo = useSelector((state) => state.update);
 
   useEffect(() => {
-    axios.get(`${API_HOST}setting/get`)
-    .then(res => {
-      setSettingData(res.data)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }, [])
+    if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
+        getSetting(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, settingData, updateInfo]);
+
+  useEffect(() => {
+    if(Object.keys(settingData).length === 0){
+      setSettingData(data)
+    }
+  }, [data])
 
   const editHandler = () => {
+    setShowLoading(true)
     axios.post(`${API_HOST}setting/update/${settingData._id}`, settingData, {
       headers: {
         'Authorization': `Bearer ${cookie._token}`,
@@ -59,14 +69,20 @@ function Blogs_Pages() {
     .then(res => {
       dispatch(addInfo({ field: 'settingUpdate', value: 'not-updated' }));
       console.log(res);
+      setShowLoading(false)
     })
     .catch(err => {
       console.log(err);
+      if(err.response.data.error === "Authentication error!"){
+        removeCookie("_token")
+      }
+      setShowLoading(false)
     });
   };
   
   return (
     <>
+      <Popup showLoading={showLoading} popupText={"Setting Updating..."}  />
       <Card title="Justify Tabs">
         <Tab.Group>
           <Tab.List className="lg:space-x-6 md:space-x-3 space-x-0 rtl:space-x-reverse">

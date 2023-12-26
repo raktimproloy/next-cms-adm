@@ -34,7 +34,7 @@ function AddPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showLoading, setShowLoading] = useState(false)
-
+  const [errorMessage, setErrorMessage] = useState("")
   const [menuType, setMenuType] = useState([])
   const [selectedMenuType, setSelectedMenuType] = useState([])
   const menuTypeData = useSelector((state) => state.menus);
@@ -77,6 +77,7 @@ function AddPage() {
       }, 1000);
     })
     .catch((err) => {
+      setErrorMessage(err.response.data.error)
       setShowLoading(false)
       if(err.response.data.error === "Authentication error!"){
           removeCookie("_token")
@@ -127,6 +128,7 @@ function AddPage() {
             onChange={handleOptionChange}
           />
           <Textinput
+            className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
             label="Page Slug"
             id="pn2"
             type="text"
@@ -134,6 +136,10 @@ function AddPage() {
             defaultValue={pageData.slug}
             onChange={(e) => setPageData({...pageData, slug:e.target.value})}
           />
+          {
+            errorMessage.includes("dup key") &&
+            <p className='text-red-500 text-sm'>This slug already used!</p>
+          }
           <Textinput
             label="Default Template"
             id="pn2"

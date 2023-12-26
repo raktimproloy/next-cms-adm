@@ -3,6 +3,7 @@ import Card from "@/components/ui/Card";
 import { tableData } from "@/constant/table-data";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
+import Popup from "@/components/ui/Popup";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -38,6 +39,7 @@ const columns = [
   const rows = tableData.slice(0, 7);
 function MenuType() {
   const navigate = useNavigate()
+  const [showLoading, setShowLoading] = useState(false)
   const [deleteInfo, setDeleteInfo] = useState({
     showDeleteModal: false,
     slug: ""
@@ -59,6 +61,7 @@ function MenuType() {
   }, [dispatch, data, updateInfo]);
 
   const handleDelete = () => {
+    setShowLoading(true)
     axios.delete(`${API_HOST}menu/delete/${deleteInfo.alias}`, {
       headers: headers
     })
@@ -66,16 +69,19 @@ function MenuType() {
       // deleteMenu(deleteInfo.alias)(dispatch);
       dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
+      setShowLoading(false)
     })
     .catch((err) => {
       console.log(err)
       if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
       }
+      setShowLoading(false)
     });
   }
   return (
     <>
+      <Popup showLoading={showLoading} popupText={"Menu Type Deleting..."}  />
       <Modal
         title="Warning"
         label=""
@@ -133,7 +139,7 @@ function MenuType() {
                               text="Edit"
                               className="btn-outline-primary rounded-[999px] py-2 me-2"
                               onClick={() => {
-                                navigate("/menu/menu-type/edit")
+                                navigate(`/menu/menu-type/edit/${row.alias}`)
                               }}
                             />
                             <Button
