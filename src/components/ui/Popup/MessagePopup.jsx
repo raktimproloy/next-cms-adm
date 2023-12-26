@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-function MessagePopup({ showMessagePopup = false, setShowMessagePopup, popupText, aleart = 'error' }) {
+function MessagePopup({ showMessagePopup = true, setShowMessagePopup, popupText, aleart = 'error' }) {
   useEffect(() => {
     let timeoutId;
 
@@ -8,7 +8,7 @@ function MessagePopup({ showMessagePopup = false, setShowMessagePopup, popupText
       // Set a timeout to automatically hide the popup after 1 second
       timeoutId = setTimeout(() => {
         setShowMessagePopup(false);
-      }, 1000);
+      }, 3000);
     }
 
     // Cleanup function to clear the timeout if the component unmounts or showMessagePopup changes

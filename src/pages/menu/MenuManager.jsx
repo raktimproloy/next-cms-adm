@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import Popup from "@/components/ui/Popup"
 import Select from "@/components/ui/Select"
+import Textinput from "@/components/ui/Textinput"
 import Modal from "@/components/ui/Modal"
 import { useSelector } from 'react-redux';
 import { getAllPages } from '../../utils/getAllPages';
@@ -55,6 +56,11 @@ function MenuManager() {
   const navigate = useNavigate()
   const [selectionValue, setSelectionValue] = useState("")
   const [showLoading, setShowLoading] = useState(false)
+  const [editPopup, setEditPopup] = useState({
+    slug: "",
+    showEditModal: false
+  })
+
   const [deleteInfo, setDeleteInfo] = useState({
     showDeleteModal: false,
     slug: ""
@@ -93,6 +99,8 @@ function MenuManager() {
       })
     }
   }, [menuTypeData, selectionValue, pageData])
+
+
 
 
   // Menu Items sort and set Page data
@@ -157,10 +165,12 @@ function MenuManager() {
       headers: headers
     })
     .then((res) => {
+      swal("Updated", "The page moved to up!", "success")
       dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
     })
     .catch((err) => {
       console.log(err)
+      swal("Not Updated", "The page can't moved to up!", "error")
       if(err.response.data.error === "Authentication error!"){
       removeCookie("_token")
       }
@@ -204,7 +214,7 @@ function MenuManager() {
     };
 
     updateApi(updatedMenuData)
-    swal("Updated", "The page moved to up!", "success")
+    
   }
   
 
@@ -239,7 +249,21 @@ function MenuManager() {
     };
 
     updateApi(updatedMenuData)
-    swal("Updated", "The page moved to down!", "success")
+  }
+
+
+  const editExternalLink = () => {
+    axios.post(`${API_HOST}menu/update/item/${selectionValue}`, {
+      slug: editPopup.slug
+    }, {
+      headers: headers
+    })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   return (
@@ -267,6 +291,64 @@ function MenuManager() {
         </h4>
         <div className="text-base text-slate-600 dark:text-slate-300">
           Do you want to delete this page?
+        </div>
+      </Modal>
+      <Modal
+        title="Edit Extranal Link"
+        label="External Link"
+        labelClass="btn-outline-dark"
+        activeModal={editPopup.showEditModal}
+        onClose={() => {
+          setEditPopup({...editPopup, showEditModal: false})
+        }}
+        footerContent={
+          <Button
+            text="Edit"
+            className="btn-dark "
+            onClick={() => {
+              editExternalLink()
+            }}
+          />
+        }
+      >
+        <div className="text-base text-slate-600 dark:text-slate-300">
+          <Textinput
+            label="Role Name"
+            type="text"
+            placeholder="Type new role"
+            // value={roleName}
+            // onChange={(e) => setRoleName(e.target.value)}
+          />
+          {/* <div className="mt-4 w-2/4 mx-auto">
+            <div className="flex justify-between py-3">
+              <Switch
+                label="Page"
+                activeClass="bg-danger-500"
+                value={pageCheck}
+                onChange={() => SetPageCheck(!pageCheck)}
+              />
+              <Switch
+                label="Info"
+                activeClass="bg-danger-500"
+                value={infoCheck}
+                onChange={() => SetInfoCheck(!infoCheck)}
+              />
+            </div>
+            <div className="flex justify-between py-3">
+              <Switch
+                label="Service"
+                activeClass="bg-danger-500"
+                value={serviceCheck}
+                onChange={() => SetServiceCheck(!serviceCheck)}
+              />
+              <Switch
+                label="Blog"
+                activeClass="bg-danger-500"
+                value={blogCheck}
+                onChange={() => SetBlogCheck(!blogCheck)}
+              />
+            </div>
+          </div> */}
         </div>
       </Modal>
       <Card title="Menu Manager" noborder>
@@ -335,7 +417,10 @@ function MenuManager() {
                             className="btn-outline-primary rounded-[999px] py-2 me-2"
                             onClick={() => {
                               if(row.slug.includes("http")){
-
+                                setEditPopup({
+                                  slug: row.slug,
+                                  showEditModal: true
+                                })
                               }else{
                                 navigate(`/pages/edit/${row.slug}`)
                               }

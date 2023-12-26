@@ -50,6 +50,7 @@ const styles = {
 };
 
 const category = [
+  {value: "all", label: "All"},
   {value: "predesign", label: "Predesign"},
   {value: "grapesjs", label: "Grapesjs"}
 ]
@@ -59,7 +60,7 @@ function index() {
   const CMS_API = import.meta.env.VITE_CMS_LINK
   const [showLoading, setShowLoading] = useState(false)
   const navigate = useNavigate()
-  const [selectionValue, setSelectionValue] = useState("predesign")
+  const [selectionValue, setSelectionValue] = useState("all")
   const [showingData, setShowingData] = useState([])
   const [deleteInfo, setDeleteInfo] = useState({
     showDeleteModal: false,
@@ -107,7 +108,9 @@ function index() {
     setShowingData([])
     if(data.length > 0){
       data.map(page => {
-        if(page.template_category.toLowerCase() === selectionValue){
+        if(selectionValue === "all"){
+          setShowingData(oldPage => [...oldPage, page])
+        }else if(page.template_category.toLowerCase() === selectionValue){
           setShowingData(oldPage => [...oldPage, page])
         }
       })

@@ -89,6 +89,8 @@ function GenarelSetting() {
     formData.append("uk_country", settingData.uk_country)
     formData.append("map_url", settingData.map_url)
     formData.append("uk_map_url", settingData.uk_map_url)
+    formData.append("map_share", settingData.map_share)
+    formData.append("uk_map_share", settingData.uk_map_share)
     formData.append("google_analytics_id", settingData.google_analytics_id)
     formData.append("blog_show_amount", settingData.blog_show_amount)
     formData.append("language", settingData.language)
@@ -290,6 +292,14 @@ function GenarelSetting() {
                     defaultValue={settingData.map_url}
                     onChange={(e) => setSettingData({...settingData, map_url:e.target.value})}
                   />
+                  <Textinput
+                    label="Map Share Link"
+                    id="pn2"
+                    type="text"
+                    placeholder="Type Your Map Share Link"
+                    defaultValue={settingData.map_share}
+                    onChange={(e) => setSettingData({...settingData, map_share:e.target.value})}
+                  />
                 </div>
                 <div className='w-2/4'>
                 <p>United Kingdom</p>
@@ -333,6 +343,14 @@ function GenarelSetting() {
                     defaultValue={settingData.uk_map_url}
                     onChange={(e) => setSettingData({...settingData, uk_map_url:e.target.value})}
                   />
+                  <Textinput
+                    label="Uk Map Share Link"
+                    id="pn2"
+                    type="text"
+                    placeholder="Type Your Uk Map Share Link"
+                    defaultValue={settingData.uk_map_share}
+                    onChange={(e) => setSettingData({...settingData, uk_map_share:e.target.value})}
+                  />
                 </div>
               </div>
             </Tab.Panel>
@@ -375,14 +393,14 @@ function GenarelSetting() {
                   placeholder=" Type Meta Title"
                   type="text"
                   defaultValue={settingMetaData.title}
-                  onChange={(e) => setSettingMetaData({...settingMetaData, title:e.target.value})}
+                  onChange={(e) => setSettingMetaData({...settingMetaData, title:e.target.value, og_title:e.target.value, twitter_title: e.target.value})}
                 />
                 <Textarea
                     label="Meta Description"
                     id="pn4"
                     placeholder="Type Meta Description"
                     defaultValue={settingMetaData.description}
-                    onChange={(e) => setSettingMetaData({...settingMetaData, description:e.target.value})}
+                    onChange={(e) => setSettingMetaData({...settingMetaData, description:e.target.value, og_description:e.target.value, twitter_description: e.target.value})}
                 />
                 <p className='mt-3'>Property: og:image</p>
                   <Fileinput
@@ -449,7 +467,7 @@ function GenarelSetting() {
                   defaultValue={settingMetaData.og_url}
                   onChange={(e) => setSettingMetaData({...settingMetaData, og_url:e.target.value})}
                 />
-              <Textarea
+              <Textinput
                   label="Twitter Card"
                   id="pn4"
                   placeholder="Type Your Twitter Card"
@@ -464,7 +482,7 @@ function GenarelSetting() {
                   defaultValue={settingMetaData.twitter_title}
                   onChange={(e) => setSettingMetaData({...settingMetaData, twitter_title:e.target.value})}
                 />
-                <Textinput
+                <Textarea
                   label="Twitter Description"
                   id="pn3"
                   placeholder="Type Your Twitter Description"

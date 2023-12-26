@@ -43,7 +43,6 @@ const EmailPage = lazy(() => import("./pages/email"))
 // Menu Page
 const MenuManager = lazy(() => import("./pages/menu/MenuManager"))
 const AddLink = lazy(() => import("./pages/menu/AddLink"))
-const EditMenu = lazy(() => import("./pages/menu/EditMenu"))
 
 const MenuType = lazy(() => import("./pages/menu/MenuType"))
 const AddMenuType = lazy(() => import("./pages/menu/AddMenuType"))
@@ -151,7 +150,6 @@ function App() {
 
                 <Route path="menu/menu-manager" element={<MenuManager />} />
                 <Route path="menu/menu-manager/add" element={<AddLink />} />
-                <Route path="menu/menu-manager/edit" element={<EditMenu />} />
               </>
             )
           }

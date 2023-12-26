@@ -150,7 +150,7 @@ useEffect(() => {
 
   return (
     <div>
-        <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
+        <Popup showLoading={showLoading} popupText={"Blog Updating..."}  />
         <Card title="Blog Edit">
         <Tab.Group>
           <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
@@ -257,14 +257,14 @@ useEffect(() => {
                     placeholder=" Disabled Input"
                     type="text"
                     defaultValue={metaTag.main_title}
-                    onChange={(e) => setMetaTag({...metaTag, title:e.target.value})}
+                    onChange={(e) => setMetaTag({...metaTag, main_title:e.target.value, title:e.target.value, og_title:e.target.value, twitter_title:e.target.value})}
                 />
                 <Textarea
                     label="Meta Description"
                     id="pn4"
                     placeholder="Type Meta Description"
                     defaultValue={metaTag.main_description}
-                    onChange={(e) => setMetaTag({...metaTag, main_description:e.target.value})}
+                    onChange={(e) => setMetaTag({...metaTag, main_description:e.target.value, description:e.target.value, og_description:e.target.value, twitter_description:e.target.value})}
                 />
                 <p className='my-3'>Property: og:image</p>
                 <Fileinput

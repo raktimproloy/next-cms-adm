@@ -90,8 +90,6 @@ function EditPage() {
   const headers = {
   'Authorization': `Bearer ${cookie._token}`
   }
-
-
   
   useEffect(() => {
     if (updateInfo.menuUpdate === "" || updateInfo.menuUpdate === "not-updated") {
@@ -285,14 +283,20 @@ function EditPage() {
                   placeholder=" Disabled Input"
                   type="text"
                   defaultValue={pageData.meta_title}
-                  onChange={(e) => setPageData({...pageData, meta_title:e.target.value})}
+                  onChange={(e) => {
+                    setPageData({...pageData, meta_title:e.target.value})
+                    setMetaTag({...metaTag, title:e.target.value, og_title:e.target.value, twitter_title:e.target.value})
+                  }}
                 />
                 <Textarea
                     label="Meta Description"
                     id="pn4"
                     placeholder="Type Meta Description"
                     defaultValue={pageData.meta_description}
-                    onChange={(e) => setPageData({...pageData, meta_description:e.target.value})}
+                    onChange={(e) => {
+                      setPageData({...pageData, meta_description:e.target.value})
+                      setMetaTag({...metaTag, description:e.target.value, og_description:e.target.value, twitter_description:e.target.value})
+                    }}
                 />
                 <p className='mt-3'>Property: og:image</p>
                   <Fileinput
