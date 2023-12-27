@@ -5,6 +5,7 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 // Auth Pages
 const Login = lazy(() => import("./pages/auth/login3"));
 const ForgotPass = lazy(() => import("./pages/auth/forgot-password3"));
+const NewPass = lazy(() => import("./pages/auth/new-password"));
 
 // Sidebar pages
 const Dashboard = lazy(() => import("./pages/dashboard"));
@@ -74,8 +75,10 @@ function App() {
   const updateInfo = useSelector((state) => state.update);
 
   useEffect(() => {
-    if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
-        getProfile(dispatch, cookie, removeCookie);
+    if(isAuthenticated){
+      if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
+          getProfile(dispatch, cookie, removeCookie);
+      }
     }
   }, [dispatch, profileData, updateInfo]);
 
@@ -108,10 +111,18 @@ function App() {
             </Suspense>
           }
         />
+        <Route
+          path="/new-password"
+          element={
+            <Suspense fallback={<Loading />}>
+              <NewPass />
+            </Suspense>
+          }
+        />
         {/* Editor */}
         
         {
-          isAuthenticated === true &&
+          isAuthenticated === true ?
         <Route path="/*" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
 
@@ -179,7 +190,7 @@ function App() {
           <Route path="*" element={<Navigate to="/404" />} />
 
         </Route> 
-        // : <Route path='*' element={<Navigate to='/' replace />} />
+        : <Route path='*' element={<Navigate to='/' replace />} />
 
         }
 

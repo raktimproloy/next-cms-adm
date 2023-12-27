@@ -1,21 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
-import Icon from "@/components/ui/Icon";
 import GroupChart3 from "@/components/partials/widget/chart/group-chart-3";
-import DonutChart from "@/components/partials/widget/chart/donut-chart";
 import BasicArea from "./BasicArea";
 import SelectMonth from "@/components/partials/SelectMonth";
-import TaskLists from "@/components/partials/widget/task-list";
-import MessageList from "@/components/partials/widget/message-list";
-import TrackingParcel from "../../components/partials/widget/activity";
-import TeamTable from "@/components/partials/Table/team-table";
-import { meets, files } from "@/constant/data";
+import { meets} from "@/constant/data";
 import CalendarView from "@/components/partials/widget/CalendarView";
 import HomeBredCurbs from "./HomeBredCurbs";
 import DefaultProfile from "/default_profile.png"
+import { useSelector } from "react-redux";
+import { getCollectionCount } from "../../utils/getCollectionCount";
+import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 
 const Dashboard = () => {
-// <GroupChart3 />
+  const dispatch = useDispatch()
+
+  // Cookies
+  const [cookie, removeCookie] = useCookies()
+  const [groupChartArray, setGroupCharArray] = useState([])
+
+  const data = useSelector((state) => state.collectionCount);
+  useEffect(() => {
+    if (data.blog === undefined) {
+      getCollectionCount(dispatch, cookie, removeCookie, "blog", data);
+    }
+    if (data.user === undefined) {
+      getCollectionCount(dispatch, cookie, removeCookie, "user", data);
+    }
+  }, [dispatch, data]);
+
+  useEffect(() => {
+    setGroupCharArray([
+        {
+          title: "Active User",
+          count: "354"
+        },
+        {
+          title: "Total User",
+          count: data.user
+        },
+        {
+          title: "Total Blog",
+          count: data.blog
+        },
+        {
+          title: "Total Services",
+          count: "10"
+        },
+      ])
+
+  }, [data])
+
+
   return (
     <div className="space-y-5">
       <HomeBredCurbs title="Dashboard" />
@@ -25,18 +61,9 @@ const Dashboard = () => {
             <div className="grid grid-cols-12 gap-5">
               <div className="xl:col-span-12 col-span-12">
                 <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
-                  <GroupChart3 />
+                  <GroupChart3 chartData={groupChartArray} />
                 </div>
               </div>
-
-              {/* <div className="xl:col-span-4 col-span-12">
-                <div className="bg-slate-50 dark:bg-slate-900 rounded-md p-4">
-                  <span className="block dark:text-slate-400 text-sm text-slate-600">
-                    Progress
-                  </span>
-                  <DonutChart />
-                </div>
-              </div> */}
             </div>
           </Card>
           <Card title="Deal distribution by stage" headerslot={<SelectMonth />}>
@@ -86,63 +113,6 @@ const Dashboard = () => {
           </Card>
         </div>
       </div>
-      {/* <div className="grid xl:grid-cols-3 grid-cols-1 gap-5">
-        <Card title="Task list" headerslot={<SelectMonth />}>
-          <TaskLists />
-        </Card>
-        <Card title="Messages" headerslot={<SelectMonth />}>
-          <MessageList />
-        </Card>
-        <Card title="Activity" headerslot={<SelectMonth />}>
-          <TrackingParcel />
-        </Card>
-      </div> */}
-      {/* <div className="grid grid-cols-12 gap-5">
-        <div className="xl:col-span-8 lg:col-span-7 col-span-12">
-          <Card title="Team members" noborder>
-            <TeamTable />
-          </Card>
-        </div>
-        <div className="xl:col-span-4 lg:col-span-5 col-span-12">
-          <Card title="Files" headerslot={<SelectMonth />}>
-            <ul className="divide-y divide-slate-100 dark:divide-slate-700">
-              {files.map((item, i) => (
-                <li key={i} className="block py-[8px]">
-                  <div className="flex space-x-2 rtl:space-x-reverse">
-                    <div className="flex-1 flex space-x-2 rtl:space-x-reverse">
-                      <div className="flex-none">
-                        <div className="h-8 w-8">
-                          <img
-                            src={item.img}
-                            alt=""
-                            className="block w-full h-full object-cover rounded-full border hover:border-white border-transparent"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex-1">
-                        <span className="block text-slate-600 text-sm dark:text-slate-300">
-                          {item.title}
-                        </span>
-                        <span className="block font-normal text-xs text-slate-500 mt-1">
-                          {item.date}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex-none">
-                      <button
-                        type="button"
-                        className="text-xs text-slate-900 dark:text-white"
-                      >
-                        Download
-                      </button>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        </div>
-      </div> */}
     </div>
   );
 };

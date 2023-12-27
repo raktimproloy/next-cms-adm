@@ -267,6 +267,21 @@ export const linkSlice = createSlice({
 });
 
 
+// Data collection count Slice
+export const collectionCountSlice = createSlice({
+  name: "collectionCount",
+  initialState: {},
+  reducers: {
+    addCollectionCount: (state, action) => {
+      return {...action.payload}; // Concatenate the new users with the existing ones
+    },
+    removeCollectionCount(state, action) {
+      state.splice(action.payload, 1)
+    },
+  },
+});
+
+
 // All Update info Slice
 export const updateInfoSlice = createSlice({
   name: "updateInfo",
@@ -318,6 +333,7 @@ export const {addMenu, removeMenu} = menuSlice.actions
 export const {addBlog, removeBlog} = blogSlice.actions
 export const {addBlogPage, removeBlogPage} = blogPageSlice.actions
 export const {addLink, removeLink} = linkSlice.actions
+export const {addCollectionCount, removeCollectionCount} = collectionCountSlice.actions
 export const {addInfo} = updateInfoSlice.actions
 
 export const {

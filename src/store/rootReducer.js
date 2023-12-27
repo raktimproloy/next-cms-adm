@@ -1,4 +1,4 @@
-import layout, {profileSlice, userSlice, updateInfoSlice, roleSlice, pageSlice, userRoleSlice, blogSlice, menuSlice, linkSlice, settingSlice, blogPageSlice } from "./layout";
+import layout, {profileSlice, userSlice, updateInfoSlice, roleSlice, pageSlice, userRoleSlice, blogSlice, menuSlice, linkSlice, settingSlice, blogPageSlice, collectionCountSlice } from "./layout";
 import pageReducer from "./reducers/pageReducer"
 import { combineReducers } from "@reduxjs/toolkit";
 
@@ -15,5 +15,6 @@ export default combineReducers({
   blogs: blogSlice.reducer,
   blogsPage: blogSlice.reducer,
   links: linkSlice.reducer,
+  collectionCount: collectionCountSlice.reducer,
   pageStore: pageReducer,
 });

@@ -197,8 +197,8 @@ function index() {
                         {/* <td className="table-td ">{row.order}</td> */}
                         <td className="table-td ">
                             <Button
-                              text="Preview"
-                              className="btn-outline-primary rounded-[999px] py-2 me-2"
+                              text="view"
+                              className="btn-outline-success rounded-[999px] py-2 me-2"
                               onClick={() => 
                                 handlePreview(row.slug)
                               }
@@ -212,12 +212,23 @@ function index() {
                           />
                           <Button
                             text="Delete"
-                            className="btn-outline-primary rounded-[999px] py-2"
+                            className="btn-outline-danger rounded-[999px] py-2"
                             onClick={() => {
                               setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
                               
                             }}
                           />
+                          {
+                            row.template_category == "Grapesjs" &&
+
+                          <Button
+                            text="design"
+                            className="btn-outline-primary rounded-[999px] py-2 ms-2"
+                            onClick={() => 
+                              navigate(`/pages/editor/${row.slug}`)
+                            }
+                          />
+                          }
                         </td>
                       </tr>
                     ))}

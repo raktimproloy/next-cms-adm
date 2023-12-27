@@ -175,12 +175,13 @@ function index() {
                         <td className="table-td " style={{paddingRight: "0"}}>{row.blog_category}</td>
                         <td className="table-td " style={{paddingRight: "0"}}>
                             <Button
-                              text="Preview"
-                              className="btn-outline-primary rounded-[999px] py-2 me-2"
+                              text="view"
+                              className="btn-outline-success rounded-[999px] py-2 me-2"
                               onClick={() => 
                                 handlePreview(row.slug.toLowerCase())
                               }
                             />
+                            
                             <Button
                               text="Edit"
                               className="btn-outline-primary rounded-[999px] py-2 me-2"
@@ -190,7 +191,7 @@ function index() {
                             />
                             <Button
                               text="Delete"
-                              className="btn-outline-primary rounded-[999px] py-2"
+                              className="btn-outline-danger rounded-[999px] py-2"
                               onClick={() => {
                                 setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
                               }}
