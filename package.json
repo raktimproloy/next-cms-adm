@@ -36,6 +36,7 @@
     "grapesjs": "^0.18.4",
     "grapesjs-blocks-basic": "^1.0.2",
     "grapesjs-blocks-bootstrap4": "^0.2.3",
+    "grapesjs-custom-code": "^1.0.2",
     "grapesjs-navbar": "^1.0.2",
     "grapesjs-parser-postcss": "^1.0.3",
     "grapesjs-plugin-export": "^1.0.12",

@@ -5,6 +5,7 @@ import grapesjsBlockBootstrap from "grapesjs-blocks-bootstrap4";
 import grapesjsPluginExport from "grapesjs-plugin-export";
 import grapesjsStyleBg from "grapesjs-style-bg";
 import grapesjsNavbar from "grapesjs-navbar"
+import customCodePlugin from 'grapesjs-custom-code';
 
 import {
   addEditorCommand,
@@ -62,7 +63,8 @@ const geditorConfig = (assets, slug) => {
       grapesjsPluginExport,
       grapesjsStyleBg,
       chartLibComponent,
-      grapesjsNavbar
+      grapesjsNavbar,
+      customCodePlugin
     ],
     pluginsOpts: {
       tailwindComponent: {},
