@@ -211,7 +211,7 @@ function GenarelSetting() {
                   </span>
                   <div className='flex justify-center'>
                     <Image
-                      src={`/public/upload/setting/${settingData.fav_icon}`}
+                      src={`/upload/setting/${settingData.fav_icon}`}
                       alt="fav_icon"
                       className="rounded-md w-[90%]"
                     />
@@ -230,7 +230,7 @@ function GenarelSetting() {
                   </span>
                   <div className='flex justify-center'>
                     <Image
-                      src={`/public/upload/setting/${settingData.logo}`}
+                      src={`/upload/setting/${settingData.logo}`}
                       alt="logo"
                       className="rounded-md w-[90%]"
                     />
@@ -415,7 +415,7 @@ function GenarelSetting() {
                   </span>
                   <div className='flex justify-center'>
                     <Image
-                      src={`/public/upload/setting/${settingMetaData.og_image}`}
+                      src={`/upload/setting/${settingMetaData.og_image}`}
                       alt="default og_image"
                       className="rounded-md w-[90%]"
                     />

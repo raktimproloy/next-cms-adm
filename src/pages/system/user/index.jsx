@@ -11,7 +11,7 @@ import {
   usePagination,
 } from "react-table";
 import GlobalFilter from "@/components/partials/widget/GlobalFilter";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {getUser} from "@/utils/getAllUser"
 import DeleteBtn from "@/pages/shared/DeleteBtn";
@@ -138,6 +138,7 @@ const IndeterminateCheckbox = React.forwardRef(
 
 const UserManager = () => {
 
+  const navigate = useNavigate()
 // User Data Fatching
 const dispatch = useDispatch();
 const userData = useSelector((state) => state.users);
@@ -302,7 +303,12 @@ const handleAllSelect = () => {
           </div>
         </div>
         <div className="mb-3">
+          <div className="flex items-center justify-between">
           <Button text="Delete Selected" className="btn-warning py-2" onClick={() => {handleAllSelect(); setWhichDelete("selected")}} />
+
+          <Button text="Add User" className="btn-success py-2" onClick={() => navigate("/add-user")} />
+
+          </div>
           <Modal
               title="Warning"
               label=""

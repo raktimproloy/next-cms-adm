@@ -56,7 +56,7 @@ function EditPage() {
     title: "",
     slug: "",
     active: false,
-    order: 0,
+    breadcrumb: "",
     menu_type: [],
     published_date: "23 March, 2024",
     template_category: "Predesign",
@@ -103,6 +103,7 @@ function EditPage() {
         headers: headers
         })
         .then((res) => {
+          console.log(res)
           setCheckGetData(true)
           setPageData(res.data)
           setMetaTag(res.data.meta_property)
@@ -122,6 +123,7 @@ function EditPage() {
     formData.append("slug", pageData.slug)
     formData.append("active", pageData.active)
     formData.append("order", pageData.order)
+    formData.append("breadcrumb", pageData.breadcrumb)
     formData.append("menu_type", JSON.stringify(pageData.menu_type))
     formData.append("published_date", pageData.published_date)
     formData.append("template_category", pageData.template_category)
@@ -182,6 +184,13 @@ function EditPage() {
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
+
+
+  function handleBreadcrumbChange(e) {
+    setPageData({
+        ...pageData, breadcrumb:e.target.value.toLowerCase()
+    })
+  }
 
   return (
     <div>
@@ -250,13 +259,11 @@ function EditPage() {
               defaultValue={pageData.template}
               onChange={(e) => setPageData({...pageData, template:e.target.value})}
             />
-            <Textinput
-              label="Page Order"
-              id="pn2"
-              type="number"
-              placeholder="Type Your Template File Name"
-              defaultValue={pageData.order}
-              onChange={(e) => setPageData({...pageData, order:e.target.value})}
+            <Select
+                options={["Active", "Inactive"]}
+                label="Breadcrumb"
+                value={pageData.breadcrumb === "active" ? "Active" : "Inactive"}
+                onChange={handleBreadcrumbChange}
             />
             {
               checkGetData && menuType.length > 0 ? 

@@ -36,3 +36,15 @@
 .removePadding .card-body{
   padding: 0 !important;
 }
+
+
+.tooltip {
+  position: absolute;
+  background-color: #3498db;
+  color: #fff;
+  padding: 5px;
+  border-radius: 3px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1;
+}

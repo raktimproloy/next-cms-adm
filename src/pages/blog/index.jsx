@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import Popup from "@/components/ui/Popup"
 import Modal from "@/components/ui/Modal"
 import Pagination from "@/components/ui/Pagination"
+import Tooltip from "@/components/ui/Tooltip"
 import { useSelector } from 'react-redux';
 import { getAllBlogs } from '../../utils/getAllBlogs';
 import axios from 'axios';
@@ -113,8 +114,22 @@ function index() {
   // Handle Preview
   const handlePreview = (slug) => {
     console.log(slug)
-    window.open(`${CMS_API}blog/${slug.toLowerCase()}`, '_blank');
+    window.open(`${CMS_API}blog/details/${slug.toLowerCase()}`, '_blank');
   }
+
+
+  // handle blog
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+
+  const handleCopyClick = (slug) => {
+    navigator.clipboard.writeText(`${CMS_API}blog/details/${slug}`);
+    setTooltipVisible(true);
+
+    // // Hide the tooltip after a delay (e.g., 2 seconds)
+    setTimeout(() => {
+      setTooltipVisible(false);
+    }, 2000);
+  };
 
   return (
     <div>
@@ -166,7 +181,24 @@ function index() {
                     {blogdata.map((row, i) => (
                       <tr key={i}>
                         <td className="table-td" style={{paddingRight: "0"}}>{row.title}</td>
-                        <td className="table-td lowercase" style={{paddingRight: "0"}}>{row.slug.toLowerCase()}</td>
+
+                        <td className="table-td" style={{paddingRight: "0"}}>
+                          <div className='lowercase flex items-center justify-around'>
+                           {row.slug.toLowerCase()}
+
+                            <span  className='ms-2 cursor-pointer' onClick={() => handleCopyClick(row.slug.toLowerCase())} title={tooltipVisible ? "copied" : "copy"}>
+                            <svg fill="#3498db" width={"20px"} height={"20px"} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M13.49 3 10.74.37A1.22 1.22 0 0 0 9.86 0h-4a1.25 1.25 0 0 0-1.22 1.25v11a1.25 1.25 0 0 0 1.25 1.25h6.72a1.25 1.25 0 0 0 1.25-1.25V3.88a1.22 1.22 0 0 0-.37-.88zm-.88 9.25H5.89v-11h2.72v2.63a1.25 1.25 0 0 0 1.25 1.25h2.75zm0-8.37H9.86V1.25l2.75 2.63z"></path><path d="M10.11 14.75H3.39v-11H4V2.5h-.61a1.25 1.25 0 0 0-1.25 1.25v11A1.25 1.25 0 0 0 3.39 16h6.72a1.25 1.25 0 0 0 1.25-1.25v-.63h-1.25z"></path></g></svg>
+                            {/* {tooltipVisible && (
+                              <div className="tooltip">
+                                Tooltip Content
+                              </div>
+                            )} */}
+                            </span>
+                          </div>
+                          
+
+                        </td>
+
                         <td className="table-td " style={{paddingRight: "0"}}>{row.published_date}</td>
                         {/* <td className="table-td bg-danger-500" style={{paddingRight: "0"}}>{row.status}</td> */}
                         <td className="table-td" style={{paddingRight: "0"}}>

@@ -23,7 +23,8 @@ function AddPage() {
   const [pageData, setPageData] = useState({
     title: "",
     slug: "",
-    active: false,
+    active: true,
+    breadcrumb: 'active',
     menu_type: [],
     published_date: CurrentDate(),
     template_category: "Predesign",
@@ -109,6 +110,11 @@ function AddPage() {
         ...pageData, template_category:e.target.value
     })
   }
+  function handleBreadcrumbChange(e) {
+      setPageData({
+          ...pageData, breadcrumb:e.target.value.toLowerCase()
+      })
+    }
 
   return (
     <div>
@@ -147,6 +153,12 @@ function AddPage() {
             type="text"
             placeholder="Type Your Template File Name"
             onChange={(e) => setPageData({...pageData, template:e.target.value})}
+          />
+          <Select
+            options={["Active", "Inactive"]}
+            label="Breadcrumb"
+            // isDisabled={pageData.template_category.toLowerCase() == "predesign" ? true : false}
+            onChange={handleBreadcrumbChange}
           />
           <MultipleSelect label={"Select Menu Type"} option={menuType} setReturnArray={setSelectedMenuType} usage={"add"}/>
           <div>
