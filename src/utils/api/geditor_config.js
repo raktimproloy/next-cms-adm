@@ -6,6 +6,8 @@ import grapesjsPluginExport from "grapesjs-plugin-export";
 import grapesjsStyleBg from "grapesjs-style-bg";
 import grapesjsNavbar from "grapesjs-navbar"
 import customCodePlugin from 'grapesjs-custom-code';
+import plugin from 'grapesjs-tailwind';
+import { svgFix } from "./svgFix";
 
 import {
   addEditorCommand,
@@ -24,6 +26,8 @@ import tailwindComponent from "@/plugins/tailwind";
 import swiperComponent from "@/plugins/swiper";
 import chartLibComponent from "@/plugins/charts";
 
+
+
 const geditorConfig = (assets, slug) => {
   $(".panel__devices").html("");
   $(".panel__basic-actions").html("");
@@ -40,9 +44,13 @@ const geditorConfig = (assets, slug) => {
 
   const editor = grapesjs.init({
     container: "#editor",
-    blockManager: {
+    blockManager: 
+    {
       appendTo: "#blocks",
     },
+    showOffsets: true,
+    fromElement: true,
+    noticeOnUnload: false,
     selectorManager: selectorManager,
     traitManager: traitManager,
     layerManager: layerManager,
@@ -64,7 +72,8 @@ const geditorConfig = (assets, slug) => {
       grapesjsStyleBg,
       chartLibComponent,
       grapesjsNavbar,
-      customCodePlugin
+      customCodePlugin,
+      plugin
     ],
     pluginsOpts: {
       tailwindComponent: {},
@@ -77,6 +86,7 @@ const geditorConfig = (assets, slug) => {
       chartLibComponent: {},
     },
   });
+  svgFix(editor)
   addEditorCommand(editor);
   editor.on("run:preview", () => {
     console.log("It will trigger when we click on preview icon");

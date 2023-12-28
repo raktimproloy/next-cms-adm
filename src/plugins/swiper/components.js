@@ -66,13 +66,15 @@ export default (editor, opts = {}) => {
       },
     },
 
-    isComponent: (el) => {
-      if (el.className && el.className.includes("swiper-container")) {
-        return {
-          type: opts.name,
-        };
-      }
-    },
+    // isComponent: (el) => {
+    //   if(el.className){
+    //     if (el.className.includes("swiper-container")) {
+    //       return {
+    //         type: opts.name,
+    //       };
+    //     }
+    //   }
+    // },
 
     view: defaultView.extend({
       init({ model }) {
