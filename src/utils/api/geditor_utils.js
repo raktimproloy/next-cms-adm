@@ -1,7 +1,9 @@
 import { API_HOST } from "@/utils";
 import swal from "sweetalert";
-import { useNavigate } from "react-router-dom";
-// const navigate = useNavigate()
+const pagedata = JSON.parse(localStorage.getItem("grapesjs_page"))
+const CMS_API = import.meta.env.VITE_CMS_LINK
+console.log(pagedata)
+console.log(CMS_API)
 
 export const selectorManager = {
   appendTo: "#styles-container",
@@ -425,6 +427,19 @@ export const panels = {
           label: '<i class="fa fa-clone"></i>',
           command: "sw-visibility", // Built-in command
         },
+        {
+          id: "device-desktop",
+          label: '<i class="fa fa-television"></i>',
+          command: "set-device-desktop",
+          active: true,
+          togglable: false
+        },
+        {
+          id: "device-mobile",
+          label: '<i class="fa fa-mobile"></i>',
+          command: "set-device-mobile",
+          togglable: false,
+        },
       ],
     },
     {
@@ -496,20 +511,15 @@ export const panels = {
             </div>
           `,
           command: "back-page",
-          // togglable: false,
         },
         {
-          id: "device-desktop",
-          label: '<i class="fa fa-television"></i>',
-          command: "set-device-desktop",
-          active: true,
-          togglable: false,
-        },
-        {
-          id: "device-mobile",
-          label: '<i class="fa fa-mobile"></i>',
-          command: "set-device-mobile",
-          togglable: false,
+          id: "title",
+          label: `
+            <div class="flex items-center bg-blue-700 px-4 py-1 rounded-full shadow-xl">
+              <p class="ml-1 text-sm">${pagedata.title}</p>
+            </div>
+          `,
+          command: "visit-page",
         },
         
       ],
@@ -540,13 +550,20 @@ export const addEditorCommand = (editor) => {
   });
 
 
-    // Save Button
-    editor.Commands.add("back-page", {
-      run: (editor, sender) => {
-        // navigate("/pages")
-        window.location.href = "/"
-      },
-    });
+  // Back Button
+  editor.Commands.add("back-page", {
+    run: (editor, sender) => {
+      // navigate("/pages")
+      window.location.href = "/"
+    },
+  });
+
+  // visit Button
+  editor.Commands.add("visit-page", {
+    run: (editor, sender) => {
+      window.open(`${CMS_API}${pagedata.slug.toLowerCase()}`, "_blank");
+    },
+  });
 
   // Save Button
   editor.Commands.add("saveDb", {

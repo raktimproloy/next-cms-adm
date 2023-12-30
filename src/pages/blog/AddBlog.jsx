@@ -21,6 +21,9 @@ import {Editor} from "@tinymce/tinymce-react"
 import image2 from "@/assets/images/all-img/image-2.png";
 import { CurrentDate } from '@/utils/CurrentDate'
 import TinyMCE from './TinyMCE'
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
 
 
@@ -35,6 +38,14 @@ const buttons = [
     }
 ];
 
+
+let schema = yup.object().shape({
+  title: yup.string().required("Title is required"),
+  slug: yup.string().required("Slug is required"),
+});
+
+
+
 function AddBlog() {
 
   const tinymceApi = import.meta.env.VITE_TINYMCE_API
@@ -48,14 +59,24 @@ function AddBlog() {
   const [value, setValue] = useState("<p>TinyMCE Editor text</p>")
 
 
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(schema),
+    //
+    mode: "all",
+  });
+
   const [blogTag, setBlogTag] = useState([])
 
   const [blogData, setBlogData] = useState({
     title: "",
     slug: "",
-    status: "",
+    status: "Active",
     published_date: CurrentDate(),
-    blog_category: "",
+    blog_category: "Management",
 
   })
 
@@ -144,7 +165,8 @@ function AddBlog() {
     <div>
         <MessagePopup showMessagePopup={showMessagePopup} setShowMessagePopup={setShowMessagePopup} popupText={"Please Fill Required Input"} aleart={"error"} />
         <Popup showLoading={showLoading} popupText={"Blog Adding..."}  />
-        <Card title="Default Tabs">
+        <Card title="Add Blog">
+      <form onSubmit={handleSubmit(saveHandler)}>
         <Tab.Group>
           <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
             {buttons.map((item, i) => (
@@ -171,49 +193,55 @@ function AddBlog() {
             ))}
           </Tab.List>
           <Tab.Panels>
-
             <Tab.Panel>
-              <div className='flex gap-10'>
-                <div className='w-2/4'>
-                <Textinput
-                  label="Blog Title*"
-                  id="pn"
-                  type="text"
-                  placeholder="Type Your Blog Title"
-                  defaultValue={blogData.title}
-                  onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
-                />
-                <Textinput
-                    label="Blog Slug*"
-                    className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
-                    id="pn2"
+                <div className='flex gap-10'>
+                  <div className='w-2/4'>
+                  <Textinput
+                    label="Blog Title*"
+                    id="pn"
                     type="text"
-                    placeholder="Type Your Blog Slug"
-                    defaultValue={blogData.slug}
-                    onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
-                />
-                {
-                  errorMessage.includes("dup key") &&
-                  <p className='text-red-500 text-sm'>This slug already used!</p>
-                }
-                <Select
-                  options={["Management", "Stories", "Development", "Updates"]}
-                  label="Blog Category*"
-                  value={blogData.blog_category}
-                  onChange={handleOptionChange}
-                />
-                </div>
+                    name="title"
+                    placeholder="Type Your Blog Title"
+                    register={register}
+                    error={errors.title}
+                    defaultValue={blogData.title}
+                    onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
+                  />
+                  <Textinput
+                      label="Blog Slug*"
+                      className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
+                      id="pn2"
+                      type="text"
+                      name="slug"
+                      placeholder="Type Your Blog Slug"
+                      register={register}
+                      error={errors.slug}
+                      defaultValue={blogData.slug}
+                      onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
+                  />
+                  {
+                    errorMessage.includes("dup key") &&
+                    <p className='text-red-500 text-sm'>This slug already used!</p>
+                  }
+                  <Select
+                    options={["Management", "Stories", "Development", "Updates"]}
+                    label="Blog Category*"
+                    value={blogData.blog_category}
+                    onChange={handleOptionChange}
+                  />
+                  </div>
 
-                <div className='w-2/4'>
-                <Keyword tags={blogTag} setTags={setBlogTag} />
-                <Select
-                    options={["Active", "Draft"]}
-                    label="Blog Status"
-                    value={blogData.status}
-                    onChange={handleStatusChange}
-                />
+                  <div className='w-2/4'>
+                  <Keyword tags={blogTag} setTags={setBlogTag} />
+                  <Select
+                      options={["Active", "Draft"]}
+                      label="Blog Status"
+                      value={blogData.status}
+                      onChange={handleStatusChange}
+                  />
+                  </div>
                 </div>
-              </div>
+              
               <div className='mt-5'>
                 <p className='mb-2'>Write Your Blog:</p>
                 <Editor 
@@ -390,10 +418,9 @@ function AddBlog() {
           </Tab.Panels>
         </Tab.Group>
         <div className='flex justify-end items-center mt-5'>
-          <Button text="Save" className="btn-success py-2" onClick={() => {
-            saveHandler()
-          }}  />
+          <Button type="submit" text="Save" className="btn-success py-2"/>
         </div>
+        </form>
       </Card>
     </div>
   )
