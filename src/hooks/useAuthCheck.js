@@ -6,12 +6,13 @@ import { useDispatch } from "react-redux";
 
 const useAuthCheck = () => {
   // Initialize with null to indicate that authentication status is pending
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const dispatch = useDispatch()
 
   // Cookie hook
   const [cookies, setCookie, removeCookie] = useCookies(['_token']);
   const token = cookies._token;
+  // console.log(token)
   useEffect(() => {
     if (!token || token == "undefined") {
       setIsAuthenticated(false);
@@ -32,6 +33,7 @@ const useAuthCheck = () => {
       }
     }
   }, [token]);
+  // console.log(isAuthenticated)
 
   return [isAuthenticated];
 };

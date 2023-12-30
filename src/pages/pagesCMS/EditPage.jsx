@@ -43,10 +43,10 @@ const styles = {
 };
 
 
-let schema = yup.object().shape({
-  title: yup.string().required("Title is required"),
-  slug: yup.string().required("Slug is required"),
-});
+// let schema = yup.object().shape({
+//   title: yup.string().required("Title is required"),
+//   slug: yup.string().required("Slug is required"),
+// });
 
 function EditPage() {
   const params = useParams()
@@ -64,7 +64,7 @@ function EditPage() {
     formState: { errors },
     handleSubmit,
   } = useForm({
-    resolver: yupResolver(schema),
+    // resolver: yupResolver(schema),
     //
     mode: "all",
   });
@@ -153,7 +153,7 @@ function EditPage() {
     formData.append("meta_property", JSON.stringify(metaTag))
 
     if(pageData.template_category === "Grapesjs" || (pageData.template_category === "Predesign" && pageData.template !== "") ){
-      axios.post(`${API_HOST}page/update/${params.slug}`, formData, {
+      axios.post(`${API_HOST}page/update/${pageData.slug}`, formData, {
           headers: headers
       })
       .then((res) => {
@@ -216,7 +216,7 @@ function EditPage() {
     <div>
         <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
         <Card title="Page Edit">
-          <form onSubmit={handleSubmit(editHandler)}>
+          <form>
           <Tab.Group>
             <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
               {buttons.map((item, i) => (
@@ -248,12 +248,12 @@ function EditPage() {
                   label="Page Title"
                   id="pn"
                   type="text"
-                  name= "title"
+                  // name= "title"
                   register={register}
-                  error={errors.title}
+                  // error={errors.title}
                   placeholder="Type Your Page Title"
                   defaultValue={pageData.title}
-                  onChange={(e) => setPageData({...pageData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
+                  onChange={(e) => setPageData({...pageData, title:e.target.value})}
               />
               <Select
                   options={["Predesign", "Grapesjs"]}
@@ -266,9 +266,9 @@ function EditPage() {
                   className={errorMessage.includes("duplicate key") && "border-1 dark:border-red-700"}
                   id="pn2"
                   type="text"
-                  name= "slug"
+                  // name= "slug"
                   register={register}
-                  error={errors.slug}
+                  // error={errors.slug}
                   placeholder="Type Your Page Slug"
                   defaultValue={pageData.slug}
                   onChange={(e) => setPageData({...pageData, slug:e.target.value})}
@@ -281,7 +281,7 @@ function EditPage() {
                 label="Predesign Page"
                 id="pn2"
                 type="text"
-                readonly={pageData.template_category.toLowerCase() == "predesign" ? false : true}
+                readonly={pageData?.template_category?.toLowerCase() == "predesign" ? false : true}
                 placeholder="Type Your Page Slug"
                 defaultValue={pageData.template}
                 onChange={(e) => setPageData({...pageData, template:e.target.value})}
@@ -461,13 +461,16 @@ function EditPage() {
           </Tab.Group>
           <div className='flex justify-between items-center mt-5'>
           <Button text="Edit Page" className="btn-warning py-2" onClick={() => {
-              navigate(`/pages/editor/${params.slug}`)
+              navigate(`/pages/editor/${pageData.slug}`)
               localStorage.setItem('grapesjs_page', JSON.stringify({
-                title: pageData.title,
-                slug: pageData.slug
+                title: pageData?.title,
+                slug: pageData?.slug
               }));
             }}  />
-            <Button type="submit" text="Save" className="btn-success py-2"/>
+            <Button text="Save" className="btn-success py-2" onClick={() => {
+              console.log("Click")
+              editHandler()
+            }}/>
           </div>
           </form>
       </Card>

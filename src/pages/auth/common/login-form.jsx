@@ -55,6 +55,7 @@ const LoginForm = () => {
       setShowLoading(false)
       const token = response?.data?.token
       setCookie("_token", token)
+      navigate("/dashboard")
     })
     .catch(error=>{
         setShowLoading(false)

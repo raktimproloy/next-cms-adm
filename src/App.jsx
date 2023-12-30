@@ -66,6 +66,7 @@ import useAuthCheck from "@/hooks/useAuthCheck";
 import { useSelector } from "react-redux";
 import { getProfile } from "./utils/getProfile";
 import { useCookies } from "react-cookie";
+import RequireAuth from "./utils/RequireAuth";
 
 function App() {
   const dispatch = useDispatch()
@@ -121,12 +122,15 @@ function App() {
           }
         />
         {/* Editor */}
-        
+          
         {
           isAuthenticated === true ?
         <Route path="/*" element={<Layout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-
+          <Route path="dashboard" element={
+          // <RequireAuth>
+            <Dashboard />
+          // </RequireAuth>
+          } />
 
           {
             profileData.rolename === "Admin" || profileData?.permission?.page ?
@@ -189,7 +193,7 @@ function App() {
 
           {/* Email Page */}
           {/* <Route path="email" element={<EmailPage />} /> */}
-          <Route path="*" element={<Navigate to="/404" />} />
+          {/* <Route path="*" element={<Navigate to="/404" />} /> */}
 
         </Route> 
         : <Route path='*' element={<Navigate to='/' replace />} />
