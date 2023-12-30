@@ -104,7 +104,7 @@ const LoginForm = () => {
           to="/forgot-password"
           className="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium"
         >
-          Forgot Password?{" "}
+          Forgot Password??{" "}
         </Link>
       </div>
 
