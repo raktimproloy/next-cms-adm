@@ -10,6 +10,13 @@ import axios from 'axios';
 import {API_HOST} from "@/utils"
 import Switch from "@/components/ui/Switch"
 import Popup from "@/components/ui/Popup"
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+let schema = yup.object().shape({
+  fullName: yup.string().required("Full name is required"),
+  email: yup.string().email("Email is not valid").required("Email is required"),
+});
 
 function userEdit() {
   const [profileData, setProfileData] = useState({})
@@ -31,7 +38,7 @@ function userEdit() {
     formState: { errors },
     handleSubmit,
   } = useForm({
-    // resolver: yupResolver(schema),
+    resolver: yupResolver(schema),
     //
     mode: "all",
   });
@@ -108,93 +115,97 @@ function userEdit() {
   return (
     <div>
       <Popup showLoading={showLoading} popupText={"User Updating..."} />
-        <Card title="Basic Inputs">
-        <div className="space-y-3">
-          <Textinput
-            label="Full Name"
-            id="pn"
-            register={register}
-            type="text"
-            name="fullName"
-            placeholder="Change Full Name"
-            defaultValue={profileData.fullName}
-            onChange={handleChange}
-          />
-          <Textinput
-            label="Username"
-            id="pn3"
-            placeholder="Enter Username"
-            register={register}
-            readonly
-            type="text"
-            name="username"
-            defaultValue={profileData.username}
-            onChange={handleChange}
-          />
-          <Textinput
-            label="Email"
-            id="pn2"
-            type="text"
-            register={register}
-            className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
-            name="email"
-            placeholder="Change Email"
-            defaultValue={profileData.email}
-            onChange={handleChange}
-          />
-          {
-            errorMessage.includes("dup key") &&
-            <p className='text-red-500 text-sm'>This email already used!</p>
-          }
-          <Textinput
-            label="Phone Number"
-            id="pn4"
-            type="text"
-            register={register}
-            name="phone"
-            placeholder="Change Phone Number"
-            defaultValue={profileData.phone}
-            onChange={handleChange}
-          />
-          {
-            profileData &&
-            <Select
-              options={["active", "inactive"]}
-              label="User Status"
-              value={profileData.status === true ? "active" : "inactive"}
-              onChange={handleStatusChange}
-            />
-          }
+        <Card title="User Edit">
+          <form onSubmit={handleSubmit(handleUpdate)}>
+            <div className="space-y-3">
+              <Textinput
+                label="Full Name"
+                id="pn"
+                register={register}
+                type="text"
+                name="fullName"
+                placeholder="Change Full Name"
+                error={errors.fullName}
+                defaultValue={profileData.fullName}
+                onChange={handleChange}
+              />
+              <Textinput
+                label="Username"
+                id="pn3"
+                placeholder="Enter Username"
+                register={register}
+                readonly
+                type="text"
+                name="username"
+                defaultValue={profileData.username}
+                onChange={handleChange}
+              />
+              <Textinput
+                label="Email"
+                id="pn2"
+                type="text"
+                register={register}
+                className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
+                name="email"
+                placeholder="Change Email"
+                error={errors.email}
+                defaultValue={profileData.email}
+                onChange={handleChange}
+              />
+              {
+                errorMessage.includes("dup key") &&
+                <p className='text-red-500 text-sm'>This email already used!</p>
+              }
+              <Textinput
+                label="Phone Number"
+                id="pn4"
+                type="text"
+                register={register}
+                name="phone"
+                placeholder="Change Phone Number"
+                defaultValue={profileData.phone}
+                onChange={handleChange}
+              />
+              {
+                profileData &&
+                <Select
+                  options={["active", "inactive"]}
+                  label="User Status"
+                  value={profileData.status === true ? "active" : "inactive"}
+                  onChange={handleStatusChange}
+                />
+              }
 
-          <h4 className='pt-5'>Permissions</h4>
-          <div className='flex align-center gap-20 py-5'>
-            <Switch
-            label="Page"
-            activeClass="bg-danger-500"
-            value={permissionData.page || false}
-            onChange={() => setPermissionData({...permissionData, page: !permissionData.page})}
-            />
-            <Switch
-            label="Info"
-            activeClass="bg-danger-500"
-            value={permissionData.info || false}
-            onChange={() => setPermissionData({...permissionData, info: !permissionData.info})}
-            />
-            <Switch
-            label="Service"
-            activeClass="bg-danger-500"
-            value={permissionData.service || false}
-            onChange={() => setPermissionData({...permissionData, service: !permissionData.service})}
-            />
-            <Switch
-            label="Blog"
-            activeClass="bg-danger-500"
-            value={permissionData.blog || false}
-            onChange={() => setPermissionData({...permissionData, blog: !permissionData.blog})}
-            />
-          </div>
-          <Button text="Update" className="btn-primary py-2" onClick={handleUpdate} />
-        </div>
+              <h4 className='pt-5'>Permissions</h4>
+              <div className='flex align-center gap-20 py-5'>
+                <Switch
+                label="Page"
+                activeClass="bg-danger-500"
+                value={permissionData.page || false}
+                onChange={() => setPermissionData({...permissionData, page: !permissionData.page})}
+                />
+                <Switch
+                label="Info"
+                activeClass="bg-danger-500"
+                value={permissionData.info || false}
+                onChange={() => setPermissionData({...permissionData, info: !permissionData.info})}
+                />
+                <Switch
+                label="Service"
+                activeClass="bg-danger-500"
+                value={permissionData.service || false}
+                onChange={() => setPermissionData({...permissionData, service: !permissionData.service})}
+                />
+                <Switch
+                label="Blog"
+                activeClass="bg-danger-500"
+                value={permissionData.blog || false}
+                onChange={() => setPermissionData({...permissionData, blog: !permissionData.blog})}
+                />
+              </div>
+              <Button type="submit" text="Update" className="btn-primary py-2"  />
+            </div>
+          </form>
       </Card>
     </div>
   )

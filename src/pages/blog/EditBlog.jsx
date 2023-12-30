@@ -18,6 +18,10 @@ import { Tab } from "@headlessui/react";
 import {Editor} from "@tinymce/tinymce-react"
 import Image from "@/components/ui/Image"
 import image2 from "@/assets/images/all-img/image-2.png";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+
 
 const buttons = [
   {
@@ -30,6 +34,11 @@ const buttons = [
   }
 ];
 
+let schema = yup.object().shape({
+  title: yup.string().required("Title is required"),
+  slug: yup.string().required("Slug is required"),
+});
+
 function EditBlog() {
   const tinymceApi = import.meta.env.VITE_TINYMCE_API
   const params = useParams()
@@ -40,6 +49,16 @@ function EditBlog() {
   const [text, setText] = useState("")
   const [value, setValue] = useState("<p>TinyMCE Editor text</p>")
 
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(schema),
+    //
+    mode: "all",
+  });
 
   const [blogTag, setBlogTag] = useState([])
 
@@ -152,253 +171,259 @@ useEffect(() => {
     <div>
         <Popup showLoading={showLoading} popupText={"Blog Updating..."}  />
         <Card title="Blog Edit">
-        <Tab.Group>
-          <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
-            {buttons.map((item, i) => (
-              <Tab as={Fragment} key={i}>
-                {({ selected }) => (
-                  <button
-                    className={` text-sm font-medium mb-7 capitalize bg-white
-             dark:bg-slate-800 ring-0 foucs:ring-0 focus:outline-none px-2
-              transition duration-150 before:transition-all before:duration-150 relative 
-              before:absolute before:left-1/2 before:bottom-[-6px] before:h-[1.5px] before:bg-primary-500 
-              before:-translate-x-1/2 
-              
-              ${
-                selected
-                  ? "text-primary-500 before:w-full"
-                  : "text-slate-500 before:w-0 dark:text-slate-300"
-              }
-              `}
-                  >
-                    {item.title}
-                  </button>
-                )}
-              </Tab>
-            ))}
-          </Tab.List>
-
-          <Tab.Panels>
-            <Tab.Panel>
-            <div className='flex gap-10'>
-                <div className='w-2/4'>
-                  <Textinput
-                      label="Blog Title"
-                      id="pn"
-                      type="text"
-                      placeholder="Type Your Blog Title"
-                      defaultValue={blogData.title}
-                      onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
-                  />
-                  <Textinput
-                      label="Blog Slug"
-                      className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
-                      id="pn2"
-                      type="text"
-                      placeholder="Type Your Blog Slug"
-                      defaultValue={blogData.slug}
-                      onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
-                  />
-                  {
-                    errorMessage.includes("dup key") &&
-                    <p className='text-red-500 text-sm'>This slug already used!</p>
-                  }
-                  <Select
-                      options={["Management", "Stories", "Development", "Updates"]}
-                      label="Blog Category"
-                      value={blogData.blog_category}
-                      onChange={handleOptionChange}
-                  />
-                  
-                </div>
-                <div className='w-2/4'>
-                  <Select
-                      options={["Active", "Draft"]}
-                      label="Blog Status"
-                      value={blogData.status}
-                      onChange={handleStatusChange}
-                  />
-                  <Keyword tags={blogTag} setTags={setBlogTag} />
-                </div>
-            </div>
-            <div className='mt-5'>
-                <p className='mb-2'>Write Your Blog:</p>
-                <Editor 
-                    apiKey={tinymceApi}
-                    onEditorChange={(newValue, editor) => {
-                    setValue(newValue)
-                    setText(editor.getContent({format:"text"}))
-                    }}
-                    onInit={(evt, editor) => {
-                    setText(editor.getContent({format: "text"}))
-                    }}
-                    // initialValue='TinyMCE rich text editor'
-                    value={value}
-                    
-                    init={{
-                    plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
-                    // theme: 'modern',
-                    keep_styles: true,
-                    width: '100%',
-                    inline_styles: true,
-                    verify_html: false,
-                    valid_children : '+body[style],-body[div],p[strong|a|#text]'
-                    }}
-                />
-            </div>
-            </Tab.Panel>
-
-            <Tab.Panel>
-            <div className='flex w-100 justify-items-between gap-10'>
-              <div className='w-2/4'>
-                <Textinput
-                    label="Meta Title"
-                    id="pn3"
-                    placeholder=" Disabled Input"
-                    type="text"
-                    defaultValue={metaTag.main_title}
-                    onChange={(e) => setMetaTag({...metaTag, main_title:e.target.value, title:e.target.value, og_title:e.target.value, twitter_title:e.target.value})}
-                />
-                <Textarea
-                    label="Meta Description"
-                    id="pn4"
-                    placeholder="Type Meta Description"
-                    defaultValue={metaTag.main_description}
-                    onChange={(e) => setMetaTag({...metaTag, main_description:e.target.value, description:e.target.value, og_description:e.target.value, twitter_description:e.target.value})}
-                />
-                <p className='my-3'>Property: og:image</p>
-                <Fileinput
-                  name="og_image"
-                  selectedFile={selectedFile}
-                  onChange={handleFileChange}
-                />
-              </div>
-              <div className='w-2/4'>
-                <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
-                  Previous Image :
-                </span>
-                <div className='flex justify-center'>
-                  <Image
-                    src={`/public/upload/${metaTag.og_image}`}
-                    alt="Small image with fluid:"
-                    className="rounded-md w-[90%] h-[250px]"
-                  />
-                </div>
-              </div>
-            </div>
-            <h5 className='mt-5'>Meta Tags</h5>
-            <div className='flex w-100 gap-10'>
-              <div className='w-1/3'>
-                <Textinput
-                  label="Property: title"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.title}
-                  onChange={(e) => setMetaTag({...metaTag, title:e.target.value})}
-                />
-                <Textarea
-                  label="Property: description"
-                  id="pn4"
-                  placeholder="Type Content"
-                  defaultValue={metaTag.description}
-                  onChange={(e) => setMetaTag({...metaTag, description:e.target.value})}
-                />
-                <Textinput
-                  label="Property: keyword"
-                  id="pn4"
-                  placeholder="Type Content"
-                  defaultValue={metaTag.keyword}
-                  onChange={(e) => setMetaTag({...metaTag, keyword:e.target.value})}
-                />
-                <Textinput
-                  label="Property: og:title"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.og_title}
-                  onChange={(e) => setMetaTag({...metaTag, og_title:e.target.value})}
-                />
-              </div>
-              <div className='w-1/3'>
-                <Textinput
-                  label="Property: og:url"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.og_url}
-                  onChange={(e) => setMetaTag({...metaTag, og_url:e.target.value})}
-                />
-                <Textarea
-                  label="Property: og:description"
-                  id="pn4"
-                  placeholder="Type Content"
-                  defaultValue={metaTag.og_description}
-                  onChange={(e) => setMetaTag({...metaTag, og_description:e.target.value})}
-                />
-                <Textinput
-                  label="Property: og:site_name"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.og_site_name}
-                  onChange={(e) => setMetaTag({...metaTag, og_site_name:e.target.value})}
-                />
-                <Textinput
-                  label="Property: og:type"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.og_type}
-                  onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
-                />
-              </div>
+          <form onSubmit={handleSubmit(editHandler)}>
+          <Tab.Group>
+            <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
+              {buttons.map((item, i) => (
+                <Tab as={Fragment} key={i}>
+                  {({ selected }) => (
+                    <button
+                      className={` text-sm font-medium mb-7 capitalize bg-white
+              dark:bg-slate-800 ring-0 foucs:ring-0 focus:outline-none px-2
+                transition duration-150 before:transition-all before:duration-150 relative 
+                before:absolute before:left-1/2 before:bottom-[-6px] before:h-[1.5px] before:bg-primary-500 
+                before:-translate-x-1/2 
                 
-              
-              <div className='w-1/3'>
-                <Textinput
-                  label="Property: twitter:card"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.twitter_card}
-                  onChange={(e) => setMetaTag({...metaTag, twitter_card:e.target.value})}
-                />
-                <Textinput
-                  label="Property: twitter:title"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.twitter_title}
-                  onChange={(e) => setMetaTag({...metaTag, twitter_title:e.target.value})}
-                />
-                <Textarea
-                  label="Property: twitter:description"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.twitter_description}
-                  onChange={(e) => setMetaTag({...metaTag, twitter_description:e.target.value})}
-                />
-                <Textinput
-                  label="Property: twitter:url"
-                  id="pn3"
-                  placeholder="Type Content"
-                  type="text"
-                  defaultValue={metaTag.twitter_url}
-                  onChange={(e) => setMetaTag({...metaTag, twitter_url:e.target.value})}
-                />
-              </div>
-            </div>
-            </Tab.Panel>
-          </Tab.Panels>
+                ${
+                  selected
+                    ? "text-primary-500 before:w-full"
+                    : "text-slate-500 before:w-0 dark:text-slate-300"
+                }
+                `}
+                    >
+                      {item.title}
+                    </button>
+                  )}
+                </Tab>
+              ))}
+            </Tab.List>
 
-        </Tab.Group>
-        <div className='flex justify-end items-center mt-5'>
-          <Button text="Save" className="btn-success py-2" onClick={() => {
-            editHandler()
-          }}  />
-        </div>
+            <Tab.Panels>
+              <Tab.Panel>
+              <div className='flex gap-10'>
+                  <div className='w-2/4'>
+                    <Textinput
+                        label="Blog Title"
+                        id="pn"
+                        name="title"
+                        type="text"
+                        placeholder="Type Your Blog Title"
+                        register={register}
+                        error={errors.title}
+                        defaultValue={blogData.title}
+                        onChange={(e) => setBlogData({...blogData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
+                    />
+                    <Textinput
+                        label="Blog Slug"
+                        className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
+                        id="pn2"
+                        name="slug"
+                        type="text"
+                        placeholder="Type Your Blog Slug"
+                        register={register}
+                        error={errors.slug}
+                        defaultValue={blogData.slug}
+                        onChange={(e) => setBlogData({...blogData, slug:e.target.value})}
+                    />
+                    {
+                      errorMessage.includes("dup key") &&
+                      <p className='text-red-500 text-sm'>This slug already used!</p>
+                    }
+                    <Select
+                        options={["Management", "Stories", "Development", "Updates"]}
+                        label="Blog Category"
+                        value={blogData.blog_category}
+                        onChange={handleOptionChange}
+                    />
+                    
+                  </div>
+                  <div className='w-2/4'>
+                    <Select
+                        options={["Active", "Draft"]}
+                        label="Blog Status"
+                        value={blogData.status}
+                        onChange={handleStatusChange}
+                    />
+                    <Keyword tags={blogTag} setTags={setBlogTag} />
+                  </div>
+              </div>
+              <div className='mt-5'>
+                  <p className='mb-2'>Write Your Blog:</p>
+                  <Editor 
+                      apiKey={tinymceApi}
+                      onEditorChange={(newValue, editor) => {
+                      setValue(newValue)
+                      setText(editor.getContent({format:"text"}))
+                      }}
+                      onInit={(evt, editor) => {
+                      setText(editor.getContent({format: "text"}))
+                      }}
+                      // initialValue='TinyMCE rich text editor'
+                      value={value}
+                      
+                      init={{
+                      plugins: "a11ychecker advcode advlist advtable anchor autocorrect autolink autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen image inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
+                      // theme: 'modern',
+                      keep_styles: true,
+                      width: '100%',
+                      inline_styles: true,
+                      verify_html: false,
+                      valid_children : '+body[style],-body[div],p[strong|a|#text]'
+                      }}
+                  />
+              </div>
+              </Tab.Panel>
+
+              <Tab.Panel>
+              <div className='flex w-100 justify-items-between gap-10'>
+                <div className='w-2/4'>
+                  <Textinput
+                      label="Meta Title"
+                      id="pn3"
+                      placeholder=" Disabled Input"
+                      type="text"
+                      defaultValue={metaTag.main_title}
+                      onChange={(e) => setMetaTag({...metaTag, main_title:e.target.value, title:e.target.value, og_title:e.target.value, twitter_title:e.target.value})}
+                  />
+                  <Textarea
+                      label="Meta Description"
+                      id="pn4"
+                      placeholder="Type Meta Description"
+                      defaultValue={metaTag.main_description}
+                      onChange={(e) => setMetaTag({...metaTag, main_description:e.target.value, description:e.target.value, og_description:e.target.value, twitter_description:e.target.value})}
+                  />
+                  <p className='my-3'>Property: og:image</p>
+                  <Fileinput
+                    name="og_image"
+                    selectedFile={selectedFile}
+                    onChange={handleFileChange}
+                  />
+                </div>
+                <div className='w-2/4'>
+                  <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
+                    Previous Image :
+                  </span>
+                  <div className='flex justify-center'>
+                    <Image
+                      src={`/public/upload/${metaTag.og_image}`}
+                      alt="Small image with fluid:"
+                      className="rounded-md w-[90%] h-[250px]"
+                    />
+                  </div>
+                </div>
+              </div>
+              <h5 className='mt-5'>Meta Tags</h5>
+              <div className='flex w-100 gap-10'>
+                <div className='w-1/3'>
+                  <Textinput
+                    label="Property: title"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.title}
+                    onChange={(e) => setMetaTag({...metaTag, title:e.target.value})}
+                  />
+                  <Textarea
+                    label="Property: description"
+                    id="pn4"
+                    placeholder="Type Content"
+                    defaultValue={metaTag.description}
+                    onChange={(e) => setMetaTag({...metaTag, description:e.target.value})}
+                  />
+                  <Textinput
+                    label="Property: keyword"
+                    id="pn4"
+                    placeholder="Type Content"
+                    defaultValue={metaTag.keyword}
+                    onChange={(e) => setMetaTag({...metaTag, keyword:e.target.value})}
+                  />
+                  <Textinput
+                    label="Property: og:title"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.og_title}
+                    onChange={(e) => setMetaTag({...metaTag, og_title:e.target.value})}
+                  />
+                </div>
+                <div className='w-1/3'>
+                  <Textinput
+                    label="Property: og:url"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.og_url}
+                    onChange={(e) => setMetaTag({...metaTag, og_url:e.target.value})}
+                  />
+                  <Textarea
+                    label="Property: og:description"
+                    id="pn4"
+                    placeholder="Type Content"
+                    defaultValue={metaTag.og_description}
+                    onChange={(e) => setMetaTag({...metaTag, og_description:e.target.value})}
+                  />
+                  <Textinput
+                    label="Property: og:site_name"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.og_site_name}
+                    onChange={(e) => setMetaTag({...metaTag, og_site_name:e.target.value})}
+                  />
+                  <Textinput
+                    label="Property: og:type"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.og_type}
+                    onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
+                  />
+                </div>
+                  
+                
+                <div className='w-1/3'>
+                  <Textinput
+                    label="Property: twitter:card"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.twitter_card}
+                    onChange={(e) => setMetaTag({...metaTag, twitter_card:e.target.value})}
+                  />
+                  <Textinput
+                    label="Property: twitter:title"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.twitter_title}
+                    onChange={(e) => setMetaTag({...metaTag, twitter_title:e.target.value})}
+                  />
+                  <Textarea
+                    label="Property: twitter:description"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.twitter_description}
+                    onChange={(e) => setMetaTag({...metaTag, twitter_description:e.target.value})}
+                  />
+                  <Textinput
+                    label="Property: twitter:url"
+                    id="pn3"
+                    placeholder="Type Content"
+                    type="text"
+                    defaultValue={metaTag.twitter_url}
+                    onChange={(e) => setMetaTag({...metaTag, twitter_url:e.target.value})}
+                  />
+                </div>
+              </div>
+              </Tab.Panel>
+            </Tab.Panels>
+
+          </Tab.Group>
+          <div className='flex justify-end items-center mt-5'>
+            <Button type="submit" text="Save" className="btn-success py-2" />
+          </div>
+          </form>
       </Card>
     </div>
   )

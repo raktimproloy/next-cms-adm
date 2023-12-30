@@ -224,8 +224,13 @@ function index() {
                           <Button
                             text="design"
                             className="btn-outline-primary rounded-[999px] py-2 ms-2"
-                            onClick={() => 
+                            onClick={() => {
                               navigate(`/pages/editor/${row.slug}`)
+                              localStorage.setItem('grapesjs_page', JSON.stringify({
+                                title: row.title,
+                                slug: row.slug
+                              }));
+                            }
                             }
                           />
                           }

@@ -18,6 +18,16 @@ import { getAllMenus } from '../../utils/getAllMenus'
 import { getAllPages } from '../../utils/getAllPages'
 import MultipleSelect from "@/pages/shared/MultipleSelect"
 import {CurrentDate} from "@/utils/CurrentDate"
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+
+
+let schema = yup.object().shape({
+  title: yup.string().required("Title is required"),
+  slug: yup.string().required("Slug is required"),
+});
+
 
 function AddPage() {
   const [pageData, setPageData] = useState({
@@ -41,6 +51,19 @@ function AddPage() {
   const menuTypeData = useSelector((state) => state.menus);
   const pagesData = useSelector((state) => state.pages);
   const updateInfo = useSelector((state) => state.update);
+
+
+  
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(schema),
+    //
+    mode: "all",
+  });
+
 
   // Cookies
   const [cookie, removeCookie] = useCookies()
@@ -120,62 +143,68 @@ function AddPage() {
     <div>
         <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
         <Card title="Add Page">
-        <div className="space-y-3">
-          <Textinput
-            label="Page Title"
-            id="pn"
-            type="text"
-            placeholder="Type Your Page Title"
-            onChange={(e) => setPageData({...pageData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
-          />
-          <Select
-            options={["Predesign", "Grapesjs"]}
-            label="Page Category"
-            onChange={handleOptionChange}
-          />
-          <Textinput
-            className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
-            label="Page Slug"
-            id="pn2"
-            type="text"
-            placeholder="Type Your Page Slug"
-            defaultValue={pageData.slug}
-            onChange={(e) => setPageData({...pageData, slug:e.target.value})}
-          />
-          {
-            errorMessage.includes("dup key") &&
-            <p className='text-red-500 text-sm'>This slug already used!</p>
-          }
-          <Textinput
-            label="Default Template"
-            id="pn2"
-            readonly={pageData.template_category.toLowerCase() == "predesign" ? false : true}
-            type="text"
-            placeholder="Type Your Template File Name"
-            onChange={(e) => setPageData({...pageData, template:e.target.value})}
-          />
-          <Select
-            options={["Active", "Inactive"]}
-            label="Breadcrumb"
-            // isDisabled={pageData.template_category.toLowerCase() == "predesign" ? true : false}
-            onChange={handleBreadcrumbChange}
-          />
-          <MultipleSelect label={"Select Menu Type"} option={menuType} setReturnArray={setSelectedMenuType} usage={"add"}/>
-          <div>
-            <label htmlFor="" className='pb-3'>Page Active</label>
-            <Switch
-              label="Page Active Status"
-              activeClass="bg-danger-500"
-              value={pageData.active}
-              onChange={() => setPageData({...pageData, active: !pageData.active})}
+          <form onSubmit={handleSubmit(saveHandler)}>
+          <div className="space-y-3">
+            <Textinput
+              label="Page Title"
+              id="pn"
+              type="text"
+              name= "title"
+              register={register}
+              error={errors.title}
+              placeholder="Type Your Page Title"
+              onChange={(e) => setPageData({...pageData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
             />
+            <Select
+              options={["Predesign", "Grapesjs"]}
+              label="Page Category"
+              onChange={handleOptionChange}
+            />
+            <Textinput
+              className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
+              label="Page Slug"
+              id="pn2"
+              type="text"
+              name= "slug"
+              placeholder="Type Your Page Slug"
+              register={register}
+              error={errors.slug}
+              defaultValue={pageData.slug}
+              onChange={(e) => setPageData({...pageData, slug:e.target.value})}
+            />
+            {
+              errorMessage.includes("dup key") &&
+              <p className='text-red-500 text-sm'>This slug already used!</p>
+            }
+            <Textinput
+              label="Default Template"
+              id="pn2"
+              readonly={pageData.template_category.toLowerCase() == "predesign" ? false : true}
+              type="text"
+              placeholder="Type Your Template File Name"
+              onChange={(e) => setPageData({...pageData, template:e.target.value})}
+            />
+            <Select
+              options={["Active", "Inactive"]}
+              label="Breadcrumb"
+              // isDisabled={pageData.template_category.toLowerCase() == "predesign" ? true : false}
+              onChange={handleBreadcrumbChange}
+            />
+            <MultipleSelect label={"Select Menu Type"} option={menuType} setReturnArray={setSelectedMenuType} usage={"add"}/>
+            <div>
+              <label htmlFor="" className='pb-3'>Page Active</label>
+              <Switch
+                label="Page Active Status"
+                activeClass="bg-danger-500"
+                value={pageData.active}
+                onChange={() => setPageData({...pageData, active: !pageData.active})}
+              />
+            </div>
           </div>
-        </div>
-        <div className='text-right mt-5'>
-          <Button text="Save" className="btn-warning py-2" onClick={() => {
-            saveHandler()
-          }}  />
-        </div>
+          <div className='text-right mt-5'>
+            <Button type="submit" text="Save" className="btn-warning py-2"/>
+          </div>
+          </form>
       </Card>
     </div>
   )
