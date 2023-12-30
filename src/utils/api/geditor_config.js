@@ -36,6 +36,7 @@ const geditorConfig = (assets, slug) => {
   $("#styles-container").html("");
   $("#layers-container").html("");
   $("#trait-container").html("");
+  $("#assets-container").html("");
 
   // Content for Preview
   const navbar = $("#navbar");
@@ -47,6 +48,21 @@ const geditorConfig = (assets, slug) => {
     blockManager: 
     {
       appendTo: "#blocks",
+      blocks:[
+        {
+          id: 'image',
+          label: 'Image',
+          media: `<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+              <path d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
+          </svg>`,
+          // Use `image` component
+          content: { type: 'image' },
+          // The component `image` is activatable (shows the Asset Manager).
+          // We want to activate it once dropped in the canvas.
+          activate: true,
+          // select: true, // Default with `activate: true`
+        }
+      ]
     },
     showOffsets: true,
     fromElement: true,
@@ -54,11 +70,11 @@ const geditorConfig = (assets, slug) => {
     selectorManager: selectorManager,
     traitManager: traitManager,
     layerManager: layerManager,
+    storageManager: storageSetting(slug),
     styleManager: styleManager,
     panels: panels,
     deviceManager: deviceManager,
-    assetManager: { assets: assets, upload: false },
-    storageManager: storageSetting(slug),
+    assetManager: { assets: assets, upload: true },
     canvas: {
       styles: styles,
       scripts: scripts,
@@ -86,6 +102,15 @@ const geditorConfig = (assets, slug) => {
       chartLibComponent: {},
     },
   });
+
+
+
+
+
+
+
+
+
   svgFix(editor)
   addEditorCommand(editor);
   editor.on("run:preview", () => {

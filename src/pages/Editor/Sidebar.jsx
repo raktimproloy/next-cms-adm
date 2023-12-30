@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Sidebar() {
   const [content, setContent] = useState("components")
+useEffect(() => {
+  const localContent = localStorage.getItem("content")
+  console.log(localContent)
+}, [localStorage])
+
   return (
     <>
       <ul className="nav nav-tabs flex px-2 py-2" id="myTab" role="tablist">

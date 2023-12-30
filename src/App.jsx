@@ -27,7 +27,8 @@ const UserEdit = lazy(() => import("./pages/system/user/userEdit"))
 
 // Settings
 const GenarelSetting = lazy(() => import("./pages/settings/GenarelSetting"))
-const Blogs_Pages = lazy(() => import("./pages/settings/Blogs_Pages"))
+const PagesSetting = lazy(() => import("./pages/settings/PagesSetting"))
+const BlogsSetting = lazy(() => import("./pages/settings/BlogsSetting"))
 
 // Blog Page
 const BlogPage = lazy(() => import("./pages/blog"))
@@ -152,7 +153,8 @@ function App() {
 
                 {/* Setting */}
                 <Route path="genarel-setting" element={<GenarelSetting />} />
-                <Route path="blogs-pages" element={<Blogs_Pages />} />
+                <Route path="pages-setting" element={<PagesSetting />} />
+                <Route path="blogs-setting" element={<BlogsSetting />} />
 
                 {/* Menu Page */}
                 <Route path="menu/menu-type" element={<MenuType />} />

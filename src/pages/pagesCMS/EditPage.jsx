@@ -201,6 +201,7 @@ function EditPage() {
   }
 
   const handleFileChange = (e) => {
+    console.log(pageData)
     setSelectedFile(e.target.files[0]);
   };
 
@@ -466,7 +467,7 @@ function EditPage() {
                 slug: pageData.slug
               }));
             }}  />
-            <Button text="Save" className="btn-success py-2"/>
+            <Button type="submit" text="Save" className="btn-success py-2"/>
           </div>
           </form>
       </Card>

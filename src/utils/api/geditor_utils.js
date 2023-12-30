@@ -2,8 +2,6 @@ import { API_HOST } from "@/utils";
 import swal from "sweetalert";
 const pagedata = JSON.parse(localStorage.getItem("grapesjs_page"))
 const CMS_API = import.meta.env.VITE_CMS_LINK
-console.log(pagedata)
-console.log(CMS_API)
 
 export const selectorManager = {
   appendTo: "#styles-container",
@@ -13,7 +11,7 @@ export const styleManager = {
   sectors: [
     {
       name: "Dimension",
-      open: false,
+      open: true,
       buildProps: [
         "width",
         "max-width",
@@ -82,7 +80,7 @@ export const styleManager = {
     
     {
       name: "Typography",
-      open: false,
+      open: true,
       buildProps: [
         "font-family",
         "font-size",
@@ -148,7 +146,7 @@ export const styleManager = {
     },
     {
       name: "Decorations",
-      open: false,
+      open: true,
       buildProps: [
         "opacity",
         "border-radius",
@@ -194,7 +192,7 @@ export const styleManager = {
     },
     {
       name: "Extra",
-      open: false,
+      open: true,
       buildProps: ["transition", "perspective", "transform"],
       properties: [
         {
@@ -220,7 +218,7 @@ export const styleManager = {
     },
     {
       name: "Flex",
-      open: false,
+      open: true,
       properties: [
         {
           name: "Flex Container",

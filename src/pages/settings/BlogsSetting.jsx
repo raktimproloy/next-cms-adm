@@ -25,10 +25,6 @@ const buttons = [
     title: "Blog",
     icon: "heroicons-outline:home",
   },
-  {
-    title: "Page",
-    icon: "heroicons-outline:user",
-  },
 ];
 
 function Blogs_Pages() {
@@ -83,9 +79,9 @@ function Blogs_Pages() {
   return (
     <>
       <Popup showLoading={showLoading} popupText={"Setting Updating..."}  />
-      <Card title="Justify Tabs">
+      <Card title="Blogs Setting">
         <Tab.Group>
-          <Tab.List className="lg:space-x-6 md:space-x-3 space-x-0 rtl:space-x-reverse">
+          <Tab.List className="lg:space-x-6 md:space-x-3 space-x-0 rtl:space-x-reverse mb-5">
             {buttons.map((item, i) => (
               <Tab as={Fragment} key={i}>
                 {({ selected }) => (
@@ -115,18 +111,6 @@ function Blogs_Pages() {
                 placeholder="Type how much amount  showing"
                 defaultValue={settingData.blog_show_amount}
                 onChange={(e) => setSettingData({...settingData, blog_show_amount:e.target.value})}
-              />
-            </Tab.Panel>
-
-            {/* Contact */}
-            <Tab.Panel>
-              <Textinput
-                label="Page Show Amount"
-                id="pn2"
-                type="text"
-                placeholder="Type how much amount showing"
-                // defaultValue={settingData.title}
-                // onChange={(e) => setSettingData({...settingData, title:e.target.value})}
               />
             </Tab.Panel>
 

@@ -24,6 +24,8 @@ import TinyMCE from './TinyMCE'
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import { getSetting } from '../../utils/getSetting'
+import { useSelector } from 'react-redux'
 
 
 
@@ -54,6 +56,13 @@ function AddBlog() {
   const dispatch = useDispatch()
   const [errorMessage, setErrorMessage] = useState("")
   const [showMessagePopup, setShowMessagePopup] = useState(false)
+  const setting = useSelector((state) => state.setting);
+  const updateInfo = useSelector((state) => state.update);
+  useEffect(() => {
+    if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
+        getSetting(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, setting, updateInfo]);
   
   const [text, setText] = useState("")
   const [value, setValue] = useState("<p>TinyMCE Editor text</p>")
@@ -161,6 +170,7 @@ function AddBlog() {
     setSelectedFile(e.target.files[0]);
   };
 
+
   return (
     <div>
         <MessagePopup showMessagePopup={showMessagePopup} setShowMessagePopup={setShowMessagePopup} popupText={"Please Fill Required Input"} aleart={"error"} />
@@ -245,7 +255,7 @@ function AddBlog() {
               <div className='mt-5'>
                 <p className='mb-2'>Write Your Blog:</p>
                 <Editor 
-                  apiKey={tinymceApi}
+                  apiKey={setting.tiny_mce}
                   onEditorChange={(newValue, editor) => {
                   setValue(newValue)
                   setText(editor.getContent({format:"text"}))

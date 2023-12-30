@@ -10,7 +10,11 @@ import GjsEditor from '@grapesjs/react';
 
 const Editor = () => {
   const [editor, setEditor] = useState(null);
-  const [assets, setAssets] = useState([]);
+  // Set Default Image
+  const [assets, setAssets] = useState([
+    "https://res.cloudinary.com/dcbantk1f/image/upload/v1690037754/blog-desk/blogs/y287vtcrul7xuqju9uko.jpg"
+  ]);
+
   const { slug } = useParams();
 
   const { pageStore } = useSelector((state) => state);
@@ -20,6 +24,10 @@ const Editor = () => {
     const editor = geditorConfig(assets, slug);
     setEditor(editor);
   }, [slug, assets]);
+
+  
+
+  
   return (
     <div className="App main-container flex d-flex mb-5">
       <div

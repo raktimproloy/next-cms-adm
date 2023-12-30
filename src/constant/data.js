@@ -100,8 +100,12 @@ export const menuItems = [
         childlink: "genarel-setting",
       },
       {
-        childtitle: "Blogs & Pages",
-        childlink: "blogs-pages",
+        childtitle: "Blogs",
+        childlink: "blogs-setting",
+      },
+      {
+        childtitle: "Pages",
+        childlink: "pages-setting",
       },
     ],
   },

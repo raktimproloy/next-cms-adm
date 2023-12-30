@@ -206,8 +206,9 @@ export default (editor, opts = {}) => {
           class: "fa fa-gear",
         },
         command: (e) => {
-          console.log("Another way to add toolbar");
-          alert("Another way to add toolbar");
+          console.log(e);
+          localStorage.setItem("content", "settings")
+          // alert("Another way to add toolbar");
         },
       },
     ];

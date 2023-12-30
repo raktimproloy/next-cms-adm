@@ -45,6 +45,14 @@ function EditBlog() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [errorMessage, setErrorMessage] = useState("")
+
+  const setting = useSelector((state) => state.setting);
+  const updateInfo = useSelector((state) => state.update);
+  useEffect(() => {
+    if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
+        getSetting(dispatch, cookie, removeCookie);
+    }
+  }, [dispatch, setting, updateInfo]);
   
   const [text, setText] = useState("")
   const [value, setValue] = useState("<p>TinyMCE Editor text</p>")
@@ -250,7 +258,7 @@ useEffect(() => {
               <div className='mt-5'>
                   <p className='mb-2'>Write Your Blog:</p>
                   <Editor 
-                      apiKey={tinymceApi}
+                      apiKey={setting.tiny_mce}
                       onEditorChange={(newValue, editor) => {
                       setValue(newValue)
                       setText(editor.getContent({format:"text"}))

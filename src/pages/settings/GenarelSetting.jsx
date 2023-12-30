@@ -78,6 +78,8 @@ function GenarelSetting() {
     formData.append("description", settingData.description);
     formData.append("fav_icon", favIcon);
     formData.append("logo", logo);
+    formData.append("tiny_mce", settingData.tinyMce);
+    formData.append("newslater", settingData.newslater);
     formData.append("phone", settingData.phone)
     formData.append("uk_phone", settingData.uk_phone)
     formData.append("email", settingData.email)
@@ -141,7 +143,7 @@ function GenarelSetting() {
   return (
     <>
       <Popup showLoading={showLoading} popupText={"Setting Updating..."}  />
-      <Card title="Justify Tabs">
+      <Card title="Genarel Setting">
         <Tab.Group>
           <Tab.List className="lg:space-x-6 md:space-x-3 space-x-0 rtl:space-x-reverse">
             {buttons.map((item, i) => (
