@@ -1,3 +1,4 @@
+import React from "react";
 import { API_HOST } from "@/utils";
 import swal from "sweetalert";
 const pagedata = JSON.parse(localStorage.getItem("grapesjs_page"))
@@ -552,7 +553,7 @@ export const addEditorCommand = (editor) => {
   editor.Commands.add("back-page", {
     run: (editor, sender) => {
       // navigate("/pages")
-      window.location.href = "/"
+      window.location.href = "/pages"
     },
   });
 
