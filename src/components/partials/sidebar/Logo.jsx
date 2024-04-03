@@ -30,9 +30,9 @@ const SidebarLogo = ({ menuHover, settingData }) => {
         <div className="flex items-center space-x-4">
           <div className="logo-icon w-[9rem]">
             {!isDark && !isSemiDark ? (
-              <img src={`/upload/setting/${settingData.logo}`} alt=""  />
+              <img src={`${settingData?.storage_config?.storage_url}${settingData.logo}`} alt=""  />
             ) : (
-              <img src={`/upload/setting/${settingData.logo}`} alt="" />
+              <img src={`${settingData?.storage_config?.storage_url}${settingData.logo}`} alt="" />
             )}
           </div>
 

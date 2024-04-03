@@ -50,15 +50,9 @@ function PermissionCard({userData, permission, setPermission}) {
                     service: role.service,
                     blog: role.blog,
                 })
-            }else{
-                console.log("nai")
             }
         })
     }, [userData])
-    
-    useEffect(() => {
-        console.log(permission)
-    }, [permission, userData])
 
   return (
     <Card title="Permission" noborder>

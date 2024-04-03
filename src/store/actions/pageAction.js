@@ -25,10 +25,10 @@ export const pageLoad = () => async (dispatch) => {
   }
 };
 
-export const createPage = (name) => async (dispatch) => {
+export const createPage = (name, slug) => async (dispatch) => {
   dispatch({ type: TYPES.CREATE_PAGE_REQUEST });
   try {
-    const response = await axios.post(`${API_HOST}api/pages/`, { name });
+    const response = await axios.post(`${API_HOST}api/pages/`, { name, slug });
     dispatch({ type: TYPES.CREATE_PAGE_SUCCESS, data: response.data });
   } catch (error) {
     dispatch({ type: TYPES.CREATE_PAGE_ERROR, data: error });

@@ -18,7 +18,8 @@ import { addInfo } from '../../store/layout';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { getSetting } from '../../utils/getSetting';
-
+import {AddLog} from "@/utils/logHandler"
+import { ToastContainer, toast } from 'react-toastify'
 
 const buttons = [
   {
@@ -41,6 +42,7 @@ function Blogs_Pages() {
 
   const data = useSelector((state) => state.setting);
   const updateInfo = useSelector((state) => state.update);
+  const profileData = useSelector((state) => state.profile);
 
   useEffect(() => {
     if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
@@ -63,21 +65,46 @@ function Blogs_Pages() {
       },
     })
     .then(res => {
+      AddLog(profileData.email, "Setting", `Setting Updated Successful`)
       dispatch(addInfo({ field: 'settingUpdate', value: 'not-updated' }));
       console.log(res);
       setShowLoading(false)
+      toast.success("Setting Updated Successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     })
     .catch(err => {
       console.log(err);
       if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
+        AddLog(profileData.email, "Setting", `Setting Updated Failed For Authorization`)
+      }else{
+        AddLog(profileData.email, "Setting", `Setting Deleted Unsuccessful`)
       }
       setShowLoading(false)
+      toast.error("Setting Updated Unsuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     });
   };
   
   return (
     <>
+      {/* <ToastContainer/> */}
       <Popup showLoading={showLoading} popupText={"Setting Updating..."}  />
       <Card title="Blogs Setting">
         <Tab.Group>

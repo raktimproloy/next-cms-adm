@@ -25,6 +25,23 @@ import {
 import tailwindComponent from "@/plugins/tailwind";
 import swiperComponent from "@/plugins/swiper";
 import chartLibComponent from "@/plugins/charts";
+import loadBlocks from '../../blocks';
+
+
+const opts = {}
+
+const options = {
+  ...{
+    i18n: {},
+    // default options
+    tailwindPlayCdn: 'https://cdn.tailwindcss.com',
+    plugins: [],
+    config: {},
+    cover: `.object-cover { filter: sepia(1) hue-rotate(190deg) opacity(.46) grayscale(.7) !important; }`,
+    changeThemeText: 'Change Theme',
+    openCategory: 'Blog',
+  }, ...opts
+};
 
 
 
@@ -48,21 +65,6 @@ const geditorConfig = (assets, slug) => {
     blockManager: 
     {
       appendTo: "#blocks",
-      blocks:[
-        {
-          id: 'image',
-          label: 'Image',
-          media: `<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-              <path d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
-          </svg>`,
-          // Use `image` component
-          content: { type: 'image' },
-          // The component `image` is activatable (shows the Asset Manager).
-          // We want to activate it once dropped in the canvas.
-          activate: true,
-          // select: true, // Default with `activate: true`
-        }
-      ]
     },
     showOffsets: true,
     fromElement: true,
@@ -74,7 +76,11 @@ const geditorConfig = (assets, slug) => {
     styleManager: styleManager,
     panels: panels,
     deviceManager: deviceManager,
-    assetManager: { assets: assets, upload: true },
+    assetManager: { 
+      assets: assets ,
+      autoAdd: 1,
+
+    },
     canvas: {
       styles: styles,
       scripts: scripts,
@@ -89,7 +95,7 @@ const geditorConfig = (assets, slug) => {
       chartLibComponent,
       grapesjsNavbar,
       customCodePlugin,
-      plugin
+      // plugin
     ],
     pluginsOpts: {
       tailwindComponent: {},
@@ -103,13 +109,41 @@ const geditorConfig = (assets, slug) => {
     },
   });
 
+  // editor.DomComponents.addType('button', {
+  //   // isComponent: el => el.tagName == 'BUTTON',
+  //   model: {
+  //     defaults: {
+  //       traits: ['name', 'href'], // Add 'href' trait to all components of type 'button'
+  //     },
+  //   },
+  // });
 
+//   editor.DomComponents.addType('button', {
+//     isComponent: el => el.tagName == 'BUTTON',
+//     model: {
+//       defaults: {
+//         traits(component) {
+//           const result = [];
 
+//           // Example of some logic
+//           if (component.get('draggable')) {
+//             result.push('name');
+//             result.push('href');
+//           } else {
+//             result.push({
+//               // type: 'select',
+//               // ....
+//             });
+//           }
 
+//           return result;
+//         }
+//       },
+//     },
+// });
 
-
-
-
+  // Add blocks
+  loadBlocks(editor, options);
 
   svgFix(editor)
   addEditorCommand(editor);

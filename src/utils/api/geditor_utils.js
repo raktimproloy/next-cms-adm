@@ -1,8 +1,8 @@
-import React from "react";
+
 import { API_HOST } from "@/utils";
 import swal from "sweetalert";
-const pagedata = JSON.parse(localStorage.getItem("grapesjs_page"))
-const CMS_API = import.meta.env.VITE_CMS_LINK
+
+const pathname = window.location.pathname.split("/")
 
 export const selectorManager = {
   appendTo: "#styles-container",
@@ -154,6 +154,7 @@ export const styleManager = {
         "border",
         "box-shadow",
         "background-bg",
+        "background-img"
       ],
       properties: [
         {
@@ -187,6 +188,11 @@ export const styleManager = {
         {
           id: "background-bg",
           property: "background",
+          type: "bg",
+        },
+        {
+          id: "background-img",
+          property: "background-image",
           type: "bg",
         },
       ],
@@ -511,15 +517,6 @@ export const panels = {
           `,
           command: "back-page",
         },
-        {
-          id: "title",
-          label: `
-            <div class="flex items-center bg-blue-700 px-4 py-1 rounded-full shadow-xl">
-              <p class="ml-1 text-sm">${pagedata.title}</p>
-            </div>
-          `,
-          command: "visit-page",
-        },
         
       ],
     },
@@ -553,14 +550,8 @@ export const addEditorCommand = (editor) => {
   editor.Commands.add("back-page", {
     run: (editor, sender) => {
       // navigate("/pages")
-      window.location.href = "/pages"
-    },
-  });
-
-  // visit Button
-  editor.Commands.add("visit-page", {
-    run: (editor, sender) => {
-      window.open(`${CMS_API}${pagedata.slug.toLowerCase()}`, "_blank");
+      
+      window.location.href = pathname[1] !== "blog" ? "/pages" : "/blog"
     },
   });
 
@@ -601,7 +592,12 @@ export const addEditorCommand = (editor) => {
   });
 };
 
+
+
+
 export const storageSetting = (slug) => {
+const urlStore = pathname[1] !== "blog" ? `${API_HOST}api/pages/${slug}/content` : `${API_HOST}blog/designer/${slug}/content`;
+const urlLoad = pathname[1] !== "blog" ? `${API_HOST}api/pages/${slug}/content` : `${API_HOST}blog/designer/${slug}/content`;
   return {
     type: "remote",
     stepsBeforeSave: 3,
@@ -612,10 +608,11 @@ export const storageSetting = (slug) => {
     storeCss: true,
     headers: {
       "Content-Type": "application/json",
+      // "Content-Type": "image/jpeg",
     },
     id: "mycustom_",
-    urlStore: `${API_HOST}api/pages/${slug}/content`,
-    urlLoad: `${API_HOST}api/pages/${slug}/content`,
+    urlStore: urlStore,
+    urlLoad: urlLoad,
   };
 };
 

@@ -18,11 +18,17 @@ import { addInfo } from '../../store/layout';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { getSetting } from '../../utils/getSetting';
-
+import {AddLog} from "@/utils/logHandler"
+import { ToastContainer, toast } from 'react-toastify'
+import Home from './pagesSetting/Home';
 
 const buttons = [
   {
-    title: "Page",
+    title: "All",
+    icon: "heroicons-outline:user",
+  },
+  {
+    title: "Home",
     icon: "heroicons-outline:user",
   },
 ];
@@ -41,6 +47,7 @@ function PagesSetting() {
 
   const data = useSelector((state) => state.setting);
   const updateInfo = useSelector((state) => state.update);
+  const profileData = useSelector((state) => state.profile);
 
   useEffect(() => {
     if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
@@ -63,16 +70,40 @@ function PagesSetting() {
       },
     })
     .then(res => {
+      AddLog(profileData.email, "Setting", `Setting Updated Successful`)
       dispatch(addInfo({ field: 'settingUpdate', value: 'not-updated' }));
       console.log(res);
       setShowLoading(false)
+      toast.success("Setting Updated Successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     })
     .catch(err => {
       console.log(err);
       if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
+        AddLog(profileData.email, "Setting", `Setting Updated Failed For Authorization`)
+      }else{
+        AddLog(profileData.email, "Setting", `Setting Deleted Unsuccessful`)
       }
       setShowLoading(false)
+      toast.error("Setting Updated Unsuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     });
   };
 
@@ -86,6 +117,7 @@ function PagesSetting() {
   
   return (
     <>
+      {/* <ToastContainer/> */}
       <Popup showLoading={showLoading} popupText={"Setting Updating..."}  />
       <Card title="Pages Setting">
         <Tab.Group>
@@ -110,8 +142,7 @@ function PagesSetting() {
             ))}
           </Tab.List>
           <Tab.Panels>
-            {/* Contact */}
-            {/* Basic */}
+            {/* All */}
             <Tab.Panel>
               <div className='flex gap-10'>
                 <div className='w-1/3'>
@@ -132,7 +163,9 @@ function PagesSetting() {
                 </div>
               </div>
             </Tab.Panel>
-
+            <Tab.Panel>
+              <Home settingData={settingData} setSettingData={setSettingData}/>
+            </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
         <div className='flex justify-end items-center mt-5'>

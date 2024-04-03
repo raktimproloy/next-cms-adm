@@ -13,7 +13,7 @@ import { useCookies } from 'react-cookie'
 import Popup from "@/components/ui/Popup"
 import { useDispatch } from 'react-redux'
 import { addInfo } from '../../store/layout'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Tab } from "@headlessui/react";
 import image2 from "@/assets/images/all-img/image-2.png";
 import { useSelector } from 'react-redux'
@@ -22,7 +22,10 @@ import MultipleSelect from "@/pages/shared/MultipleSelect"
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-
+import {AddLog} from "@/utils/logHandler"
+import { getSetting } from '../../utils/getSetting'
+import { StoreMetaImage } from '@/utils/appwrite/StoreImage';
+import { ToastContainer, toast } from 'react-toastify'
 
 const buttons = [
     {
@@ -43,32 +46,21 @@ const styles = {
 };
 
 
-// let schema = yup.object().shape({
-//   title: yup.string().required("Title is required"),
-//   slug: yup.string().required("Slug is required"),
-// });
-
 function EditPage() {
   const params = useParams()
+  const [searchParams] = useSearchParams();
+  const paramValue = searchParams.get('param');
+  const paramArray =paramValue?.split("/")
   const [selectedFile, setSelectedFile] = useState(null)
   const [errorMessage, setErrorMessage] = useState("")
-
-  const [menuData, setMenuData] = useState([])
+  
   const [menuType, setMenuType] = useState([])
   const [selectedMenuType, setSelectedMenuType] = useState([])
   const menuTypeData = useSelector((state) => state.menus);
   const updateInfo = useSelector((state) => state.update);
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm({
-    // resolver: yupResolver(schema),
-    //
-    mode: "all",
-  });
-
+  const profileData = useSelector((state) => state.profile);
+  const setting = useSelector((state) => state.setting);
+  const AppwriteUrl = setting?.storage_config?.storage_url
 
   const [checkGetData, setCheckGetData] = useState(false)
 
@@ -83,6 +75,12 @@ function EditPage() {
     template: "",
     meta_title: "",
     meta_description: ""
+  })
+  const [menuData, setMenuData] = useState({
+    isClickable: true,
+    menu_design: 0,
+    tag_line: "",
+    svg_icon: ""
   })
   
   const [metaTag, setMetaTag] = useState({
@@ -115,6 +113,9 @@ function EditPage() {
     if (updateInfo.menuUpdate === "" || updateInfo.menuUpdate === "not-updated") {
       getAllMenus(dispatch, cookie, removeCookie);
     }
+    if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
+      getSetting(dispatch, cookie, removeCookie);
+  }
   }, [dispatch, pageData, updateInfo]);
 
     // Get data
@@ -132,42 +133,77 @@ function EditPage() {
         });
     }, [])
 
-
 //   Edit Data
-  const editHandler = () => {
+  const editHandler = async() => {
     setShowLoading(true)
-    const formData = new FormData()
+    try{
+      let og_imageUrl =  metaTag.og_image
+      if(selectedFile){
+        og_imageUrl = await StoreMetaImage(selectedFile, setting?.storage_config?.storage_meta_bucket_id);
+      }
+      const formData = new FormData()
 
-    formData.append("title", pageData.title)
-    formData.append("slug", pageData.slug)
-    formData.append("active", pageData.active)
-    formData.append("order", pageData.order)
-    formData.append("breadcrumb", pageData.breadcrumb)
-    formData.append("menu_type", JSON.stringify(pageData.menu_type))
-    formData.append("published_date", pageData.published_date)
-    formData.append("template_category", pageData.template_category)
-    formData.append("template", pageData.template)
-    formData.append("meta_title", pageData.meta_title)
-    formData.append("meta_description", pageData.meta_description)
-    formData.append("og_image", selectedFile)
-    formData.append("meta_property", JSON.stringify(metaTag))
+      formData.append("title", pageData.title)
+      formData.append("slug", pageData.slug)
+      formData.append("active", pageData.active)
+      formData.append("breadcrumb", pageData.breadcrumb)
+      formData.append("param", paramValue ? paramValue : "")
+      formData.append("isClickable", menuData.isClickable)
+      formData.append("menu_design", menuData.menu_design)
+      formData.append("svg_icon", menuData.svg_icon)
+      formData.append("tag_line", menuData.tag_line)
+      formData.append("menu_type", JSON.stringify(pageData.menu_type))
+      formData.append("published_date", pageData.published_date)
+      formData.append("template_category", pageData.template_category)
+      formData.append("template", pageData.template)
+      formData.append("meta_title", pageData.meta_title)
+      formData.append("meta_description", pageData.meta_description)
+      formData.append("og_image", og_imageUrl)
+      formData.append("meta_property", JSON.stringify(metaTag))
 
-    if(pageData.template_category === "Grapesjs" || (pageData.template_category === "Predesign" && pageData.template !== "") ){
-      axios.post(`${API_HOST}page/update/${pageData.slug}`, formData, {
-          headers: headers
-      })
-      .then((res) => {
-          dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
-          dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
-          setShowLoading(false)
-          navigate("/pages")
-      })
-      .catch((err) => {
-          setErrorMessage(err.response.data.error)
-          setShowLoading(false)
-          if(err.response.data.error === "Authentication error!"){
-          removeCookie("_token")
-          }
+      if(pageData.template_category === "Designer" || (pageData.template_category === "Predesign" && pageData.template !== "") ){
+        axios.post(`${API_HOST}page/update/${params.slug}`, formData, {
+            headers: headers
+        })
+        .then((res) => {
+            AddLog(profileData.email, "Page", `Page Edited Successful`)
+            dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+            dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
+            setShowLoading(false)
+            navigate("/pages")
+        })
+        .catch((err) => {
+            setErrorMessage(err.response.data.error)
+            setShowLoading(false)
+            if(err.response.data.error === "Authentication error!"){
+            removeCookie("_token")
+            AddLog(profileData.email, "Page", `Page Edited Faild For Authorization`)
+            }else{
+              AddLog(profileData.email, "Page", `Page Edited Unsuccessful`)
+            }
+            toast.error("Page Updated Unsuccessful!", {
+              position: "top-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+        });
+      }
+    }
+    catch(error){
+      toast.error("Page Updated Unsuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
     }
   }
@@ -190,6 +226,34 @@ function EditPage() {
     menuTypeData.map(type => {
       setMenuType(oldType => [...oldType, { value: type._id, label: type.title }])
     })
+
+    if(paramArray?.length > 0){
+      menuTypeData.map(type => {
+        if( paramArray.length === 1){
+          if(type.alias === paramArray[0]){
+            type.items.map(item => {
+              if(item.menu_slug === params.slug){
+                setMenuData({isClickable: item.isClickable, menu_design: item.menu_design})
+              }
+            })
+          }
+        }else{
+          if(type.alias === paramArray[0]){
+            type.items.map(item => {
+              if(item.menu_slug === paramArray[1]){
+                if(item.items && item.items.length > 0){
+                  item.items.map(child => {
+                    if(child.menu_slug === params.slug){
+                      setMenuData({isClickable: child.isClickable, menu_design: child.menu_design, svg_icon: child.svg_icon, tag_line: child.tag_line})
+                    }
+                  })
+                }
+              }
+            })
+          }
+        }
+      })
+    }
   }, [menuTypeData])
 
 
@@ -212,11 +276,21 @@ function EditPage() {
     })
   }
 
+
+  function handlePageClickableChange(e){
+    setMenuData({...menuData, isClickable: e.target.value.toLowerCase() === "true" ? true : false})
+  }
+
+  function handleMenuDesignChange(e){
+    setMenuData({...menuData, menu_design: e.target.value === "Normal Menu" ? 0 : 1})
+  }
+
+
   return (
     <div>
-        <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
+      {/* <ToastContainer/> */}
+        <Popup showLoading={showLoading} popupText={"Page Updating..."}  />
         <Card title="Page Edit">
-          <form>
           <Tab.Group>
             <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
               {buttons.map((item, i) => (
@@ -248,27 +322,21 @@ function EditPage() {
                   label="Page Title"
                   id="pn"
                   type="text"
-                  // name= "title"
-                  register={register}
-                  // error={errors.title}
                   placeholder="Type Your Page Title"
                   defaultValue={pageData.title}
                   onChange={(e) => setPageData({...pageData, title:e.target.value})}
               />
               <Select
-                  options={["Predesign", "Grapesjs"]}
+                  options={["Designer","Predesign"]}
                   label="Page Category"
                   value={pageData.template_category}
                   onChange={handleOptionChange}
               />
               <Textinput
                   label="Page Slug"
-                  className={errorMessage.includes("duplicate key") && "border-1 dark:border-red-700"}
+                  className={errorMessage?.includes("duplicate key") && "border-1 dark:border-red-700"}
                   id="pn2"
                   type="text"
-                  // name= "slug"
-                  register={register}
-                  // error={errors.slug}
                   placeholder="Type Your Page Slug"
                   defaultValue={pageData.slug}
                   onChange={(e) => setPageData({...pageData, slug:e.target.value})}
@@ -294,9 +362,57 @@ function EditPage() {
               />
               {
                 checkGetData && menuType.length > 0 ? 
-              <MultipleSelect option={menuType} setReturnArray={setSelectedMenuType} defaultArray={pageData.menu_type} usage={"edit"}/>
-              : ""
-              }
+                <MultipleSelect option={menuType} label={"Select Menu Type"} setReturnArray={setSelectedMenuType} defaultArray={pageData.menu_type} usage={"edit"}/>
+                : ""
+                }
+                {
+                  paramArray !== undefined || paramArray?.length >= 3 ? 
+                  <div className='flex gap-10'>
+                    <div className='w-full md:w-1/2'>
+                    <Select
+                      options={["True", "False"]}
+                      label="Is Clickable"
+                      value={menuData.isClickable ? "True" : "False"}
+                      onChange={handlePageClickableChange}
+                    />
+                    
+                    </div>
+                    {paramArray.length === 1 ? 
+                      <div className='w-full md:w-1/2'>
+                        <Select
+                          options={["Normal Menu", "Mega Menu"]}
+                          label="Select Menu Design"
+                          value={menuData.menu_design === 0 ? "Normal Menu" : "Mega Menu"}
+                          onChange={handleMenuDesignChange}
+                        />
+                      </div>
+                      : ""
+                    }
+                    {
+                      paramArray.length === 2 ? 
+                      <div className='w-1/2'>
+                      <Textarea
+                        label="Input Your SVG"
+                        id="pn2"
+                        type="text"
+                        placeholder="Input your SVG icon"
+                        defaultValue={menuData.svg_icon}
+                        onChange={(e) => setMenuData({...menuData, svg_icon:e.target.value})}
+                      />
+                      <Textinput
+                        label="Menu Tag Line"
+                        id="pn2"
+                        type="text"
+                        placeholder="Input your menu tag line"
+                        defaultValue={menuData.tag_line}
+                        onChange={(e) => setMenuData({...menuData, tag_line:e.target.value})}
+                      />
+                      </div>
+                      : ""
+                    }
+                  </div>
+                  : ""
+                }
               <div>
                   <label htmlFor="" className='pb-3'>Page Active</label>
                   <Switch
@@ -309,8 +425,8 @@ function EditPage() {
               </Tab.Panel>
 
               <Tab.Panel>
-                <div className='flex w-100 justify-items-between gap-10'>
-                  <div className='w-2/4'>
+                <div className='flex flex-col md:flex-row w-full gap-10'>
+                  <div className='w-full md:w-1/2'>
                   <Textinput
                     label="Meta Title"
                     id="pn3"
@@ -339,13 +455,13 @@ function EditPage() {
                       onChange={handleFileChange}
                     />
                   </div>
-                  <div className='w-2/4'>
+                  <div className='w-full md:w-1/2'>
                     <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
-                      Previous Image :
+                      View Template :
                     </span>
                     <div className='flex justify-center'>
                       <Image
-                        src={image2}
+                        src={metaTag.og_image.length > 0 ? `${AppwriteUrl}${metaTag.og_image}` : `${AppwriteUrl}${setting?.meta_property?.og_image}`}
                         alt="Small image with fluid:"
                         className="rounded-md w-[90%]"
                       />
@@ -354,11 +470,11 @@ function EditPage() {
                 </div>
               
                 <h5 className='mt-5'>Meta Tags</h5>
-              <div className='flex w-100 gap-10'>
+              <div className='flex flex-col md:flex-row w-full gap-10'>
 
-                <div className='w-1/3'>
+                <div className='w-full md:w-1/3'>
                   <Textinput
-                    label="Property: title"
+                    label="Main Title"
                     id="pn3"
                     placeholder="Type Content"
                     type="text"
@@ -366,7 +482,7 @@ function EditPage() {
                     onChange={(e) => setMetaTag({...metaTag, title:e.target.value})}
                   />
                   <Textarea
-                    label="Property: description"
+                    label="Main Description"
                     id="pn4"
                     placeholder="Type Content"
                     defaultValue={metaTag.description}
@@ -388,7 +504,7 @@ function EditPage() {
                     onChange={(e) => setMetaTag({...metaTag, og_title:e.target.value})}
                   />
                 </div>
-                <div className='w-1/3'>
+                <div className='w-full md:w-1/3'>
                 <Textinput
                     label="Property: og:url"
                     id="pn3"
@@ -421,7 +537,7 @@ function EditPage() {
                     onChange={(e) => setMetaTag({...metaTag, og_type:e.target.value})}
                   />
                 </div>
-                <div className='w-1/3'>
+                <div className='w-full md:w-1/3'>
                   <Textinput
                     label="Property: twitter:card"
                     id="pn3"
@@ -468,11 +584,9 @@ function EditPage() {
               }));
             }}  />
             <Button text="Save" className="btn-success py-2" onClick={() => {
-              console.log("Click")
               editHandler()
             }}/>
           </div>
-          </form>
       </Card>
     </div>
   )

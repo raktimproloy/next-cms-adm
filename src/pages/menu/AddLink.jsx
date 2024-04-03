@@ -19,6 +19,7 @@ import { getAllMenus } from '../../utils/getAllMenus'
 import MultipleSelect from "@/pages/shared/MultipleSelect"
 import { getAllPages } from '../../utils/getAllPages'
 import { getAllBlogs } from '../../utils/getAllBlogs'
+import { ToastContainer, toast } from 'react-toastify'
 
 
 
@@ -56,6 +57,8 @@ function AddLink() {
   const [selectedBlogs, setSelectedBlogs] = useState([])
   const [selectPage, setSelectPage] = useState("")
   const [selectedPageData, setSelectedPageData] = useState({
+    menu_design: 0,
+    isClickable: true,
     menu_type: []
   })
   const menuTypeData = useSelector((state) => state.menus);
@@ -94,18 +97,18 @@ function AddLink() {
     })
   }, [pageData])
 
-  useEffect(() => {
-    setSelectedPages([{value: "none", label: "None"}])
-    pageData.map(page => {
-      setSelectedPages(oldPage => [...oldPage, { value: page.slug, label: page.title }])
-    })
-  }, [pageData])
+  // useEffect(() => {
+  //   setSelectedPages([{value: "none", label: "None"}])
+  //   pageData.map(page => {
+  //     setSelectedPages(oldPage => [...oldPage, { value: page.slug, label: page.title }])
+  //   })
+  // }, [pageData])
 
   useEffect(() => {
     if(pageData.length > 0){
       pageData.map(page => {
         if(page.slug === selectPage){
-          setSelectedPageData(page)
+          setSelectedPageData({...selectedPageData, ...page})
         }
       })
     }
@@ -125,12 +128,32 @@ function AddLink() {
         dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
         setShowLoading(false)
         navigate("/menu/menu-manager")
+        toast.success("Link Added Successful!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .catch((err) => {
         setShowLoading(false)
         if(err.response.data.error === "Authentication error!"){
             removeCookie("_token")
         }
+        toast.error("Link Added Unsuccessful!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       });
     }else{
       axios.post(`${API_HOST}page/update/${selectedPageData.slug}`, selectedPageData, {
@@ -141,6 +164,16 @@ function AddLink() {
           dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
           setShowLoading(false)
           navigate("/menu/menu-manager")
+          toast.success("Item Added Successful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
       })
       .catch((err) => {
           console.log(err)
@@ -148,6 +181,16 @@ function AddLink() {
           if(err.response.data.error === "Authentication error!"){
           removeCookie("_token")
           }
+          toast.error("Item Added Unsuccessful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
       });
 
     }
@@ -186,8 +229,18 @@ function AddLink() {
     setSelectPage(e.target.value)
   }
 
+  function handlePageClickableChange(e){
+    setSelectedPageData({...selectedPageData, isClickable: e.target.value.toLowerCase() === "true" ? true : false})
+  }
+
+  function handleMenuDesignChange(e){
+    
+    setSelectedPageData({...selectedPageData, menu_design: e.target.value === "Normal Menu" ? 0 : 1})
+  }
+
   return (
     <div>
+      {/* <ToastContainer/> */}
         <Popup showLoading={showLoading} popupText={"Link Adding..."}  />
         <Card title="Add Link">
         <div className="space-y-3">
@@ -198,6 +251,24 @@ function AddLink() {
             placeholder="Type Your Link Title"
             onChange={(e) => setLinkData({...linkData, title:e.target.value})}
           />
+          <div className='flex items-center gap-10'>
+            <div className='w-full md:w-1/2'>
+            <Select
+              options={["True", "False"]}
+              label="Is Clickable"
+              onChange={handlePageClickableChange}
+            />
+            </div>
+            <div className='w-full md:w-1/2'>
+            <Select
+              options={["Noramal Menu", "Mega Menu"]}
+              label="Select Menu Design"
+              onChange={handleMenuDesignChange}
+            />
+            </div>
+          </div>
+          
+          
           <p>Links: </p>
           <Card className="removePadding" >
                 <Tab.Group>
@@ -264,7 +335,7 @@ function AddLink() {
             </Card>
             {
               menuType.length > 0 ? 
-            <MultipleSelect option={menuType} setReturnArray={setSelectedMenuType} defaultArray={selectedPageData.menu_type} usage={"add"}/>
+            <MultipleSelect option={menuType} label="Select Menu Type" setReturnArray={setSelectedMenuType} defaultArray={selectedPageData.menu_type} usage={"add"}/>
             : ""
             }
         </div>

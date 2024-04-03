@@ -12,6 +12,7 @@ import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { API_HOST } from '../../utils';
 import { addInfo } from '../../store/layout';
+import { toast } from 'react-toastify';
 
 const columns = [
     {
@@ -23,8 +24,8 @@ const columns = [
       field: "alias",
     },
     {
-      label: "Template",
-      field: "template",
+      label: "Type",
+      field: "type",
     },
     {
       label: "Status",
@@ -70,6 +71,16 @@ function MenuType() {
       dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
       setShowLoading(false)
+      toast.success("Menu Type Deleted Successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     })
     .catch((err) => {
       console.log(err)
@@ -77,6 +88,16 @@ function MenuType() {
         removeCookie("_token")
       }
       setShowLoading(false)
+      toast.error("Menu Type Deleted Unsuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     });
   }
   return (
@@ -130,7 +151,11 @@ function MenuType() {
                       <tr key={i}>
                         <td className="table-td">{row.title}</td>
                         <td className="table-td lowercase">{row.alias}</td>
-                        <td className="table-td ">{row.template}</td>
+                        <td className="table-td ">{
+                          row.parent_menu ? "Parent Menu" 
+                          : row.children_menu ? "Children Menu"
+                          : "Main Menu"
+                        }</td>
                         <td className="table-td" style={{paddingRight: "0"}}>
                         <span className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row.status ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500"}`}>{row.status ? "Active": "Inactive"}</span>
                         </td>

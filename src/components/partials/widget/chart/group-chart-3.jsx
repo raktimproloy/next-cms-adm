@@ -50,13 +50,28 @@ const GroupChart3 = ({chartData}) => {
       percentClass: "text-primary-500",
     },
   ])
-useEffect(() => {
-  if(chartData.length > 0){
-    chartData.map(data => {
-      
-    })
-  }
-}, [chartData])
+  useEffect(() => {
+    if (chartData.length > 0) {
+      const updatedStatistics = statistics.map(stat => {
+        const matchingData = chartData.find(data => data.title === stat.title);
+  
+        if (matchingData) {
+          // If there is matching data in chartData, update title and count
+          return {
+            ...stat,
+            title: matchingData.title,
+            count: matchingData.count,
+          };
+        }
+  
+        // If no matching data found, return the original stat
+        return stat;
+      });
+  
+      // Update the state with the new statistics
+      setStatistics(updatedStatistics);
+    }
+  }, [chartData]);
 
 
   return (
@@ -80,19 +95,6 @@ useEffect(() => {
           <span className="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
             {item.count}
           </span>
-          {/* <div className="flex space-x-2 rtl:space-x-reverse">
-            <div className={` flex-none text-xl  ${item.text} `}>
-              <Icon icon={item.icon} />
-            </div>
-            <div className="flex-1 text-sm">
-              <span className={` block mb-[2px] ${item.percentClass} `}>
-                {item.percent}
-              </span>
-              <span className="block mb-1 text-slate-600 dark:text-slate-300">
-                From last week
-              </span>
-            </div>
-          </div> */}
         </div>
       ))}
     </>

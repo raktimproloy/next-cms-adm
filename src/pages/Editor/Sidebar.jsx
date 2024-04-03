@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 
 function Sidebar() {
   const [content, setContent] = useState("components")
-useEffect(() => {
-  const localContent = localStorage.getItem("content")
-  console.log(localContent)
-}, [localStorage])
+// useEffect(() => {
+//   const localContent = localStorage.getItem("content")
+// }, [localStorage])
 
   return (
     <>
@@ -23,23 +22,7 @@ useEffect(() => {
             onClick={() => setContent("components")}
             title="components"
           >
-            <i className="fa fa-cubes"></i>
-          </button>
-        </li>
-        <li className="nav-item" role="presentation">
-          <button
-            className="nav-link"
-            id="layer-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#layer"
-            type="button"
-            role="tab"
-            aria-controls="layer"
-            aria-selected="false"
-            onClick={() => setContent("layers")}
-            title="layers"
-          >
-            <i className="fa fa-tasks"></i>
+            <i className="fa fa-th" aria-hidden="true"></i>
           </button>
         </li>
         <li className="nav-item" role="presentation">
@@ -55,10 +38,27 @@ useEffect(() => {
             onClick={() => setContent("styles")}
             title="styles"
           >
-            <i className="fa fa-paint-brush"></i>
+            {/* <i className="fa fa-paint-brush"></i> */}
+            <i className="fa fa-cog"></i>
           </button>
         </li>
         <li className="nav-item" role="presentation">
+          <button
+            className="nav-link"
+            id="layer-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#layer"
+            type="button"
+            role="tab"
+            aria-controls="layer"
+            aria-selected="false"
+            onClick={() => setContent("layers")}
+            title="layers"
+          >
+            <i className="fa fa-tree" aria-hidden="true"></i>
+          </button>
+        </li>
+        {/* <li className="nav-item" role="presentation">
           <button
             className="nav-link"
             id="trait-tab"
@@ -73,7 +73,7 @@ useEffect(() => {
           >
             <i className="fa fa-cog"></i>
           </button>
-        </li>
+        </li> */}
       </ul>
       <div className="tab-content">
         {/* Row */}
@@ -101,17 +101,18 @@ useEffect(() => {
           role="tabpanel"
           aria-labelledby="style-tab"
         >
+          <div id="trait-container"></div>
           <div id="styles-container"></div>
         </div>
         {/* Setting */}
-        <div
+        {/* <div
           className={`tab-pane fade ${content === "settings"? "block" : "hidden"}`}
           id="trait"
           role="tabpanel"
           aria-labelledby="trait-tab"
         >
           <div id="trait-container"></div>
-        </div>
+        </div> */}
       </div>
     </>
   );

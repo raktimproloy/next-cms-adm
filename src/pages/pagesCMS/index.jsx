@@ -4,7 +4,10 @@ import Button from "@/components/ui/Button";
 import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import Popup from "@/components/ui/Popup"
+import MessagePopup from "@/components/ui/Popup/MessagePopup"
 import Modal from "@/components/ui/Modal"
+import Icon from "@/components/ui/Icon"
+import Tooltip from "@/components/ui/Tooltip"
 import Select from "@/components/ui/Select"
 import { useSelector } from 'react-redux';
 import { getAllPages } from '../../utils/getAllPages';
@@ -13,7 +16,12 @@ import { API_HOST } from '@/utils';
 import { addInfo } from '../../store/layout';
 import { Link, useNavigate } from 'react-router-dom';
 import { deletePage } from '@/store/actions/pageAction';
-
+import {AddLog} from "@/utils/logHandler"
+import {CurrentDate} from "@/utils/CurrentDate"
+import { createPage } from "@/store/actions/pageAction";
+import { ToastContainer, toast } from 'react-toastify';
+import Pagination from "@/components/ui/Pagination"
+import Textinput from "@/components/ui/Textinput"
 
 const columns = [
     {
@@ -52,13 +60,14 @@ const styles = {
 const category = [
   {value: "all", label: "All"},
   {value: "predesign", label: "Predesign"},
-  {value: "grapesjs", label: "Grapesjs"}
+  {value: "designer", label: "Designer"}
 ]
 
 
 function index() {
   const CMS_API = import.meta.env.VITE_CMS_LINK
   const [showLoading, setShowLoading] = useState(false)
+  const [showLoadingText, setShowLoadingText] = useState("Page Deleting...")
   const navigate = useNavigate()
   const [selectionValue, setSelectionValue] = useState("all")
   const [showingData, setShowingData] = useState([])
@@ -66,8 +75,9 @@ function index() {
     showDeleteModal: false,
     slug: ""
   })
-  const data = useSelector((state) => state.pages);
-  const updateInfo = useSelector((state) => state.update);
+  // const data = useSelector((state) => state.pages);
+  // const updateInfo = useSelector((state) => state.update);
+  const profileData = useSelector((state) => state.profile);
   const dispatch = useDispatch()
 
   // Cookies
@@ -75,47 +85,122 @@ function index() {
   const headers = {
     'Authorization': `Bearer ${cookie._token}`
   }
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchInput, setSearchInput] = useState("")
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePagination = () => {
+    setCurrentPage(1);
+    axios.get(`${API_HOST}page/count/${selectionValue}`)
+    .then(res => {
+      setTotalPages(Math.ceil(res.data.count/10) || 1)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
 
   useEffect(() => {
-    if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
-      getAllPages(dispatch, cookie, removeCookie);
-    }
-  }, [dispatch, data, updateInfo]);
+    handlePagination()
+  }, [selectionValue])
+
+  // useEffect(() => {
+  //   // setBlogData(ArraySlice(currentPage, parseInt(setting.blog_show_amount), data))
+  //   axios.get(`${API_HOST}page/get/all/${currentPage}`)
+  //   .then(res => {
+  //     setShowingData(res.data)
+  //   })
+  //   .catch(err => {
+  //     console.log(err)
+  //   })
+  // }, [currentPage, showLoading])
+
+  // useEffect(() => {
+  //   if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
+  //     getAllPages(dispatch, cookie, removeCookie);
+  //   }
+  // }, [dispatch, data, updateInfo]);
 
 
   const handleDelete = () => {
+    setShowLoadingText("Page Deleting...")
     setShowLoading(true)
     axios.delete(`${API_HOST}page/delete/${deleteInfo.slug}`, {
       headers: headers
     })
     .then((res) => {
+      AddLog(profileData.email, "Page", `Page Deleted Successful`)
       deletePage(deleteInfo.slug)(dispatch);
       dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+      dataShowingFilter()
+      handlePagination()
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
       setShowLoading(false)
+      toast.success("Slider Added Successful", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     })
     .catch((err) => {
       console.log(err)
       if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
+        AddLog(profileData.email, "Page", `Page Deleted Failed For Authorization`)
+      }else{
+        AddLog(profileData.email, "Page", `Page Edited Unsuccessful`)
       }
       setShowLoading(false)
+      toast.error("Page Deleted Unuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     });
   }
 
-  useEffect(() => {
+
+  const dataShowingFilter = () => {
     setShowingData([])
-    if(data.length > 0){
-      data.map(page => {
-        if(selectionValue === "all"){
-          setShowingData(oldPage => [...oldPage, page])
-        }else if(page.template_category.toLowerCase() === selectionValue){
-          setShowingData(oldPage => [...oldPage, page])
-        }
+    if(searchInput.length > 0){
+      axios.get(`${API_HOST}page/query/${currentPage}/search?query=${searchInput}`)
+      .then(res => {
+        setTotalPages(Math.ceil(res.data.count/10) || 1)
+        setShowingData(res.data.results)
       })
+      .catch(err => {
+        console.log(err)
+      })
+
+    }else{
+      axios.get(`${API_HOST}page/get/${selectionValue}/${currentPage}`)
+      .then(res => {
+        setShowingData(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
     }
-  }, [data, selectionValue])
+  }
+
+  useEffect(() => {
+    dataShowingFilter()
+  }, [currentPage, selectionValue])
 
   // handle selection
   const handleChange = (e) => {
@@ -125,12 +210,166 @@ function index() {
   // Handle Preview
   const handlePreview = (slug) => {
     console.log(slug)
-    window.open(`${CMS_API}${slug.toLowerCase()}`, '_blank');
+    if(slug == "home"){
+      window.open(`${CMS_API}`, '_blank');
+    }else{
+      window.open(`${CMS_API}${slug.toLowerCase()}`, '_blank');
+    }
+  }
+
+  // handle Duplicate
+  const handleDuplicate = (slug) => {
+    setShowLoadingText("Page Duplicating...")
+    setShowLoading(true)
+
+    // get main page data
+    axios.get(`${API_HOST}page/${slug}`, {
+      headers: headers
+    })
+    .then((res) => {
+
+      // change duplicate data value
+      const duplicatePageData = res.data
+      duplicatePageData.title = duplicatePageData.title + "_new"
+      duplicatePageData.slug = duplicatePageData.slug + "_new"
+
+      // create duplicate page
+      axios.post(`${API_HOST}page/add`, duplicatePageData, {
+        headers: headers
+      })
+      .then((res) => {
+        AddLog(profileData.email, "Page", `Page Duplicated Successful`)
+        dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
+        dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
+        
+        createPage(duplicatePageData.title)(dispatch);
+
+        // get main page grapes js content
+        axios.get(`${API_HOST}api/pages/${slug}/content`)
+        .then(res => {
+          const content = res.data
+          if(typeof(content) === "object"){
+            // duplicate main page grapes js content
+            axios.post(`${API_HOST}api/pages/${duplicatePageData.slug}/content`, content)
+            .then(res => {
+              setShowLoading(false)
+              toast.success("Page Duplicated Successful!", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+            })
+            .catch(err => {
+              setShowLoading(false)
+              toast.error("Page Duplicated Unsuccessful!", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+            })
+          }else{
+            setShowLoading(false)
+            toast.success("Page Duplicated Successful!", {
+              position: "top-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        })
+        .catch(err => {
+          setShowLoading(false)
+          toast.error("Page Duplicated Unsuccessful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        })
+      })
+      .catch((err) => {
+        setShowLoading(false)
+        if(err.response.data.error === "Authentication error!"){
+          removeCookie("_token")
+          AddLog(profileData.email, "Page", `Page Duplicated Faild For Authorization`)
+        }else{
+          AddLog(profileData.email, "Page", `Page Duplicated Unsuccessful`)
+        }
+        toast.error("Page Duplicated Unsuccessful!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
+    })
+    .catch((err) => {
+      setShowLoading(false)
+      console.log(err)
+      toast.error("Page Duplicated Unsuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    });
+  }
+
+
+  
+  const handleSearch = () => {
+    axios.get(`${API_HOST}page/query/${currentPage}/search?query=${searchInput}`)
+    .then(res => {
+      setTotalPages(Math.ceil(res.data.count/10) || 1)
+      setShowingData(res.data.results)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  const emptyCheck = (e) => {
+    if(e?.target?.value?.length === 0){
+      axios.get(`${API_HOST}page/get/${selectionValue}/${currentPage}`)
+      .then(res => {
+        setShowingData(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+    handlePagination()
   }
 
   return (
     <div>
-      <Popup showLoading={showLoading} popupText={"Page Deleting..."}  />
+      <Popup showLoading={showLoading} popupText={showLoadingText}  />
       <Modal
         title="Warning"
         label=""
@@ -156,6 +395,19 @@ function index() {
         </div>
       </Modal>
       <Card title="Pages" noborder>
+        <div className='flex justify-end mb-3'>
+          <div className='w-full flex justify-end md:w-1/4'>
+            <Textinput
+              id="pn"
+              type="text"
+              placeholder="Search..."
+              onChange={(e) => {setSearchInput(e.target.value); emptyCheck(e)}}
+            />
+            <Button text="Search" className="btn-success py-2 ml-3" onClick={() => {
+              handleSearch()
+            }}  />
+          </div>
+        </div>
         <div className='flex justify-between mb-3'>
           <Select
               className="react-select"
@@ -186,7 +438,9 @@ function index() {
                   <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                     {showingData.map((row, i) => (
                       <tr key={i}>
-                        <td className="table-td">{row.title}</td>
+                        <td className="table-td flex justify-evely items-center">
+                          {row.title}
+                        </td>
                         <td className="table-td lowercase">{row.slug}</td>
                         {/* <td className="table-td ">{row.menu_type}</td> */}
                         <td className="table-td" style={{paddingRight: "0"}}>
@@ -194,36 +448,37 @@ function index() {
                         </td>
                         <td className="table-td ">{row.published_date}</td>
                         <td className="table-td ">{row.template_category}</td>
-                        {/* <td className="table-td ">{row.order}</td> */}
-                        <td className="table-td ">
-                            <Button
-                              text="view"
-                              className="btn-outline-success rounded-[999px] py-2 me-2"
-                              onClick={() => 
-                                handlePreview(row.slug)
-                              }
-                            />
-                          <Button
-                            text="Edit"
-                            className="btn-outline-primary rounded-[999px] py-2 me-2"
-                            onClick={() => 
+                        <td className="table-td flex ">
+                          <Tooltip content="View" placement="top" arrow animation="shift-away">
+                            <button className="action-btn btn-outline-success mr-3" type="button" onClick={() => 
+                              handlePreview(row.slug)
+                            }>
+                              <Icon icon="heroicons:eye" />
+                            </button>
+                          </Tooltip>
+                          <Tooltip content="Edit" placement="top" arrow animation="shift-away">
+                            <button className="action-btn btn-outline-cyan mr-3" type="button" onClick={() => 
                               navigate(`/pages/edit/${row.slug}`)
-                            }
-                          />
-                          <Button
-                            text="Delete"
-                            className="btn-outline-danger rounded-[999px] py-2"
-                            onClick={() => {
+                            }>
+                              <Icon icon="heroicons:pencil" />
+                            </button>
+                          </Tooltip>
+                          <Tooltip content="Delete" placement="top" arrow animation="shift-away">
+                            <button className="action-btn btn-outline-danger mr-3" type="button" onClick={() => 
                               setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
-                              
-                            }}
-                          />
+                            }>
+                              <Icon icon="heroicons:trash" />
+                            </button>
+                          </Tooltip>
+                          <Tooltip content="Clone" placement="top" arrow animation="shift-away">
+                            <button className="action-btn btn-outline-success mr-3" type="button" onClick={() => handleDuplicate(row.slug)} >
+                              <Icon icon="heroicons:document-duplicate" />
+                            </button>
+                          </Tooltip>
                           {
-                            row.template_category == "Grapesjs" &&
-
-                          <Button
-                            text="design"
-                            className="btn-outline-primary rounded-[999px] py-2 ms-2"
+                            row.template_category == "Designer" &&
+                            <Tooltip content="Design" placement="top" arrow animation="shift-away">
+                            <button className="action-btn btn-outline-cyan mr-3" type="button" 
                             onClick={() => {
                               navigate(`/pages/editor/${row.slug}`)
                               localStorage.setItem('grapesjs_page', JSON.stringify({
@@ -232,7 +487,10 @@ function index() {
                               }));
                             }
                             }
-                          />
+                            >
+                              <Icon icon="heroicons:pencil-square" />
+                            </button>
+                          </Tooltip>
                           }
                         </td>
                       </tr>
@@ -242,6 +500,14 @@ function index() {
               </div>
             </div>
           </div>
+          {
+            <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange}
+                className={"flex justify-center py-5"}
+            />
+          }
       </Card>
     </div>
     )

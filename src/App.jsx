@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // home pages  & dashboard
@@ -66,29 +66,44 @@ import useAuthCheck from "@/hooks/useAuthCheck";
 import { useSelector } from "react-redux";
 import { getProfile } from "./utils/getProfile";
 import { useCookies } from "react-cookie";
+import { getSetting } from "@/utils/getSetting";
 import RequireAuth from "./utils/RequireAuth";
+import NotFoundPage from "./pages/404"
 
 function App() {
   const dispatch = useDispatch()
+  const sessionData = useSelector((state) => state.session)
   const [isAuthenticated] = useAuthCheck();
   const [cookie, setCookie, removeCookie] = useCookies();
 
   const profileData = useSelector((state) => state.profile);
+  const settingData = useSelector((state) => state.setting);
   const updateInfo = useSelector((state) => state.update);
-
   useEffect(() => {
     if(isAuthenticated){
       if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
-          getProfile(dispatch, cookie, removeCookie);
+          getProfile(dispatch, cookie, removeCookie, sessionData);
       }
+    }
+    if (updateInfo.settingUpdate === "" || updateInfo.settingUpdate === "not-updated") {
+      getSetting(dispatch, cookie, removeCookie);
     }
   }, [dispatch, profileData, updateInfo]);
 
+  useEffect(() => {
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+    
+    link.href = `${settingData?.storage_config?.storage_url}${settingData.fav_icon}` || "";
+  }, [settingData]);
 
   useEffect(() => {
     pageLoad()(dispatch);
   }, [dispatch]);
-
 
   return (
     <main className="App  relative">
@@ -124,77 +139,240 @@ function App() {
         {/* Editor */}
           
         {
-          isAuthenticated === true ?
-        <Route path="/*" element={<Layout />}>
+          isAuthenticated === true  ?
+        <Route path="/*" element={<RequireAuth />}>
           <Route path="dashboard" element={
-          // <RequireAuth>
+            <Suspense fallback={<Loading />}>
             <Dashboard />
-          // </RequireAuth>
+          </Suspense>
+            
           } />
 
-          {
-            profileData.rolename === "Admin" || profileData?.permission?.page ?
-            (
-              <>
-                {/* Pages */}
-                <Route path="pages" element={<Pages />} />
-                <Route path="pages/add" element={<AddPage />} />
-                <Route path="pages/edit/:slug" element={<EditPage />} />
-                <Route path="pages/editor/:slug" element={<Editor />} />
-              </>
-            ): ""
-          }
-          
-          {
-            profileData.rolename === "Admin" && (
-              <>
-                {/* System */}
-                <Route path="add-user" element={<AddUser />} />
-                <Route path="change-password" element={<ChangePassword />} />
-                <Route path="role-management" element={<RoleManager />} />
-                <Route path="user-management" element={<UserManager />} />
-                <Route path="user-management/edit/:username" element={<UserEdit />} />
-
-                {/* Setting */}
-                <Route path="genarel-setting" element={<GenarelSetting />} />
-                <Route path="pages-setting" element={<PagesSetting />} />
-                <Route path="blogs-setting" element={<BlogsSetting />} />
-
-                {/* Menu Page */}
-                <Route path="menu/menu-type" element={<MenuType />} />
-                <Route path="menu/menu-type/add" element={<AddMenuType />} />
-                <Route path="menu/menu-type/edit/:alias" element={<EditMenuType />} />
-
-                <Route path="menu/menu-manager" element={<MenuManager />} />
-                <Route path="menu/menu-manager/add" element={<AddLink />} />
-              </>
-            )
-          }
-          {
-            profileData.rolename === "Admin" || profileData?.permission?.blog ? 
-              <>
-                {/* Blog Page */}
-                <Route path="blog" element={<BlogPage />} />
-                <Route path="blog/add" element={<AddBlog />} />
-                <Route path="blog/edit/:slug" element={<EditBlog/>} />
-              </>
-            : ""
-          }
-          
-
-          {/* Service Page */}
-          {/* <Route path="service" element={<ServicePage />} />
-          <Route path="service-details" element={<ServiceDetailsPage />} /> */}
-
-
-
           {/* profile page */}
-          <Route path="profile/:username" element={<Profile />} />
+          <Route path="profile/:username" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" || profileData?.permission?.page ?
+                <Profile />
+                :<NotFoundPage/>
+              }
+          </Suspense>
+          } />
 
-          {/* Email Page */}
-          {/* <Route path="email" element={<EmailPage />} /> */}
-          {/* <Route path="*" element={<Navigate to="/404" />} /> */}
+          {/* Pages */}
+          <Route path="pages" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" || profileData?.permission?.page ?
+                <Pages />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+          <Route path="pages/add" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" || profileData?.permission?.page ?
+                <AddPage />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+            
+          } />
+          <Route path="pages/edit/:slug" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" || profileData?.permission?.page ?
+                <EditPage />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+          <Route path="pages/editor/:slug" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" || profileData?.permission?.page ?
+                <Editor />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+    
+          {/* System */}
+          <Route path="add-user" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <AddUser />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+            } 
+          />
+          <Route path="change-password" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <ChangePassword />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+          <Route path="role-management" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <RoleManager />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+          <Route path="user-management" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <UserManager />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+          <Route path="user-management/edit/:username" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <UserEdit />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
 
+          {/* Setting */}
+          <Route path="genarel-setting" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <GenarelSetting />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+          <Route path="pages-setting" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <PagesSetting />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+          <Route path="blogs-setting" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <BlogsSetting />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+
+          {/* Menu Page */}
+          <Route path="menu/menu-type" element={
+          <Suspense fallback={<Loading />}>
+            {
+              Object.keys(profileData).length === 0 ? <Loading /> :
+              profileData.rolename === "Admin" ?
+              <MenuType />
+              :<NotFoundPage/>
+            }
+          </Suspense>
+          } />
+          <Route path="menu/menu-type/add" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <AddMenuType />
+                :<NotFoundPage/>
+              }
+            </Suspense>
+          } />
+          <Route path="menu/menu-type/edit/:alias" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <EditMenuType />
+                :<NotFoundPage/>
+              }
+          </Suspense>
+          } />
+
+          <Route path="menu/menu-manager" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <MenuManager />
+                :<NotFoundPage/>
+              }
+          </Suspense>
+          } />
+          <Route path="menu/menu-manager/add" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" ?
+                <AddLink />
+                :<NotFoundPage/>
+              }
+          </Suspense>
+          } />
+
+          {/* Blog Page */}
+          <Route path="blog" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" || profileData?.permission?.blog ?
+                  <BlogPage />
+                :<NotFoundPage/>
+              }
+          </Suspense>
+          } />
+          <Route path="blog/add" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" || profileData?.permission?.blog ?
+                  <AddBlog />
+                :<NotFoundPage/>
+              }
+          </Suspense>
+          } />
+          <Route path="blog/edit/:slug" element={
+            <Suspense fallback={<Loading />}>
+              {
+                Object.keys(profileData).length === 0 ? <Loading /> :
+                profileData.rolename === "Admin" || profileData?.permission?.blog ?
+                  <EditBlog/>
+                :<NotFoundPage/>
+              }
+          </Suspense>
+          } />
+          <Route path='*' element={<NotFoundPage />} />
         </Route> 
         : <Route path='*' element={<Navigate to='/' replace />} />
 

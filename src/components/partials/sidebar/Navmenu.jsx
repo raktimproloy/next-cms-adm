@@ -9,6 +9,7 @@ import { getProfile } from "../../../utils/getProfile";
 
 const Navmenu = ({ menus }) => {
   const dispatch = useDispatch()
+  const sessionData = useSelector((state) => state.session)
   const [activeSubmenu, setActiveSubmenu] = useState(null);
 
   const [cookie, setCookie, removeCookie] = useCookies();
@@ -19,7 +20,7 @@ const Navmenu = ({ menus }) => {
 
   useEffect(() => {
     if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
-        getProfile(dispatch, cookie, removeCookie);
+        getProfile(dispatch, cookie, removeCookie, sessionData);
     }
   }, [dispatch, profileData, updateInfo]);
 

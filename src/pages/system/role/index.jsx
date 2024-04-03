@@ -26,6 +26,7 @@ import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
 import Popup from "@/components/ui/Popup"
 import { addInfo } from "@/store/layout";
+import { ToastContainer, toast } from "react-toastify";
 
 const COLUMNS = [
   {
@@ -205,18 +206,39 @@ const [blogCheck, SetBlogCheck] = useState(false)
       dispatch(addInfo({ field: 'roleUpdate', value: 'not-updated' }));
       setShowLoading(false)
       setShowAddModal(false)
+      toast.success("Role Added Successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     })
     .catch((err) => {
       setShowLoading(false)
       if(err.response.data.error === "Authentication error!"){
         removeCookie("_token")
       }
+      toast.error("Role Added Unsuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       console.log(err);
     });
   }
   
   return (
     <div>
+      {/* <ToastContainer/> */}
       <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
       <HomeBredCurbs title="Role Management" />
       <div className="lg:flex flex-wrap blog-posts lg:space-x-5 space-y-5 lg:space-y-0 rtl:space-x-reverse">

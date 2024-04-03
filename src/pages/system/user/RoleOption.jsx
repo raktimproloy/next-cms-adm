@@ -30,8 +30,9 @@ useEffect(() => {
   }
 }, [dispatch, data, updateInfo]);
 
-useEffect(() => {
+useEffect(() => { 
   if(roles.length < 1){
+    setRoles([])
     data.map(role => {
       setRoles(oldValue => [...oldValue, {value: role.rolename, label: role.rolename}])
     })

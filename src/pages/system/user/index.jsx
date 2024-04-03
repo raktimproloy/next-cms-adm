@@ -13,7 +13,7 @@ import {
 import GlobalFilter from "@/components/partials/widget/GlobalFilter";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {getUser} from "@/utils/getAllUser"
+import {getAllUser} from "@/utils/getAllUser"
 import DeleteBtn from "@/pages/shared/DeleteBtn";
 import { useDispatch } from "react-redux";
 import Button from "@/components/ui/Button";
@@ -22,6 +22,7 @@ import axios from "axios";
 import {API_HOST} from "@/utils"
 import { useCookies } from "react-cookie";
 import { getAllUserRoles } from "../../../utils/getAllUserRole";
+import { addInfo, removeUser } from "../../../store/layout";
 
 const COLUMNS = [
   {
@@ -150,52 +151,60 @@ const headers = {
 }
 const [data, setData] = useState([])
 
-// Added Role Name Dynamically
 useEffect(() => {
-  setData([]);
+  if (updateInfo.userUpdate === "" || updateInfo.userUpdate === "not-updated") {
+    getAllUser(dispatch, cookie, removeCookie);
+  }
+  if (updateInfo.userRoleUpdate === "" || updateInfo.userRoleUpdate === "not-updated") {
+    getAllUserRoles(dispatch, cookie, removeCookie);
+  }
+}, [dispatch, data, updateInfo, userData]);
 
-  if (userData) {
+
+useEffect(() => {
+  if (userData.length > 0 && userData.length !== data.length && userRoleData.length > 0) {
     const fetchRoleData = async () => {
-      const promises = userData.map(async (user, index) => {
-        if (userData[index]?.permission[0] === userRoleData[index]?._id) {
-          if (userRoleData[index]) {
-            try {
-              const res = await axios.get(`${API_HOST}role/${userRoleData[index]?.role}`, {
+      const uniqueUserIds = Array.from(new Set(userData.map((user) => user._id)));
+      const newUserData = [];
+
+      let dummyIndex = 0
+
+      for (const userId of uniqueUserIds) {
+        const user = userData.find((u) => u._id === userId);
+        dummyIndex = dummyIndex + 1
+        if (user && user.permission && user.permission[0]) {
+          try {
+            if(user.permission[0] === userRoleData[dummyIndex-1]?._id){
+              const res = await axios.get(`${API_HOST}role/${userRoleData[dummyIndex-1]?.role}`, {
                 headers: headers,
               });
-
-              const newUser = { ...userData[index], role: res.data[0]?.rolename };
-              return newUser;
-            } catch (err) {
-              if (err.response.data.error === "Authentication error!") {
-                removeCookie("_token");
+              const newUser = { ...user, role: res.data[0]?.rolename };
+  
+              // Check if the user with the same ID already exists in newUserData
+              const existingUserIndex = newUserData.findIndex((u) => u._id === newUser._id);
+  
+              if (existingUserIndex === -1) {
+                newUserData.push(newUser);
+              } else {
+                // If the user exists, replace the old data with the new one
+                newUserData[existingUserIndex] = newUser;
               }
-              console.log(err);
             }
+
+          } catch (err) {
+            if (err.response && err.response.data.error === "Authentication error!") {
+              removeCookie("_token");
+            }
+            console.log(err);
           }
         }
-        return null;
-      });
-
-      const newUserData = await Promise.all(promises);
-      // Filter out null values (errors in axios requests)
-      const filteredUserData = newUserData.filter((user) => user !== null);
-      setData((oldData) => [...oldData, ...filteredUserData]);
+      }
+      setData(newUserData);
     };
 
     fetchRoleData();
   }
-}, [updateInfo]);
-
-
-useEffect(() => {
-  if (updateInfo.userUpdate === "" || updateInfo.userUpdate === "not-updated") {
-      getUser(dispatch, cookie, removeCookie);
-  }
-  if (updateInfo.userRoleUpdate === "" || updateInfo.userRoleUpdate === "not-updated") {
-    getAllUserRoles(dispatch, cookie, removeCookie);
-}
-}, [dispatch, data, updateInfo]);
+}, [userData, userRoleData, updateInfo]);
 
 
 // Selected User
@@ -205,7 +214,6 @@ const handleSelect = (user) => {
 
   setSelectedUser((prevSelectedUser) => {
     const isUserInArray = prevSelectedUser.includes(id);
-    console.log(isUserInArray)
     if (isUserInArray) {
       return prevSelectedUser.filter((item) => item !== id);
     } else {
@@ -217,6 +225,8 @@ const handleSelect = (user) => {
 // Delete User 
 const deleteUser = () => {
   selectedUser.map(id => {
+    dispatch(addInfo({ field: 'userUpdate', value: 'not-updated' }));
+    dispatch(addInfo({ field: 'userRoleUpdate', value: 'not-updated' }));
     dispatch(removeUser(id))
   })
 }
@@ -289,6 +299,11 @@ const handleAllSelect = () => {
 
 
   const { globalFilter, pageIndex, pageSize } = state;
+
+  useEffect(() => {
+    console.log("globalFilter", globalFilter)
+    console.log("setGlobalFilter", setGlobalFilter())
+  }, [globalFilter, setGlobalFilter])
   
   return (
     <div>
@@ -324,6 +339,7 @@ const handleAllSelect = () => {
                   className="btn-warning "
                   onClick={() => 
                     {
+                      console.log(selectedUser)
                       axios
                       .delete(`${API_HOST}user/delete`, { data: { userList: selectedUser }, headers: headers })
                       .then((res) => {
@@ -331,10 +347,11 @@ const handleAllSelect = () => {
                         deleteUser()
                       })
                       .catch((err) => {
+                        console.log(err);
                         if(err.response.data.error === "Authentication error!"){
                           removeCookie("_token")
                         }
-                        console.log(err);
+                        
                       });
                     }
                   }

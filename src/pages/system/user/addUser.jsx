@@ -17,6 +17,7 @@ import { useCookies } from "react-cookie";
 import Popup from "@/components/ui/Popup"
 import RoleOption from "./RoleOption";
 import PermissionCard from "./PermissionCard";
+import { ToastContainer, toast } from "react-toastify";
 
 
 
@@ -129,13 +130,34 @@ function AddUser() {
       }
       axios.post(`${API_HOST}user-role/add`, roleData)
       .then(res=>{
+        dispatch(addInfo({ field: 'userRoleUpdate', value: 'not-updated' }));
         dispatch(addInfo({ field: 'userUpdate', value: 'not-updated' }));
         navigate("/user-management")
         setShowLoading(false)
+        toast.success("User Added Successful!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .catch(error=>{
           console.log(error)
           setShowLoading(false)
+          toast.error("User Added Unsuccessful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
       })
     })
     .catch(error=>{
@@ -147,6 +169,16 @@ function AddUser() {
         if(error.response.data.error === "Authentication error!"){
           removeCookie("_token")
         }
+        toast.error("User Added Unsuccessful!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
     })
   }
 
@@ -162,6 +194,7 @@ function AddUser() {
 
   return (
     <div>
+       {/* <ToastContainer/> */}
       <Popup showLoading={showLoading} popupText={"User Adding..."} />
       <Card title="Horizontal">
         <div>
@@ -294,7 +327,7 @@ function AddUser() {
                 <div>
                   <div className="grid md:grid-cols-2 grid-cols-1 gap-5 mb-5">
                     <div className="md:col-span-2 col-span-1">
-                      <h4 className="text-base text-slate-800 dark:text-slate-300 mb-6">
+                      <h4 className="text-base text-slate-800 dark:text-slate-300 mt-12">
                         Enter Your Personal info-500
                       </h4>
                     </div>

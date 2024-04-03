@@ -112,11 +112,16 @@ html {
 .gjs-radio-item-label{
   color: white;
 }
-.gjs-input-unit{
-  color: white !important;
+.gjs-input-unit {
+  font-size: 12px;
+  font-weight: 300;
+  color: #ffc5d0!important;
 }
-.gjs-sm-label{
-  color: white;
+.gjs-sm-label {
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+  margin: 2px;
 }
 .gjs-title{
   font-size: 13px !important;
@@ -142,11 +147,14 @@ html {
 .gjs-clm-tags-btn{
   color: white;
 }
+
 .gjs-field-text input{
   color: white;
 }
-.gjs-field-class_select select{
-  color: black;
+.gjs-field-class_select select {
+  color: #fff;
+  background-color: #1e293b;
+  font-weight: 300;
 }
 .gjs-field-text input::placeholder{
   color: white;
@@ -154,6 +162,7 @@ html {
 .gjs-four-color,
 .gjs-four-color-h:hover {
   color: #d97aa6;
+  font-size: 12px;
 }
 .nav-item{
   color: #DEDFEF;
@@ -229,12 +238,16 @@ html {
 .gjs-am-close,
 .gjs-am-file-uploader,
 .gjs-am-assets-header {
-  display: none;
+  // display: none;
 }
 
 .gjs-am-assets-cont {
-  width: 100%;
+  // width: 100%;
 }
+.gjs-btn-prim{
+  font-size: 15px;
+}
+
 
 .gjs-am-assets {
   justify-content: space-between;
@@ -335,4 +348,78 @@ html {
 }
 .gjs-cell{
   height: auto !important;
+}
+
+
+
+.gjs-radio-item input:checked+.gjs-radio-item-label {
+  background-color: #3d4758;
+  border: 1px solid #ffffff4d;
+}
+
+.gjs-field-integer input, .gjs-clm-header-label, .gjs-clm-sels-info, .gjs-sm-input-holder select, .gjs-radio-item-label {
+  color: #d7e1ff;
+  font-size: 12px;
+}
+
+
+.gjs-field {
+  background-color: #0003;
+  border: none;
+  box-shadow: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 3px;
+  position: relative;
+  font-size: 12px;
+}
+
+.gjs-sm-property__background{
+  width: 100%;
+}
+.gjs-sm-property__background-image{
+  width: 100%;
+}
+
+.gjs-trt-trait .gjs-label {
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  color: #eaffff;
+  font-weight: 400;
+}
+
+.gjs-layer-name--no-edit {
+  text-overflow: ellipsis;
+  font-weight: 200;
+}
+
+.fa-arrows:before {
+  content: "\f047";
+  color: #c7ffb3;
+}
+
+// .gjs-one-bg :hover {
+//   font-size: 12px;
+// }
+
+
+#styles-container{
+  display: flex;
+  flex-flow: column-reverse;
+}
+
+.gjs-field input, .gjs-field select, .gjs-field textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  color: green;
+  border: none;
+  background-color: black;
+  box-sizing: border-box;
+  width: 100%;
+  font-weight: 600;
+  position: relative;
+  padding: 5px;
+  z-index: 1;
 }

@@ -16,6 +16,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { deletePage } from '@/store/actions/pageAction';
 import { getAllMenus } from '../../utils/getAllMenus';
 import swal from 'sweetalert';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 const columns = [
@@ -56,6 +57,7 @@ function MenuManager() {
   const navigate = useNavigate()
   const [selectionValue, setSelectionValue] = useState("")
   const [showLoading, setShowLoading] = useState(false)
+  const [loadingText, setLoadingText] = useState("")
   const [editPopup, setEditPopup] = useState({
     slug: "",
     showEditModal: false
@@ -67,6 +69,11 @@ function MenuManager() {
   })
   const [menuData, setMenuData] = useState({
     title: ""
+  })
+
+  const [externalLink, setExternalLink] = useState({
+    title: "",
+    link: "",
   })
   const [menuType, setMenuType] = useState([])
   const pageData = useSelector((state) => state.pages);
@@ -91,29 +98,56 @@ function MenuManager() {
   }, [dispatch, pageData, updateInfo]);
 
   useEffect(() => {
+    const selectionValueArray = selectionValue.split("/")
     if(menuTypeData.length > 0){
-      menuTypeData.map(type => {
-        if(type._id === selectionValue){
-          setMenuData(type)
-        }
-      })
+      if(selectionValueArray.length === 1){
+        menuTypeData.map(type => {
+          if(type.alias === selectionValueArray[0]){
+            setMenuData(type)
+          }
+        })
+      }else if(selectionValueArray.length === 2){
+        menuTypeData.map(type => {
+          if(type.items && type.items.length > 0){
+            type.items.map(item => {
+              if(item.menu_slug === selectionValueArray[1]){
+                setMenuData(item)
+              }
+            })
+          }
+        })
+      }else{
+        menuTypeData.map(type => {
+          if(type.items && type.items.length > 0){
+            type.items.map(item => {
+              if(item.menu_slug === selectionValueArray[1] && item.items.length > 0){
+                item.items.map(child => {
+                  if(child.items && child.items.length > 0){
+                    setMenuData(child)
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
     }
   }, [menuTypeData, selectionValue, pageData])
-
-
-
 
   // Menu Items sort and set Page data
   useEffect(() => {
     setShowingPages([])
+    // console.log(menuData)
     const pagesData = []
     if(menuData.title !== ""){
       const sortItems = [...menuData.items].sort((a, b) => a.order - b.order);
       sortItems.map((item) => {
+        // console.log(item)
          if(item.link_type === "external"){
             pagesData.push(item.link)
          }else{
            pageData.map((page) => {
+            // console.log("pageSlug", page.slug, "menuSlug", item.menu_slug)
                if(page.slug === item.menu_slug){
                    pagesData.push(page)
                }
@@ -124,32 +158,68 @@ function MenuManager() {
     setShowingPages(pagesData)
   }, [menuData, menuTypeData, pageData])
 
-
   // update Menu Type
   useEffect(() => {
     setMenuType([])
-    menuTypeData.map(type => {
-      setMenuType(oldType => [...oldType, { value: type._id, label: type.title }])
-    })
+    // Update the menuType state based on menuTypeData
+    const menuTypeValue = [];
+    menuTypeData.forEach(type => {
+      menuTypeValue.push({ value: type.alias, label: type.title });
+      if (type.items && type.items.length > 0) {
+        type.items.forEach(item => {
+          if (item.items && item.items.length > 0) {
+            menuTypeValue.push({ value: type.alias + "/" + item.menu_slug, label: item.title });
+            item.items.map(child => {
+              if(child.items && child.items.length > 0){
+                menuTypeValue.push({ value: type.alias + "/" + item.menu_slug + "/" + child.menu_slug, label: child.title });
+              }
+            })
+          }
+        });
+      }
+    });
+
+    setMenuType(menuTypeValue);
+
     if(selectionValue === ""){
-      menuTypeData.length > 0 && setSelectionValue(menuTypeData[0]._id)
+      menuTypeData.length > 0 && setSelectionValue(menuTypeData[0].alias)
     }
+
   }, [menuTypeData])
 
 
-
   const handleDelete = () => {
+    const manageDeleteSlug = selectionValue.split("/")
+    const menuTypeSlug = manageDeleteSlug.shift()
+    manageDeleteSlug.push(deleteInfo.slug)
+    let joinedString = manageDeleteSlug.join('/');
+    let menuTypeId = ""
+    menuTypeData.map(menu => {
+      if(menu.alias === menuTypeSlug){
+        menuTypeId = menu._id
+      }
+    })
+
     setShowLoading(true)
-    axios.post(`${API_HOST}menu/delete/item/${selectionValue}`, {
-      slug: deleteInfo.slug
+    axios.post(`${API_HOST}menu/delete/item/${menuTypeId}`, {
+      slug: joinedString
     }, {
       headers: headers
     })
     .then((res) => {
-      // deletePage(deleteInfo.slug)(dispatch);
       dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
       setDeleteInfo({...deleteInfo, showDeleteModal: false})
       setShowLoading(false)
+      toast.success("Menu Item Deleted Successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     })
     .catch((err) => {
       console.log(err)
@@ -157,11 +227,31 @@ function MenuManager() {
         removeCookie("_token")
       }
       setShowLoading(false)
+      toast.error("Menu Items Deleted Unsuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     });
   }
 
   const updateApi = (updatedData) => {
-    axios.post(`${API_HOST}menu/update/${selectionValue}`, updatedData, {
+    const manageDeleteSlug = selectionValue.split("/")
+    const menuTypeSlug = manageDeleteSlug.shift()
+    manageDeleteSlug.push(deleteInfo.slug)
+    let joinedString = manageDeleteSlug.join('/');
+    let menuTypeId = ""
+    menuTypeData.map(menu => {
+      if(menu.alias === menuTypeSlug){
+        menuTypeId = menu._id
+      }
+    })
+    axios.post(`${API_HOST}menu/update/${menuTypeId}`, updatedData, {
       headers: headers
     })
     .then((res) => {
@@ -177,48 +267,90 @@ function MenuManager() {
     });
   }
 
-  // handle selection
-  const handleChange = (e) => {
-    setSelectionValue(e.target.value)
-  }
-
   // Handle Position
   const handleUpButton = (slug) => {
-    let previousPage = {};
-    let clickedPage = {};
-
-    menuData.items.map(menuPage => {
-      if (menuPage.menu_slug === slug) {
-        clickedPage = Object.assign({}, menuPage); // create a new object
-      } 
-    });
-
-    menuData.items.map(menuPage => {
-      if(menuPage.order === (clickedPage.order - 1)){
-        previousPage = Object.assign({}, menuPage); // create a new object
+    const manageOrderSlug = selectionValue.split("/")
+    const menuTypeSlug = manageOrderSlug.shift()
+    manageOrderSlug.push(slug)
+    let joinedString = manageOrderSlug.join('/');
+    let menuTypeId = ""
+    let MainMenuData = {}
+    menuTypeData.map(menu => {
+      if(menu.alias === menuTypeSlug){
+        menuTypeId = menu._id
+        MainMenuData = menu
       }
     })
 
-    if (previousPage && clickedPage) {
-      previousPage.order = previousPage.order + 1;
-      clickedPage.order = clickedPage.order - 1;
-    }
-
-    const updatedData = [previousPage, clickedPage]
-    const updatedMenuData = {
-      ...menuData,
-      items: menuData.items.map((item) => {
-        const updatedItem = updatedData.find((updated) => updated.menu_slug === item.menu_slug);
-        return updatedItem ? { ...item, ...updatedItem } : item;
-      }),
-    };
-
-    updateApi(updatedMenuData)
-    
-  }
+      let previousPage = {};
+      let clickedPage = {};
   
+      menuData.items.map(menuPage => {
+        if (menuPage.menu_slug === slug) {
+          clickedPage = Object.assign({}, menuPage); // create a new object
+        } 
+      });
+  
+      menuData.items.map(menuPage => {
+        if(menuPage.order === (clickedPage.order - 1)){
+          previousPage = Object.assign({}, menuPage); // create a new object
+        }
+      })
+  
+      if (previousPage && clickedPage) {
+        previousPage.order = previousPage.order + 1;
+        clickedPage.order = clickedPage.order - 1;
+      }
+  
+      const updatedData = [previousPage, clickedPage]
+      let updatedMenuData = {}
+
+      if(manageOrderSlug.length === 1){
+        updatedMenuData = {
+          ...menuData,
+          items: menuData.items.map((item) => {
+            const updatedItem = updatedData.find((updated) => updated.menu_slug === item.menu_slug);
+            return updatedItem ? { ...item, ...updatedItem } : item;
+          }),
+        };
+      }else if(manageOrderSlug.length === 2){
+        const updatedSecoundMenuData = {
+          ...menuData,
+          items: menuData.items.map((item) => {
+            const updatedItem = updatedData.find((updated) => updated.menu_slug === item.menu_slug);
+            return updatedItem ? { ...item, ...updatedItem } : item;
+          }),
+        };
+        updatedMenuData = {
+          ...MainMenuData,
+          items: MainMenuData.items.map((item) => {
+            if (item.menu_slug === manageOrderSlug[0]) {
+              const updatedBlogData = updatedSecoundMenuData.menu_slug === manageOrderSlug[0] ? updatedSecoundMenuData : {};
+              return updatedBlogData ? { ...item, ...updatedBlogData } : item;
+            }
+            return item;
+          }),
+        };
+      }
+      updateApi(updatedMenuData)
+  }
 
   const handleDownButton = (slug) => {
+    const manageOrderSlug = selectionValue.split("/")
+    const menuTypeSlug = manageOrderSlug.shift()
+    manageOrderSlug.push(slug)
+    let joinedString = manageOrderSlug.join('/');
+    let menuTypeId = ""
+    let MainMenuData = {}
+    menuTypeData.map(menu => {
+      if(menu.alias === menuTypeSlug){
+        menuTypeId = menu._id
+        MainMenuData = menu
+      }
+    })
+
+
+
     let nextPage = {};
     let clickedPage = {};
 
@@ -240,35 +372,90 @@ function MenuManager() {
     }
 
     const updatedData = [nextPage, clickedPage]
-    const updatedMenuData = {
-      ...menuData,
-      items: menuData.items.map((item) => {
-        const updatedItem = updatedData.find((updated) => updated.menu_slug === item.menu_slug);
-        return updatedItem ? { ...item, ...updatedItem } : item;
-      }),
-    };
+    let updatedMenuData = {}
+
+    if(manageOrderSlug.length === 1){
+      updatedMenuData = {
+        ...menuData,
+        items: menuData.items.map((item) => {
+          const updatedItem = updatedData.find((updated) => updated.menu_slug === item.menu_slug);
+          return updatedItem ? { ...item, ...updatedItem } : item;
+        }),
+      };
+    }else if(manageOrderSlug.length === 2){
+      const updatedSecoundMenuData = {
+        ...menuData,
+        items: menuData.items.map((item) => {
+          const updatedItem = updatedData.find((updated) => updated.menu_slug === item.menu_slug);
+          return updatedItem ? { ...item, ...updatedItem } : item;
+        }),
+      };
+      updatedMenuData = {
+        ...MainMenuData,
+        items: MainMenuData.items.map((item) => {
+          if (item.menu_slug === manageOrderSlug[0]) {
+            const updatedBlogData = updatedSecoundMenuData.menu_slug === manageOrderSlug[0] ? updatedSecoundMenuData : {};
+            return updatedBlogData ? { ...item, ...updatedBlogData } : item;
+          }
+          return item;
+        }),
+      };
+    }
+
 
     updateApi(updatedMenuData)
   }
 
+  // handle selection
+  const handleTypeChange = (e) => {
+    setSelectionValue(e.target.value)
+  }
 
   const editExternalLink = () => {
+    setShowLoading(true)
     axios.post(`${API_HOST}menu/update/item/${selectionValue}`, {
-      slug: editPopup.slug
+      slug: editPopup.slug,
+      externalLink
     }, {
       headers: headers
     })
     .then(res => {
-      console.log(res)
+      dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
+      setEditPopup({...editPopup, showEditModal: false})
+      setShowLoading(false)
+      toast.success("External Link Updated Successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     })
     .catch(err => {
-      console.log(err)
+      setShowLoading(false)
+      if(err.response.data.error === "Authentication error!"){
+        removeCookie("_token")
+      }
+      toast.error("External Link Updated Unsuccessful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     })
   }
-
+  
   return (
     <div>
-      <Popup showLoading={showLoading} popupText={"Menu Deleting..."}  />
+      {/* <ToastContainer/> */}
+      <Popup showLoading={showLoading} popupText={loadingText}  />
       <Modal
         title="Warning"
         label=""
@@ -313,42 +500,19 @@ function MenuManager() {
       >
         <div className="text-base text-slate-600 dark:text-slate-300">
           <Textinput
-            label="Role Name"
+            label="Title Name"
             type="text"
-            placeholder="Type new role"
-            // value={roleName}
-            // onChange={(e) => setRoleName(e.target.value)}
+            placeholder="Type new external title"
+            defaultValue={externalLink.title}
+            onChange={(e) => setExternalLink({...externalLink, title: e.target.value})}
           />
-          {/* <div className="mt-4 w-2/4 mx-auto">
-            <div className="flex justify-between py-3">
-              <Switch
-                label="Page"
-                activeClass="bg-danger-500"
-                value={pageCheck}
-                onChange={() => SetPageCheck(!pageCheck)}
-              />
-              <Switch
-                label="Info"
-                activeClass="bg-danger-500"
-                value={infoCheck}
-                onChange={() => SetInfoCheck(!infoCheck)}
-              />
-            </div>
-            <div className="flex justify-between py-3">
-              <Switch
-                label="Service"
-                activeClass="bg-danger-500"
-                value={serviceCheck}
-                onChange={() => SetServiceCheck(!serviceCheck)}
-              />
-              <Switch
-                label="Blog"
-                activeClass="bg-danger-500"
-                value={blogCheck}
-                onChange={() => SetBlogCheck(!blogCheck)}
-              />
-            </div>
-          </div> */}
+          <Textinput
+            label="Link"
+            type="text"
+            placeholder="Type new link"
+            defaultValue={externalLink.link}
+            onChange={(e) => setExternalLink({...externalLink, link: e.target.value})}
+          />
         </div>
       </Modal>
       <Card title="Menu Manager" noborder>
@@ -359,7 +523,7 @@ function MenuManager() {
             defaultValue={menuType[0]}
             options={menuType}
             styles={styles}
-            onChange={handleChange}
+            onChange={handleTypeChange}
             id="hh"
           />
           <Button text="Add Link" className="btn-success py-2" onClick={() => {
@@ -416,13 +580,18 @@ function MenuManager() {
                             text="Edit"
                             className="btn-outline-primary rounded-[999px] py-2 me-2"
                             onClick={() => {
-                              if(row.slug.includes("http")){
+                              setLoadingText("External Link Updating...")
+                              if(row.slug.includes("http") || row.slug.includes("www")){
+                                setExternalLink({
+                                  title: row.title,
+                                  link: row.slug
+                                })
                                 setEditPopup({
                                   slug: row.slug,
                                   showEditModal: true
                                 })
                               }else{
-                                navigate(`/pages/edit/${row.slug}`)
+                                navigate(`/pages/edit/${row.slug}?param=${selectionValue}`)
                               }
                             }
                             }
@@ -431,6 +600,7 @@ function MenuManager() {
                             text="Delete"
                             className="btn-outline-primary rounded-[999px] py-2"
                             onClick={() => {
+                              setLoadingText("Menu Deleting...")
                               setDeleteInfo({...deleteInfo, showDeleteModal: true, slug: row.slug})
                               
                             }}

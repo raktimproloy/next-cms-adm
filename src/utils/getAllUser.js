@@ -3,7 +3,7 @@ import { addInfo, addUser } from '../store/layout';
 import { API_HOST } from './index';
 import { useCookies } from 'react-cookie';
 
-export const getUser = (dispatch, cookies, removeCookies) => {
+export const getAllUser = (dispatch, cookies, removeCookies) => {
 
   const token = cookies._token
   const headers = {

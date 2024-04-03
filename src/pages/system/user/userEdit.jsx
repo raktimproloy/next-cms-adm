@@ -12,6 +12,8 @@ import Switch from "@/components/ui/Switch"
 import Popup from "@/components/ui/Popup"
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { ToastContainer, toast } from 'react-toastify';
+import {AddLog} from "@/utils/logHandler"
 
 let schema = yup.object().shape({
   fullName: yup.string().required("Full name is required"),
@@ -94,14 +96,36 @@ function userEdit() {
     })
     .then(res => {
         navigate("/user-management")
+        AddLog(profileData.email, "user", `User Updated Successful`)
         setShowLoading(false)
+        toast.success("User Updated Successful!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
     })
     .catch(err => {
       setErrorMessage(err.response.data.error)
+      AddLog(profileData.email, "user", `User Updated Unsuccessful`)
         setShowLoading(false)
         if(err.response.data.error === "Authentication error!"){
           removeCookie("_token")
         }
+        toast.success("User Updated Unsuccessful!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
     })
   }
 
@@ -114,6 +138,7 @@ function userEdit() {
 
   return (
     <div>
+      {/* <ToastContainer/> */}
       <Popup showLoading={showLoading} popupText={"User Updating..."} />
         <Card title="User Edit">
           <form onSubmit={handleSubmit(handleUpdate)}>
@@ -125,7 +150,7 @@ function userEdit() {
                 type="text"
                 name="fullName"
                 placeholder="Change Full Name"
-                error={errors.fullName}
+                // error={errors.fullName}
                 defaultValue={profileData.fullName}
                 onChange={handleChange}
               />
@@ -136,7 +161,7 @@ function userEdit() {
                 register={register}
                 readonly
                 type="text"
-                name="username"
+                // name="username"
                 defaultValue={profileData.username}
                 onChange={handleChange}
               />
@@ -148,7 +173,7 @@ function userEdit() {
                 className={errorMessage.includes("dup key") && "border-1 dark:border-red-700"}
                 name="email"
                 placeholder="Change Email"
-                error={errors.email}
+                // error={errors.email}
                 defaultValue={profileData.email}
                 onChange={handleChange}
               />
@@ -203,7 +228,7 @@ function userEdit() {
                 onChange={() => setPermissionData({...permissionData, blog: !permissionData.blog})}
                 />
               </div>
-              <Button type="submit" text="Update" className="btn-primary py-2"  />
+              <Button type="submit" text="Update" className="btn-primary py-2" onClick={() => handleUpdate()}  />
             </div>
           </form>
       </Card>

@@ -109,11 +109,11 @@ export const menuItems = [
       },
     ],
   },
-  {
-    title: "Logout",
-    icon: "ant-design:logout-outlined",
-    link: "/",
-  },
+  // {
+  //   title: "Logout",
+  //   icon: "ant-design:logout-outlined",
+  //   link: "/",
+  // },
 ];
 
 export const topMenu = [

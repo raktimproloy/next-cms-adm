@@ -4,11 +4,12 @@ import Icon from "@/components/ui/Icon";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import axios from "axios";
-import { removeUser, removeRole } from '../../store/layout';
+import { removeUser, removeRole, addInfo } from '../../store/layout';
 import { useDispatch } from 'react-redux';
 import {API_HOST} from "@/utils"
 import { useCookies } from 'react-cookie';
 import Popup from "@/components/ui/Popup"
+import { ToastContainer, toast } from 'react-toastify';
 
 function DeleteBtn({row, which}) {
     const [showModal, setShowModal] = useState(false)
@@ -37,14 +38,36 @@ function DeleteBtn({row, which}) {
         })
         .then((res) => {
           setShowLoading(false)
+          dispatch(addInfo({ field: 'userRoleUpdate', value: 'not-updated' }));
+          dispatch(addInfo({ field: 'userUpdate', value: 'not-updated' }));
           deleteUser(row?.cell?.row.id)
           setShowModal(false)
+          toast.success("User Deleted Successful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         })
         .catch((err) => {
           setShowLoading(false)
           if(err.response.data.error === "Authentication error!"){
             removeCookies("_token")
           }
+          toast.error("User Deleted Unsuccessful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         });
       }else{
         axios.delete(`${API_HOST}role/delete/${row?.cell?.row.original._id}`, {
@@ -54,6 +77,16 @@ function DeleteBtn({row, which}) {
           setShowLoading(false)
           deleteRole(row?.cell?.row.id)
           setShowModal(false)
+          toast.success("Role Deleted Successful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         })
         .catch((err) => {
           setShowLoading(false)
@@ -61,11 +94,22 @@ function DeleteBtn({row, which}) {
             removeCookies("_token")
           }
           console.log(err);
+          toast.error("Role Deleted Unsuccessful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         });
       }
     }
   return (
     <>
+    {/* <ToastContainer/> */}
       <Popup showLoading={showLoading} popupText={which === "user" ? "User Deleting..." : "Role Deleting..."} />
       <div className="flex justify-center">
         <Tooltip

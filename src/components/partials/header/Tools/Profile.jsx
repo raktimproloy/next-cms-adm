@@ -9,6 +9,7 @@ import UserAvatar from "@/assets/images/all-img/user.png";
 import { useCookies } from "react-cookie";
 import { getProfile } from "../../../../utils/getProfile";
 import ProfileImage from "/default_profile.png"
+import { addInfo, profileSlice } from "../../../../store/layout";
 
 let profileData;
 
@@ -39,6 +40,7 @@ const profileLabel = () => {
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const sessionData = useSelector((state) => state.session)
   const [cookie, setCookie, removeCookie] = useCookies();
 
   profileData = useSelector((state) => state.profile);
@@ -46,12 +48,15 @@ const Profile = () => {
 
   useEffect(() => {
     if (updateInfo.profileUpdate === "" || updateInfo.profileUpdate === "not-updated") {
-        getProfile(dispatch, cookie, removeCookie);
+        getProfile(dispatch, cookie, removeCookie, sessionData);
     }
   }, [dispatch, profileData, updateInfo]);
 
   const handleRemove = () => {
     removeCookie('_token');
+    dispatch(profileSlice.actions.clearProfile());
+    dispatch(addInfo({ field: 'profileUpdate', value: 'not-updated' }));
+    navigate("/")
   };
 
   const ProfileMenu = [

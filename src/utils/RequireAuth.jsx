@@ -1,12 +1,13 @@
 import React from 'react';
 import useAuthCheck from "@/hooks/useAuthCheck";
-import { Navigate, Route, useLocation } from 'react-router-dom';
+import { Navigate} from 'react-router-dom';
+import Layout from '../layout/Layout';
 
 function RequireAuth({ children }) {
     const [isAuthenticated] = useAuthCheck();
-    console.log(isAuthenticated)
-  
-    return isAuthenticated ? children : <Navigate to="/" />;
+    return(
+      isAuthenticated ? <Layout/> : <Navigate to="/"/>
+    )
   }
 
 export default RequireAuth;

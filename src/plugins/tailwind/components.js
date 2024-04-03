@@ -201,16 +201,6 @@ export default (editor, opts = {}) => {
         },
         command: "tlb-delete",
       },
-      {
-        attributes: {
-          class: "fa fa-gear",
-        },
-        command: (e) => {
-          console.log(e);
-          localStorage.setItem("content", "settings")
-          // alert("Another way to add toolbar");
-        },
-      },
     ];
 
     if (type.id === "svg" || type.id === "svg-in") {

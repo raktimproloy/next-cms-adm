@@ -21,23 +21,22 @@ import {CurrentDate} from "@/utils/CurrentDate"
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import {AddLog} from "@/utils/logHandler"
 
-
-let schema = yup.object().shape({
-  title: yup.string().required("Title is required"),
-  slug: yup.string().required("Slug is required"),
-});
 
 
 function AddPage() {
+  const [pageCategory, setPageCategory] = useState(["Designer","Predesign"])
   const [pageData, setPageData] = useState({
     title: "",
     slug: "",
     active: true,
     breadcrumb: 'active',
+    menu_design: 0,
+    isClickable: true,
     menu_type: [],
     published_date: CurrentDate(),
-    template_category: "Predesign",
+    template_category: pageCategory[0],
     template: "",
     meta_title: "",
     meta_description: ""
@@ -51,18 +50,9 @@ function AddPage() {
   const menuTypeData = useSelector((state) => state.menus);
   const pagesData = useSelector((state) => state.pages);
   const updateInfo = useSelector((state) => state.update);
+  const profileData = useSelector((state) => state.profile);
 
 
-  
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm({
-    resolver: yupResolver(schema),
-    //
-    mode: "all",
-  });
 
 
   // Cookies
@@ -88,10 +78,11 @@ function AddPage() {
       headers: headers
     })
     .then((res) => {
+      AddLog(profileData.email, "Page", `Page Added Successful`)
       dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
       dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
       setShowLoading(false)
-      createPage(pageData.title)(dispatch);
+      createPage(pageData.title, pageData.slug)(dispatch);
       setTimeout(() => {
         if(pageData.template_category === "Predesign"){
           navigate("/pages")
@@ -104,7 +95,10 @@ function AddPage() {
       setErrorMessage(err.response.data.error)
       setShowLoading(false)
       if(err.response.data.error === "Authentication error!"){
-          removeCookie("_token")
+        removeCookie("_token")
+        AddLog(profileData.email, "Page", `Page Added Faild For Authorization`)
+      }else{
+        AddLog(profileData.email, "Page", `Page Added Unsuccessful`)
       }
     });
   }
@@ -139,24 +133,29 @@ function AddPage() {
       })
     }
 
+  // function handlePageClickableChange(e){
+  //   setPageData({...pageData, isClickable: e.target.value.toLowerCase() === "true" ? true : false})
+  // }
+
+  // function handleMenuDesignChange(e){
+    
+  //   setPageData({...pageData, menu_design: e.target.value === "Normal Menu" ? 0 : 1})
+  // }
+
   return (
     <div>
-        <Popup showLoading={showLoading} popupText={"Role Adding..."}  />
+        <Popup showLoading={showLoading} popupText={"Page Adding..."}  />
         <Card title="Add Page">
-          <form onSubmit={handleSubmit(saveHandler)}>
           <div className="space-y-3">
             <Textinput
               label="Page Title"
               id="pn"
               type="text"
-              name= "title"
-              register={register}
-              error={errors.title}
               placeholder="Type Your Page Title"
               onChange={(e) => setPageData({...pageData, title:e.target.value, slug: e.target.value.replace(/ /g, "-").toLowerCase()})}
             />
             <Select
-              options={["Predesign", "Grapesjs"]}
+              options={pageCategory}
               label="Page Category"
               onChange={handleOptionChange}
             />
@@ -165,10 +164,7 @@ function AddPage() {
               label="Page Slug"
               id="pn2"
               type="text"
-              name= "slug"
               placeholder="Type Your Page Slug"
-              register={register}
-              error={errors.slug}
               defaultValue={pageData.slug}
               onChange={(e) => setPageData({...pageData, slug:e.target.value})}
             />
@@ -191,6 +187,25 @@ function AddPage() {
               onChange={handleBreadcrumbChange}
             />
             <MultipleSelect label={"Select Menu Type"} option={menuType} setReturnArray={setSelectedMenuType} usage={"add"}/>
+
+            {/* <div className='flex items-center gap-10'>
+              <div className='w-full md:w-1/2'>
+              <Select
+                options={["True", "False"]}
+                label="Is Clickable"
+                disabled={selectedMenuType.length === 0}
+                onChange={handlePageClickableChange}
+              />
+              </div>
+              <div className='w-full md:w-1/2'>
+              <Select
+                options={["Noramal Menu", "Mega Menu"]}
+                label="Select Menu Design"
+                disabled={selectedMenuType.length === 0}
+                onChange={handleMenuDesignChange}
+              />
+              </div>
+            </div> */}
             <div>
               <label htmlFor="" className='pb-3'>Page Active</label>
               <Switch
@@ -202,9 +217,8 @@ function AddPage() {
             </div>
           </div>
           <div className='text-right mt-5'>
-            <Button type="submit" text="Save" className="btn-warning py-2"/>
+            <Button text="Save" className="btn-warning py-2" onClick={() => saveHandler()}/>
           </div>
-          </form>
       </Card>
     </div>
   )

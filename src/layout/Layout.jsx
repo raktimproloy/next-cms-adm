@@ -39,12 +39,11 @@ const Layout = () => {
   const [menuHidden] = useMenuHidden();
   // mobile menu
   const [mobileMenu, setMobileMenu] = useMobileMenu();
-  const nodeRef = useRef(null);
   const pathname = window.location.pathname
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer/>
       {/* {!pathname.includes("/pages/editor") &&  */}
       <Header className={width > breakpoints.xl ? switchHeaderClass() : ""} />
       {/* } */}

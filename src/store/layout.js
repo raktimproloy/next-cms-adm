@@ -121,6 +121,24 @@ export const layoutSlice = createSlice({
 });
 
 
+// Session Data Slice
+export const sessionSlice = createSlice({
+  name: "session",
+  initialState: {},
+  reducers: {
+    addSession: (state, action) => {
+      return {...action.payload}; // Concatenate the new users with the existing ones
+    },
+    removeSession(state, action) {
+      state.splice(action.payload, 1)
+    },
+    clearSession: (state) => {
+      return {}; // Clear all data by returning an empty object
+    },
+  },
+});
+
+
 // Setting Data Slice
 export const settingSlice = createSlice({
   name: "setting",
@@ -146,6 +164,9 @@ export const profileSlice = createSlice({
     },
     removeProfile(state, action) {
       state.splice(action.payload, 1)
+    },
+    clearProfile: (state) => {
+      return {}; // Clear all data by returning an empty object
     },
   },
 });
@@ -323,7 +344,8 @@ export const updateInfoSlice = createSlice({
 });
 
 
-export const {addProfile, removeProfile} = profileSlice.actions
+export const {addProfile, removeProfile, clearProfile} = profileSlice.actions
+export const {addSession, removeSession, clearSession} = sessionSlice.actions
 export const {addSetting, removeSetting} = settingSlice.actions
 export const {addUser, removeUser} = userSlice.actions
 export const {addUserRole, removeUserRole} = userRoleSlice.actions

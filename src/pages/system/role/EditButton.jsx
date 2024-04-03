@@ -12,6 +12,7 @@ import { API_HOST } from '@/utils'
 import Popup from "@/components/ui/Popup"
 import { useDispatch } from 'react-redux';
 import { addInfo } from "@/store/layout";
+import { ToastContainer, toast } from 'react-toastify';
 
 function EditButton({row}) {
     const dispatch = useDispatch()
@@ -58,6 +59,16 @@ function EditButton({row}) {
             dispatch(addInfo({ field: 'roleUpdate', value: 'not-updated' }));
             setShowLoading(false)
             setShowEditModal(false)
+            toast.success("Role Updated Successful!", {
+              position: "top-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
         })
         .catch(error => {
           setShowLoading(false)
@@ -65,11 +76,22 @@ function EditButton({row}) {
             removeCookie("_token")
           }
           console.log(error)
+          toast.error("Role Updated Unsuccessful!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         })
     }
     
   return (
     <>
+    {/* <ToastContainer/> */}
     <Popup showLoading={showLoading} popupText={"Role Updating..."} />
     <Tooltip content="Edit" placement="top" arrow animation="shift-away">
         <button className="action-btn" type="button"  onClick={() => setShowEditModal(true)}>

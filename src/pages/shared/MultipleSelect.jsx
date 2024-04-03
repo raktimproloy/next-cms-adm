@@ -29,8 +29,8 @@ const styles = {
 const MultipleSelect = ({label ,option, setReturnArray, defaultArray, usage}) => {
   const [defaultOptionIndex, setDefaultOptionIndex] = useState([])
   useEffect(() => {
-    option.map((value, index) => {
-      defaultArray.map(data => {
+    option?.map((value, index) => {
+      defaultArray?.map(data => {
         if(value.value === data){
           setDefaultOptionIndex(oldIndex => [...oldIndex, option[index]])
         }
@@ -59,7 +59,7 @@ const MultipleSelect = ({label ,option, setReturnArray, defaultArray, usage}) =>
               styles={styles}
               className="react-select"
               classNamePrefix="select"
-              id="animated_1"
+              id="mul_2"
               onChange={handleChange}
             /> 
             :""
