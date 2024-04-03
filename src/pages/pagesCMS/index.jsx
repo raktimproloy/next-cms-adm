@@ -108,23 +108,6 @@ function index() {
     handlePagination()
   }, [selectionValue])
 
-  // useEffect(() => {
-  //   // setBlogData(ArraySlice(currentPage, parseInt(setting.blog_show_amount), data))
-  //   axios.get(`${API_HOST}page/get/all/${currentPage}`)
-  //   .then(res => {
-  //     setShowingData(res.data)
-  //   })
-  //   .catch(err => {
-  //     console.log(err)
-  //   })
-  // }, [currentPage, showLoading])
-
-  // useEffect(() => {
-  //   if (updateInfo.pageUpdate === "" || updateInfo.pageUpdate === "not-updated") {
-  //     getAllPages(dispatch, cookie, removeCookie);
-  //   }
-  // }, [dispatch, data, updateInfo]);
-
 
   const handleDelete = () => {
     setShowLoadingText("Page Deleting...")
@@ -342,6 +325,9 @@ function index() {
   }
 
 
+  useEffect(() => {
+    console.log(showingData)
+  }, [showingData])
   
   const handleSearch = () => {
     axios.get(`${API_HOST}page/query/${currentPage}/search?query=${searchInput}`)

@@ -4,13 +4,12 @@ import { API_HOST } from "..";
 
 export const client = new Client();
 
-const endpoint = process.env.NEXT_PUBLIC_STORAGE_ENDPOINT
 axios
 .get(`${API_HOST}setting/get`)
 .then((res) => {
   const setting = res.data
   client
-  .setEndpoint(endpoint)
+  .setEndpoint(setting?.storage_config?.storage_endpoint)
   .setProject(setting?.storage_config?.storage_project_id);
 })
 .catch((err) => {

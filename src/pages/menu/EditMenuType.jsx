@@ -13,7 +13,7 @@ import { useCookies } from 'react-cookie'
 import Popup from "@/components/ui/Popup"
 import { useDispatch } from 'react-redux'
 import { addInfo } from '../../store/layout'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Tab } from "@headlessui/react";
 import image2 from "@/assets/images/all-img/image-2.png";
 import { ToastContainer, toast } from 'react-toastify'
@@ -39,7 +39,8 @@ const buttons = [
 function EditMenuType() {
 
   const [layout, setLayout] = useState([]);
-  
+  const location = useLocation()
+  const state = location.state
   const params = useParams()
   const [selectedPages, setSelectedPages] = useState([])
   const pageData = useSelector((state) => state.pages);
@@ -413,7 +414,7 @@ function EditMenuType() {
           </div>
         </Modal>
         <Card title="Menu Type Edit">
-        <Tab.Group>
+        <Tab.Group defaultIndex={state ? state.key : 0}>
         <Tab.List className="lg:space-x-6 md:space-x-3 space-x-0 rtl:space-x-reverse mb-5">
             {buttons.map((item, i) => (
               <Tab as={Fragment} key={i}>

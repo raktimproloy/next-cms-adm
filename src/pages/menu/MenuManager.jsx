@@ -451,7 +451,15 @@ function MenuManager() {
       });
     })
   }
-  
+
+  const handleAddMenu = () => {
+    if(selectionValue === "top-menu" || selectionValue === "footer-left" || selectionValue === "footer-right"){
+      navigate(`/menu/menu-type/edit/${selectionValue}`, { state: { key: 1 } })
+    }else{
+      navigate(`/menu/menu-type/edit/top-menu`, { state: { key: 1 } })
+    }
+  }
+
   return (
     <div>
       {/* <ToastContainer/> */}
@@ -526,9 +534,15 @@ function MenuManager() {
             onChange={handleTypeChange}
             id="hh"
           />
-          <Button text="Add Link" className="btn-success py-2" onClick={() => {
-            navigate("/menu/menu-manager/add")
-          }}  />
+          <div>
+            <Button text="Add Page" className="btn-success py-2" onClick={() => {
+              
+              handleAddMenu()
+            }}  />
+            <Button text="Add Link" className="btn-success py-2 ms-2" onClick={() => {
+              navigate("/menu/menu-manager/add")
+            }}  />
+          </div>
         </div>
           <div className="overflow-x-auto -mx-6">
             <div className="inline-block min-w-full align-middle">

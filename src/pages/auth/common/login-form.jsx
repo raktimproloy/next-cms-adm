@@ -72,7 +72,8 @@ const LoginForm = () => {
 
   
   const onSubmit = () => {
-    const token = captchaRef.current.getValue();
+    // const token = captchaRef.current.getValue();
+    const token = "captchaRef.current.getValue()";
     // if(token){
       setShowLoading(true)
       axios.post(`${API_HOST}user/login`, {token, loginData})
