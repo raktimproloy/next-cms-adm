@@ -27,6 +27,9 @@ import { getSetting } from '../../utils/getSetting'
 import { StoreMetaImage } from '@/utils/appwrite/StoreImage';
 import { ToastContainer, toast } from 'react-toastify'
 import Designer from '../Editor'
+import Icon from "@/components/ui/Icon"
+import Tooltip from "@/components/ui/Tooltip"
+import Modal from "@/components/ui/Modal"
 
 const buttons = [
   {
@@ -137,13 +140,15 @@ useEffect(() => {
         console.log(err)
     });
 }, [])
-
+const [changeMetaImage, setChangeMetaImage] = useState("")
 //   Edit Data
   const editHandler = async() => {
     setShowLoading(true)
     try{
       let og_imageUrl =  metaTag.og_image
-      if(selectedFile){
+      if(changeMetaImage.length > 0){
+        og_imageUrl = changeMetaImage
+      }else if(selectedFile){
         og_imageUrl = await StoreMetaImage(selectedFile, setting?.storage_config?.storage_meta_bucket_id);
       }
       console.log(og_imageUrl)
@@ -232,10 +237,40 @@ useEffect(() => {
     setBlogData({...blogData, design_type: e.target.value === "TinyMCE" ? 0 : 1})
   }
 
+  const [activeModal, setActiveModal] = useState(false)
+  const handleMetaImage = () => {
+    setChangeMetaImage(setting?.meta_property?.og_image)
+    setActiveModal(false)
+  }
+
   return (
     <div>
         {/* <ToastContainer/> */}
         <Popup showLoading={showLoading} popupText={"Blog Updating..."}  />
+        <Modal
+          title="Warning"
+          label=""
+          labelClass="btn-outline-warning p-1"
+          themeClass="bg-warning-500"
+          activeModal={activeModal}
+          onClose={() => {
+            setActiveModal(false)
+          }}
+          footerContent={
+            <Button
+              text="Accept"
+              className="btn-warning "
+              onClick={handleMetaImage}
+            />
+          }
+        >
+          <h4 className="font-medium text-lg mb-3 text-slate-900">
+            Delete Og Image
+          </h4>
+          <div className="text-base text-slate-600 dark:text-slate-300">
+            Do you want to delete ob image?
+          </div>
+        </Modal>
         <Card title="Blog Edit">
           <Tab.Group>
             <Tab.List className="lg:space-x-8 md:space-x-4 space-x-0 rtl:space-x-reverse">
@@ -384,15 +419,23 @@ useEffect(() => {
                   />
                 </div>
                 <div className='w-full md:w-1/2'>
-                  <span className="block text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
-                    View Template :
-                  </span>
+                  <div className='flex justify-between'>
+                    <span className="text-base font-medium tracking-[0.01em] dark:text-slate-300 text-slate-500 mb-3">
+                      View Meta Image :
+                    </span>
+                    {
+                      metaTag.og_image !== setting?.meta_property?.og_image ?
+                        <Button text="Remove" className="btn-success py-2" onClick={() => setActiveModal(true)} />
+                      : ""
+                    }
+                  </div>
                   <div className='flex justify-center'>
                     <Image
-                      src={`${AppwriteUrl}${metaTag.og_image}`}
+                      src={changeMetaImage.length > 0 ? `${AppwriteUrl}${changeMetaImage}`  : `${AppwriteUrl}${metaTag.og_image}`}
                       alt="Small image with fluid:"
                       className="rounded-md w-[90%] h-[250px]"
                     />
+                    
                   </div>
                 </div>
               </div>

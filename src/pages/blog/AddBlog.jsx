@@ -278,12 +278,12 @@ function AddBlog() {
                   </div>
 
                   <div className='w-full md:w-2/4'>
-                  {/* <Select
+                  <Select
                     options={["TinyMCE", "Designer"]}
                     label="Design Type"
                     value={blogData.design_type === 0 ? "TinyMCE" : "Designer"}
                     onChange={handleDesignChange}
-                  /> */}
+                  />
                   <Keyword tags={blogTag} setTags={setBlogTag} />
 
                   </div>

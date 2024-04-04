@@ -69,7 +69,7 @@ function index() {
   const [showLoading, setShowLoading] = useState(false)
   const [showLoadingText, setShowLoadingText] = useState("Page Deleting...")
   const navigate = useNavigate()
-  const [selectionValue, setSelectionValue] = useState("all")
+  const [selectionValue, setSelectionValue] = useState("")
   const [showingData, setShowingData] = useState([])
   const [deleteInfo, setDeleteInfo] = useState({
     showDeleteModal: false,
@@ -187,8 +187,26 @@ function index() {
 
   // handle selection
   const handleChange = (e) => {
+    sessionStorage.setItem("pageSelection", e.target.value)
     setSelectionValue(e.target.value)
   }
+
+  const [defaultSelection, setDefaultSelection] = useState({})
+  useEffect(() => {
+    const storedSelection = sessionStorage.getItem("pageSelection")
+    console.log(storedSelection)
+    if(storedSelection){
+      setSelectionValue(storedSelection)
+      category.map((item) => {
+        if(item.value === storedSelection){
+          setDefaultSelection(item)
+        }
+      })
+    }else{
+      setDefaultSelection(category[0])
+      setSelectionValue("all")
+    }
+  }, [])
 
   // Handle Preview
   const handlePreview = (slug) => {
@@ -323,14 +341,9 @@ function index() {
       });
     });
   }
-
-
-  useEffect(() => {
-    console.log(showingData)
-  }, [showingData])
   
-  const handleSearch = () => {
-    axios.get(`${API_HOST}page/query/${currentPage}/search?query=${searchInput}`)
+  const handleSearch = (search) => {
+    axios.get(`${API_HOST}page/query/${currentPage}/search?query=${search}`)
     .then(res => {
       setTotalPages(Math.ceil(res.data.count/10) || 1)
       setShowingData(res.data.results)
@@ -352,6 +365,7 @@ function index() {
     }
     handlePagination()
   }
+
 
   return (
     <div>
@@ -387,23 +401,29 @@ function index() {
               id="pn"
               type="text"
               placeholder="Search..."
-              onChange={(e) => {setSearchInput(e.target.value); emptyCheck(e)}}
+              // onChange={(e) => {setSearchInput(e.target.value); emptyCheck(e)}}
+              onChange={(e) => {handleSearch(e.target.value); emptyCheck(e)}}
             />
-            <Button text="Search" className="btn-success py-2 ml-3" onClick={() => {
+            {/* <Button text="Search" className="btn-success py-2 ml-3" onClick={() => {
               handleSearch()
-            }}  />
+            }}  /> */}
           </div>
         </div>
         <div className='flex justify-between mb-3'>
-          <Select
-              className="react-select"
-              classNamePrefix="select"
-              defaultValue={category[0]}
-              options={category}
-              styles={styles}
-              onChange={handleChange}
-              id="hh"
-            />
+          {
+            Object.keys(defaultSelection).length > 0 ?
+            <Select
+                className="react-select"
+                classNamePrefix="select"
+                defaultValue={defaultSelection}
+                options={category}
+                styles={styles}
+                onChange={handleChange}
+                id="hh"
+              />
+
+            : ""
+          }
             <Button text="Add Page" className="btn-success py-2" onClick={() => {
               navigate("/pages/add")
             }}  />
@@ -487,12 +507,14 @@ function index() {
             </div>
           </div>
           {
+            totalPages > 1 ?
             <Pagination
                 totalPages={totalPages}
                 currentPage={currentPage}
                 handlePageChange={handlePageChange}
                 className={"flex justify-center py-5"}
             />
+            : ""
           }
       </Card>
     </div>

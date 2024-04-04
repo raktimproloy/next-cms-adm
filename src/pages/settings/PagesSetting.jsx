@@ -55,10 +55,10 @@ function PagesSetting() {
     }
   }, [dispatch, settingData, updateInfo]);
 
-  useEffect(() => {
-    if(Object.keys(settingData).length === 0){
+  useEffect(() => { 
+    // if(Object.keys(settingData).length === 0){
       setSettingData(data)
-    }
+    // }
   }, [data])
 
   const editHandler = () => {
@@ -164,7 +164,7 @@ function PagesSetting() {
               </div>
             </Tab.Panel>
             <Tab.Panel>
-              <Home settingData={settingData} setSettingData={setSettingData}/>
+              <Home settingData={settingData} setSettingData={setSettingData} />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>

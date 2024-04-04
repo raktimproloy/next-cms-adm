@@ -63,6 +63,7 @@ function index() {
   const setting = useSelector((state) => state.setting);
   const updateInfo = useSelector((state) => state.update);
   const dispatch = useDispatch()
+  const [changeHandle, setChangeHandle] = useState(false)
 
   // Cookies
   const [cookie, removeCookie] = useCookies()
@@ -113,8 +114,8 @@ function index() {
     headers: headers
   })
   .then((res) => {
+    setChangeHandle(!changeHandle)
     AddLog(profileData.email, "Blog", `Blog Deleted Successful`)
-    // dispatch(removeBlog(deleteInfo.slug))
     dispatch(addInfo({ field: 'blogUpdate', value: 'not-updated' }));
     setDeleteInfo({...deleteInfo, showDeleteModal: false})
     setShowLoading(false)
@@ -221,11 +222,11 @@ function index() {
 
   useEffect(() => {
     dataShowingFilter()
-  }, [currentPage])
+  }, [currentPage, changeHandle])
 
 
-  const handleSearch = () => {
-      axios.get(`${API_HOST}blog/query/${currentPage}/search?query=${searchInput}`)
+  const handleSearch = (search) => {
+      axios.get(`${API_HOST}blog/query/${currentPage}/search?query=${search}`)
       .then(res => {
         setTotalPages(Math.ceil(res.data.count/parseInt(setting.blog_show_amount)) || 1)
         setBlogData(res.data.results)
@@ -283,15 +284,16 @@ function index() {
               id="pn"
               type="text"
               placeholder="Search..."
-              onChange={(e) => {setSearchInput(e.target.value); emptyCheck(e)}}
+              // onChange={(e) => {setSearchInput(e.target.value); emptyCheck(e)}}
+              onChange={(e) => {handleSearch(e.target.value); emptyCheck(e)}}
             />
-            <Button text="Search" className="btn-success py-2 ml-3" onClick={() => {
+            {/* <Button text="Search" className="btn-success py-2 ml-3" onClick={() => {
               handleSearch()
-            }}  />
+            }}  /> */}
           </div>
         </div>
         <div className='text-right mb-3'>
-            <Button text="Add Page" className="btn-success py-2" onClick={() => {
+            <Button text="Add Blog" className="btn-success py-2" onClick={() => {
               navigate("/blog/add")
             }}  />
         </div>
@@ -391,8 +393,8 @@ function index() {
           </div>
           <div>
             {
-              blogdata.length > 0 &&
-            <Pagination
+              totalPages.length > 0 &&
+              <Pagination
                 totalPages={totalPages}
                 currentPage={currentPage}
                 handlePageChange={handlePageChange}

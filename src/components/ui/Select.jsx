@@ -60,7 +60,7 @@ const Select = ({
             defaultValue={defaultValue}
           >
             <option value="" disabled>
-              {placeholder}
+              {placeholder}a
             </option>
             {options.map((option, i) => (
               <Fragment key={i}>

@@ -19,17 +19,18 @@ import { getSetting } from '../../../utils/getSetting';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { addInfo } from '../../../store/layout';
+import Switch from "@/components/ui/Switch";
 
-function Home() {
+function Home({settingData, setSettingData}) {
   const [showLoading, setShowLoading] = useState(false)
   const [modalAddButtonInfo, setModalAddButtonInfo] = useState("add")
   const [showSliderModal, setShowSliderModal] =useState(false)
-  const settingData = useSelector((state) => state.setting);
   const updateInfo = useSelector((state) => state.update);
   const [selectedBgImage, setSelectedBgImage] = useState(null)
   const [sliderData, setSliderData] = useState({
     title: "",
     description: "",
+    button_title: "",
     button_link: "",
     video: ""
   })
@@ -70,6 +71,7 @@ function Home() {
           setSliderData({
             title: "",
             description: "",
+            button_title: "",
             button_link: "",
             video: ""
           })
@@ -129,6 +131,7 @@ function Home() {
         setSliderData({
           title: "",
           description: "",
+          button_title: "",
           button_link: "",
           video: ""
         })
@@ -170,6 +173,7 @@ function Home() {
       background_image: sliderObj.background_image,
       title: sliderObj.title,
       description: sliderObj.description,
+      button_title: sliderObj.button_title,
       button_link: sliderObj.button_link,
       video: sliderObj.video
     })
@@ -189,6 +193,7 @@ function Home() {
       setSliderData({
         title: "",
         description: "",
+        button_title: "",
         button_link: "",
         video: ""
       })
@@ -219,6 +224,42 @@ function Home() {
       });
     })
   }
+
+
+  const [staticActive, setStaticActive] = useState(settingData.page.home.static_hero_section);
+  const [sliderActive, setSliderActive] = useState(settingData.page.home.slider_hero_section);
+
+  const handleStaticChange = () => {
+    setStaticActive(!staticActive);
+    setSliderActive(false); // Deactivate the slider switch
+    setSettingData(prevSettingData => ({
+      ...prevSettingData,
+      page: {
+        ...prevSettingData.page,
+        home: {
+          ...prevSettingData.page.home,
+          static_hero_section: !staticActive,
+          slider_hero_section: false // Deactivate slider_hero_section when static_hero_section is active
+        }
+      }
+    }));
+  };
+  
+  const handleSliderChange = () => {
+    setSliderActive(!sliderActive);
+    setStaticActive(false); // Deactivate the static switch
+    setSettingData(prevSettingData => ({
+      ...prevSettingData,
+      page: {
+        ...prevSettingData.page,
+        home: {
+          ...prevSettingData.page.home,
+          static_hero_section: false, // Deactivate static_hero_section when slider_hero_section is active
+          slider_hero_section: !sliderActive
+        }
+      }
+    }));
+  };
 
   return (
     <>
@@ -267,6 +308,14 @@ function Home() {
                 onChange={(e) => setSliderData({...sliderData, description:e.target.value})}
             />
             <Textinput
+                label="Slider Button Title"
+                id="pn2"
+                type="text"
+                placeholder="Type Your Slider Button Title"
+                defaultValue={sliderData.button_title}
+                onChange={(e) => setSliderData({...sliderData, button_title:e.target.value})}
+            />
+            <Textinput
                 label="Slider Button Link"
                 id="pn2"
                 type="text"
@@ -284,15 +333,33 @@ function Home() {
             />
           </div>
         </Modal>
+        <div className='pb-5 flex'>
+          <span className='mr-3'>Active Static Image</span>
+          <Switch
+            label="Static Hero Status"
+            activeClass="bg-danger-500"
+            value={staticActive}
+            onChange={handleStaticChange}
+          />
+        </div>
         <div className='my-5'>
         <div className='flex justify-between mb-5'>
-          <label htmlFor="" className='pb-3'>Home Page Sliders</label> 
+          <div className='flex'>
+          <label htmlFor="" className='pb-3 mr-3'>Active Sliders</label> 
+          <Switch
+            label="Slider Hero Status"
+            activeClass="bg-danger-500"
+            value={sliderActive}
+            onChange={handleSliderChange}
+          />
+          </div>
           <Button text="Add Slider" className="btn-success py-2" onClick={() => {
             setModalAddButtonInfo("add")
             setSelectedBgImage(null)
             setSliderData({
               title: "",
               description: "",
+              button_title: "",
               button_link: "",
               video: ""
             })
