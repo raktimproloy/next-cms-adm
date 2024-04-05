@@ -1,0 +1,18 @@
+[
+    {slug: 'home', id: 0, parent_id: null, name: 'Home'},
+    {slug: 'about-us', id: 1, parent_id: null, name: 'About Us'},
+    {slug: 'about-us/company', id: 2, parent_id: 1, name: 'Company'},
+    {slug: 'about-us/company/web-development', id: 3, parent_id: 2, name: 'Web Development'},
+    {slug: 'cloud', id: 4, parent_id: null, name: 'Cloud'},
+    {slug: 'cloud/wordpress-hosting', id: 5, parent_id: 4, name: 'Wordpress Hosting'},
+    {slug: 'cloud/nodejs-hosting', id: 6, parent_id: 4, name: 'NodeJs Hosting'},
+    {slug: 'cloud/aws-cloud', id: 7, parent_id: 4, name: 'AWS Cloud'},
+    {slug: 'services', id: 8, parent_id: null, name: 'Services'},
+    {slug: 'services/software-development', id: 9, parent_id: 8, name: 'Software Development'},
+    {slug: 'services/web-development', id: 10, parent_id: 8, name: 'Web Development'},
+    {slug: 'services/cloud-solution', id: 11, parent_id: 8, name: 'Cloud Solution'},
+    {slug: 'services/education-and-e-learning', id: 12, parent_id: 8, name: 'Education & E-Learning'},
+    {slug: 'services/finance', id: 13, parent_id: 8, name: 'Finance'},
+    {slug: 'blog', id: 14, parent_id: null, name: 'Blog'},
+    {slug: 'contact', id: 15, parent_id: null, name: 'Contact'}
+]

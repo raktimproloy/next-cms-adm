@@ -94,7 +94,7 @@ const Select = ({
             <option value="" disabled>
               {placeholder}
             </option>
-            {options.map((option, i) => (
+            {options && options.length > 0 && options.map((option, i) => (
               <Fragment key={i}>
                 {option.value && option.label ? (
                   <option key={i} value={option.value}>

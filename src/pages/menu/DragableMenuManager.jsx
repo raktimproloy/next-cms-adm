@@ -21,20 +21,6 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 function DragableMenuManager() {
 
-
-    useEffect(() => {
-        // Your HTML content
-        const htmlContent = "<p>hello <i> world </i></p>";
-
-        // Create a temporary DOM element to parse the HTML
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = htmlContent;
-
-        // Extract the text content
-        const textContent = tempElement.textContent || tempElement.innerText || '';
-        console.log(textContent)
-    })
-
     const [layout, setLayout] = useState([]);
     const location = useLocation()
     const state = location.state
@@ -67,7 +53,7 @@ function DragableMenuManager() {
       slug: "",
       title: ""
     })
-  
+  console.log(showDeleteModal)
     useEffect(() => {
       if (updateInfo.menuUpdate === "" || updateInfo.menuUpdate === "not-updated") {
         getAllMenus(dispatch, cookie, removeCookie);

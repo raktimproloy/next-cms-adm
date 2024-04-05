@@ -18,7 +18,7 @@ import { getAllMenus } from '../../utils/getAllMenus';
 import swal from 'sweetalert';
 import { ToastContainer, toast } from 'react-toastify';
 import DragableMenuManager from './DragableMenuManager';
-
+import DragMenuManager from './DragMenuManager';
 
 const columns = [
     {
@@ -463,9 +463,13 @@ function MenuManager() {
 
   return (
     <div>
+      {/* New Menu Manager */}
+      <DragMenuManager/>
+      {/* Pervious MEnu Manager */}
       {/* <DragableMenuManager/> */}
+      {/* PReviious Code */}
       {/* <ToastContainer/> */}
-      <Popup showLoading={showLoading} popupText={loadingText}  />
+      {/* <Popup showLoading={showLoading} popupText={loadingText}  />
       <Modal
         title="Warning"
         label=""
@@ -627,7 +631,7 @@ function MenuManager() {
               </div>
             </div>
           </div>
-      </Card>
+      </Card> */}
     </div>
     )
 }

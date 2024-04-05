@@ -114,11 +114,54 @@ function AddBlog() {
   // 'Content-Type': 'application/json'
   }
 
+  const htmlToStringConverter = (html) => {
+    // Your HTML content
+    const htmlContent = html;
+
+    // Create a temporary DOM element to parse the HTML
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = htmlContent;
+
+    // Extract the text content
+    const textContent = tempElement.textContent || tempElement.innerText || '';
+    return textContent.trim()
+  }
+
+
 //   Save Data
   const saveHandler = async() => {
     setShowLoading(true)
-
     try{
+      let metaFinal = { ...metaTag };
+      const desText = htmlToStringConverter(value);
+      
+      if (metaTag.main_description.length === 0) {
+        metaFinal = {
+          ...metaFinal, // Spread the existing properties
+          main_description: desText,
+        };
+      }
+      if (metaTag.description.length === 0) {
+        metaFinal = {
+          ...metaFinal, // Spread the existing properties
+          description: desText,
+        };
+      }
+      if (metaTag.og_description.length === 0) {
+        metaFinal = {
+          ...metaFinal, // Spread the existing properties
+          og_description: desText,
+        };
+      }
+      if (metaTag.twitter_description.length === 0) {
+        metaFinal = {
+          ...metaFinal, // Spread the existing properties
+          twitter_description: desText,
+        };
+      }
+
+      console.log(metaFinal)
+
       let og_imageUrl = setting?.meta_property?.og_image
       if(selectedFile){
         og_imageUrl = await StoreMetaImage(selectedFile, setting?.storage_config?.storage_meta_bucket_id);
@@ -133,7 +176,7 @@ function AddBlog() {
         formData.append('blog_tags', JSON.stringify(blogTag));
         formData.append('blog_details', value);
         formData.append("og_image", og_imageUrl)
-        formData.append("meta_property", JSON.stringify(metaTag))
+        formData.append("meta_property", JSON.stringify(metaFinal))
   
         axios.post(`${API_HOST}blog/add`, formData, {
             headers: headers
