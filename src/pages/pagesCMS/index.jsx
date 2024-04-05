@@ -88,6 +88,7 @@ function index() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchInput, setSearchInput] = useState("")
+  const [duplicateActivity, setDuplicateActivity] = useState(false)
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -183,7 +184,7 @@ function index() {
 
   useEffect(() => {
     dataShowingFilter()
-  }, [currentPage, selectionValue])
+  }, [currentPage, selectionValue, duplicateActivity])
 
   // handle selection
   const handleChange = (e) => {
@@ -228,7 +229,7 @@ function index() {
       headers: headers
     })
     .then((res) => {
-
+      console.log("first Api res")
       // change duplicate data value
       const duplicatePageData = res.data
       duplicatePageData.title = duplicatePageData.title + "_new"
@@ -239,21 +240,20 @@ function index() {
         headers: headers
       })
       .then((res) => {
+        console.log("SEcound Api res")
         AddLog(profileData.email, "Page", `Page Duplicated Successful`)
-        dispatch(addInfo({ field: 'pageUpdate', value: 'not-updated' }));
-        dispatch(addInfo({ field: 'menuUpdate', value: 'not-updated' }));
-        
         createPage(duplicatePageData.title)(dispatch);
 
         // get main page grapes js content
         axios.get(`${API_HOST}api/pages/${slug}/content`)
         .then(res => {
           const content = res.data
-          if(typeof(content) === "object"){
-            // duplicate main page grapes js content
+          console.log(content)
+          if(content?.message === "No content"){
             axios.post(`${API_HOST}api/pages/${duplicatePageData.slug}/content`, content)
             .then(res => {
               setShowLoading(false)
+              setDuplicateActivity(!duplicateActivity)
               toast.success("Page Duplicated Successful!", {
                 position: "top-right",
                 autoClose: 2000,
@@ -279,20 +279,54 @@ function index() {
               });
             })
           }else{
-            setShowLoading(false)
-            toast.success("Page Duplicated Successful!", {
-              position: "top-right",
-              autoClose: 2000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
+            if(typeof(content) === "object"){
+              // duplicate main page grapes js content
+              axios.post(`${API_HOST}api/pages/${duplicatePageData.slug}/content`, content)
+              .then(res => {
+                setShowLoading(false)
+                setDuplicateActivity(!duplicateActivity)
+                toast.success("Page Duplicated Successful!", {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+              })
+              .catch(err => {
+                console.log("Fourth Api err")
+                setShowLoading(false)
+                toast.error("Page Duplicated Unsuccessful!", {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+              })
+            }else{
+              setShowLoading(false)
+              toast.success("Page Duplicated Successful!", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+            }
           }
         })
         .catch(err => {
+          console.log("Third Api err")
           setShowLoading(false)
           toast.error("Page Duplicated Unsuccessful!", {
             position: "top-right",
@@ -307,6 +341,7 @@ function index() {
         })
       })
       .catch((err) => {
+        console.log("secound Api err")
         setShowLoading(false)
         if(err.response.data.error === "Authentication error!"){
           removeCookie("_token")
@@ -327,6 +362,7 @@ function index() {
       });
     })
     .catch((err) => {
+      console.log("first Api Err")
       setShowLoading(false)
       console.log(err)
       toast.error("Page Duplicated Unsuccessful!", {

@@ -17,6 +17,7 @@ import { deletePage } from '@/store/actions/pageAction';
 import { getAllMenus } from '../../utils/getAllMenus';
 import swal from 'sweetalert';
 import { ToastContainer, toast } from 'react-toastify';
+import DragableMenuManager from './DragableMenuManager';
 
 
 const columns = [
@@ -462,6 +463,7 @@ function MenuManager() {
 
   return (
     <div>
+      {/* <DragableMenuManager/> */}
       {/* <ToastContainer/> */}
       <Popup showLoading={showLoading} popupText={loadingText}  />
       <Modal
@@ -563,7 +565,6 @@ function MenuManager() {
                         <td className="table-td">{row.title}</td>
                         <td className="table-td lowercase">{row.slug}</td>
                         <td className="table-td flex justify-center items-center">
-                          {/* Up Arrow */}
                           {
                             i !== 0 &&
                             <button onClick={(e) => handleUpButton(row.slug)}>
@@ -571,7 +572,6 @@ function MenuManager() {
                             </button>
                           }
 
-                          {/* Down Arrow */}
                           {
                             i !== (menuData.items.length-1) &&
                             <button onClick={(e) => handleDownButton(row.slug)}>
