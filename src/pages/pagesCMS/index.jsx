@@ -101,7 +101,6 @@ function index() {
       setTotalPages(Math.ceil(res.data.count/10) || 1)
     })
     .catch(err => {
-      console.log(err)
     })
   }
 
@@ -195,7 +194,6 @@ function index() {
   const [defaultSelection, setDefaultSelection] = useState({})
   useEffect(() => {
     const storedSelection = sessionStorage.getItem("pageSelection")
-    console.log(storedSelection)
     if(storedSelection){
       setSelectionValue(storedSelection)
       category.map((item) => {
@@ -211,7 +209,6 @@ function index() {
 
   // Handle Preview
   const handlePreview = (slug) => {
-    console.log(slug)
     if(slug == "home"){
       window.open(`${CMS_API}`, '_blank');
     }else{
@@ -229,7 +226,6 @@ function index() {
       headers: headers
     })
     .then((res) => {
-      console.log("first Api res")
       // change duplicate data value
       const duplicatePageData = res.data
       duplicatePageData.title = duplicatePageData.title + "_new"
@@ -240,7 +236,6 @@ function index() {
         headers: headers
       })
       .then((res) => {
-        console.log("SEcound Api res")
         AddLog(profileData.email, "Page", `Page Duplicated Successful`)
         createPage(duplicatePageData.title)(dispatch);
 
@@ -248,7 +243,6 @@ function index() {
         axios.get(`${API_HOST}api/pages/${slug}/content`)
         .then(res => {
           const content = res.data
-          console.log(content)
           if(content?.message === "No content"){
             axios.post(`${API_HOST}api/pages/${duplicatePageData.slug}/content`, content)
             .then(res => {
@@ -297,7 +291,6 @@ function index() {
                 });
               })
               .catch(err => {
-                console.log("Fourth Api err")
                 setShowLoading(false)
                 toast.error("Page Duplicated Unsuccessful!", {
                   position: "top-right",
@@ -326,7 +319,6 @@ function index() {
           }
         })
         .catch(err => {
-          console.log("Third Api err")
           setShowLoading(false)
           toast.error("Page Duplicated Unsuccessful!", {
             position: "top-right",
@@ -341,7 +333,6 @@ function index() {
         })
       })
       .catch((err) => {
-        console.log("secound Api err")
         setShowLoading(false)
         if(err.response.data.error === "Authentication error!"){
           removeCookie("_token")
@@ -362,9 +353,7 @@ function index() {
       });
     })
     .catch((err) => {
-      console.log("first Api Err")
       setShowLoading(false)
-      console.log(err)
       toast.error("Page Duplicated Unsuccessful!", {
         position: "top-right",
         autoClose: 2000,
@@ -512,11 +501,11 @@ function index() {
                               <Icon icon="heroicons:trash" />
                             </button>
                           </Tooltip>
-                          <Tooltip content="Clone" placement="top" arrow animation="shift-away">
+                          {/*<Tooltip content="Clone" placement="top" arrow animation="shift-away">
                             <button className="action-btn btn-outline-success mr-3" type="button" onClick={() => handleDuplicate(row.slug)} >
                               <Icon icon="heroicons:document-duplicate" />
                             </button>
-                          </Tooltip>
+                          </Tooltip> */}
                           {
                             row.template_category == "Designer" &&
                             <Tooltip content="Design" placement="top" arrow animation="shift-away">

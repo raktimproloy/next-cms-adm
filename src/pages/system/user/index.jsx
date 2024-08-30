@@ -301,8 +301,6 @@ const handleAllSelect = () => {
   const { globalFilter, pageIndex, pageSize } = state;
 
   useEffect(() => {
-    console.log("globalFilter", globalFilter)
-    console.log("setGlobalFilter", setGlobalFilter())
   }, [globalFilter, setGlobalFilter])
   
   return (
@@ -339,7 +337,6 @@ const handleAllSelect = () => {
                   className="btn-warning "
                   onClick={() => 
                     {
-                      console.log(selectedUser)
                       axios
                       .delete(`${API_HOST}user/delete`, { data: { userList: selectedUser }, headers: headers })
                       .then((res) => {

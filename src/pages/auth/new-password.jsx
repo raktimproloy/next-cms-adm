@@ -62,7 +62,6 @@ const NewPassword = () => {
     const navigate = useNavigate();
 
     const onSubmit = () => {
-        console.log("Hello")
     //   setShowLoading(true)
   
     //   axios.post(`${API_HOST}user/login`, loginData)

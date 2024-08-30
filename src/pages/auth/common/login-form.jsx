@@ -49,8 +49,8 @@ const LoginForm = () => {
   }, [setting]);
 
   const [loginData, setLoginData] = useState({
-    email:"",
-    password: ""
+    email:"admin@gmail.com",
+    password: "12341234"
   })
 
   function handleChange(e) {
@@ -88,7 +88,6 @@ const LoginForm = () => {
       .catch(error=>{
           AddLog(loginData.email, "login", `${error?.response?.data?.error || "Unsuccessful Login"}`)
           setShowLoading(false)
-          console.log(error)
           setErrorMessage(error?.response?.data?.error)
           setError(true)
       })
@@ -115,6 +114,7 @@ const LoginForm = () => {
         type="email"
         register={register}
         error={errors.email}
+        defaultValue={loginData.email}
         className="h-[48px]"
         onChange={handleChange}
       />
@@ -123,6 +123,7 @@ const LoginForm = () => {
         label="passwrod"
         type="password"
         register={register}
+        defaultValue={loginData.password}
         error={errors.password}
         className="h-[48px]"
         onChange={handleChange}

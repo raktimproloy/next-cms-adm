@@ -269,7 +269,6 @@ function EditPage() {
   }
 
   const handleFileChange = (e) => {
-    console.log(pageData)
     setSelectedFile(e.target.files[0]);
   };
 

@@ -151,7 +151,6 @@ const [changeMetaImage, setChangeMetaImage] = useState("")
       }else if(selectedFile){
         og_imageUrl = await StoreMetaImage(selectedFile, setting?.storage_config?.storage_meta_bucket_id);
       }
-      console.log(og_imageUrl)
       const formData = new FormData();
       formData.append('title', blogData.title);
       formData.append('slug', blogData.slug);

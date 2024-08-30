@@ -66,7 +66,6 @@ function Home({settingData, setSettingData}) {
           headers: headers
         })
         .then(res => {
-          console.log(res)
           setShowSliderModal(false)
           setSliderData({
             title: "",
@@ -126,7 +125,6 @@ function Home({settingData, setSettingData}) {
         headers: headers
       })
       .then(res => {
-        console.log(res)
         setShowSliderModal(false)
         setSliderData({
           title: "",
@@ -226,8 +224,8 @@ function Home({settingData, setSettingData}) {
   }
 
 
-  const [staticActive, setStaticActive] = useState(settingData.page.home.static_hero_section);
-  const [sliderActive, setSliderActive] = useState(settingData.page.home.slider_hero_section);
+  const [staticActive, setStaticActive] = useState(settingData.page.home.static_hero_section || false);
+  const [sliderActive, setSliderActive] = useState(settingData.page.home.slider_hero_section || true);
 
   const handleStaticChange = () => {
     setStaticActive(!staticActive);

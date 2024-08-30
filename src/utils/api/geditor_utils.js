@@ -559,7 +559,6 @@ export const addEditorCommand = (editor) => {
   editor.Commands.add("saveDb", {
     run: (editor, sender) => {
       sender && sender.set("active");
-      console.log(editor)
       editor.store();
       swal("Nice", "Your design was saved", "success")
     },

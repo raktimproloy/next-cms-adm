@@ -12,7 +12,6 @@ export default function TinyMCE() {
       // formData.append('image', blobInfo.blob(), blobInfo.filename());
       formData.append('image', blobInfo.blob(), blobInfo.filename());
       setTimeout(() => {
-        console.log(formData)
       }, 1000);
       // xhr.upload.onprogress = (e) => {
       //   if (progress && typeof progress === 'function') {

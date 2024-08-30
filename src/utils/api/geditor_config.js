@@ -148,7 +148,6 @@ const geditorConfig = (assets, slug) => {
   svgFix(editor)
   addEditorCommand(editor);
   editor.on("run:preview", () => {
-    console.log("It will trigger when we click on preview icon");
     // This will be used to hide border
     editor.stopCommand("sw-visibility");
     // This will hide the sidebar view
@@ -161,7 +160,6 @@ const geditorConfig = (assets, slug) => {
   });
   editor.on("stop:preview", () => {
     // This event is reverse of the above event.
-    console.log("It will trigger when we click on cancel preview icon");
     editor.runCommand("sw-visibility");
     navbar.addClass("sidebar");
     mainContent.addClass("main-content");

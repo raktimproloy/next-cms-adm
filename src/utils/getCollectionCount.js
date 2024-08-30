@@ -8,8 +8,6 @@ export const getCollectionCount = async (dispatch, cookie, removeCookie, collect
       'Authorization': `Bearer ${cookie._token}`
     };
 
-    // console.log("previous",previousData)
-    // Get Collection Count Data
     const countResponse = await axios.get(`${API_HOST}${collection}/collection/count`, {
       headers: headers
     });

@@ -53,7 +53,6 @@ function DragableMenuManager() {
       slug: "",
       title: ""
     })
-  console.log(showDeleteModal)
     useEffect(() => {
       if (updateInfo.menuUpdate === "" || updateInfo.menuUpdate === "not-updated") {
         getAllMenus(dispatch, cookie, removeCookie);
@@ -283,7 +282,6 @@ function DragableMenuManager() {
     }
 
     const handleLayoutSave = () => {
-        console.log(layout)
     }
 
     

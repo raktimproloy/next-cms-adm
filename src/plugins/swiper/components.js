@@ -51,7 +51,6 @@ export default (editor, opts = {}) => {
                 prevEl: ".swiper-button-prev",
               },
             });
-            console.log("swiper :>> ", swiper);
           };
 
           if (typeof Swiper == "undefined") {

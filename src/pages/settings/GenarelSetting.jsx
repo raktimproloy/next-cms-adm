@@ -94,7 +94,6 @@ function GenarelSetting() {
 
 
   const editHandler = async () => {
-    console.log(settingData)
     setShowLoading(true)
     try {
       let logoURL = settingData.logo
@@ -188,7 +187,6 @@ function GenarelSetting() {
         });
       });
     } catch (error) {
-        console.error("Image upload failed:", error);
         toast.error("Setting Updated Unsuccessful!", {
           position: "top-right",
           autoClose: 2000,

@@ -52,7 +52,6 @@ export default (dc, label, type, config) => {
             script.src = "https://cdn.jsdelivr.net/npm/chart.js";
             document.body.appendChild(script);
           } else {
-            console.log("InitLib");
             initLib();
           }
         },

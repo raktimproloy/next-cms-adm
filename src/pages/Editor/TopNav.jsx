@@ -3,7 +3,6 @@ import { toggleSidebar } from "@/utils/api/geditor_utils";
 function TopNav({editorPageData}) {
   const CMS_API = import.meta.env.VITE_CMS_LINK
   const pathname = window.location.pathname.split("/")
-  console.log(pathname[1])
   const handleClick = () => {
     toggleSidebar(false);
   };

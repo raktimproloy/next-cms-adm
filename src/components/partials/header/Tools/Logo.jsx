@@ -6,8 +6,6 @@ const Logo = ({settingData}) => {
   const [isDark] = useDarkMode();
   const { width, breakpoints } = useWidth();
 
-  console.log(settingData?.storage_config?.storage_url)
-
   return (
     <div>
       <Link to="/dashboard">

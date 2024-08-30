@@ -160,8 +160,6 @@ function AddBlog() {
         };
       }
 
-      console.log(metaFinal)
-
       let og_imageUrl = setting?.meta_property?.og_image
       if(selectedFile){
         og_imageUrl = await StoreMetaImage(selectedFile, setting?.storage_config?.storage_meta_bucket_id);
@@ -235,7 +233,6 @@ function AddBlog() {
         progress: undefined,
         theme: "light",
       });
-      console.error("Image upload failed:", error);
     }
     
   }

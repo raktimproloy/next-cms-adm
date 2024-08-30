@@ -237,7 +237,6 @@ axios.post(`${API_HOST}menu/item/update/${menuData._id}`,
   });
 })
 .catch((err) => {
-    console.log(err)
     setShowLoading(false)
 //   if(err?.response?.data?.error === "Authentication error!"){
 //       removeCookie("_token")

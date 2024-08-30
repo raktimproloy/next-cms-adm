@@ -168,7 +168,6 @@ function index() {
 
   // Handle Preview
   const handlePreview = (slug) => {
-    console.log(slug)
     window.open(`${CMS_API}blog/details/${slug.toLowerCase()}`, '_blank');
     toast.success("Blog Preview Link Copied", {
       position: "top-right",

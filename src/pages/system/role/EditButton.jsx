@@ -38,7 +38,6 @@ function EditButton({row}) {
         })
         .then(res => {
             const data = res.data[0]
-            console.log(res.data[0])
             setRoleData(res.data[0])
         })
         .catch(error => {

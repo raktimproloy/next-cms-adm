@@ -13,7 +13,6 @@ import { useCookies } from "react-cookie";
 const Editor = () => {
   const [editor, setEditor] = useState(null);
   const pathname = window.location.pathname
-  console.log(pathname)
   const [search, setSearch] = useState("")
   // Set Default Image
   const [assets, setAssets] = useState([
