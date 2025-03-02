@@ -313,7 +313,7 @@ const handleAddItem = () => {
         menuItems && menuItems.length > 0 && menuItems.map(item => {
           setSelectItems(oldPage => [...oldPage, { value: item.menu_slug, label: item.title }])
         })
-        setSelectParent(selectItems[0]?.value)
+        // setSelectParent(selectItems[0]?.value)
       }, [menuItems]);
     
       function handleParentChange(e) {
